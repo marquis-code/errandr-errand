@@ -14,6 +14,14 @@ export default defineNuxtConfig({
     host: 'localhost'
   },
 
+    nitro: {
+    prerender: {
+      routes: ['/', '/404.html'],
+      ignore: ['/dynamic-routes', '/api'],
+      failOnError: false
+    }
+  },
+
   postcss: {
     plugins: {
       "postcss-import": {},
@@ -96,6 +104,12 @@ export default defineNuxtConfig({
     "@nuxtjs/sitemap",
     "@nuxtjs/seo",
   ],
+    runtimeConfig: {
+    public: {
+      apiBase: process.env.VITE_API_BASE_URL || "http://localhost:3005",
+      wsBase: process.env.WS_BASE_URL || process.env.VITE_WS_URL || "http://localhost:3005",
+    },
+  },
 
   compatibilityDate: "2025-11-01"
 });

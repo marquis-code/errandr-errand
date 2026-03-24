@@ -8,20 +8,24 @@ const SOCKET_CONNECTING_KEY = 'realtime_socket_connecting'
 
 const createSessionId = () => `session_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
 
+const socket = ref<Socket | null>(null)
+const isConnected = ref(false)
+const isConnecting = ref(false)
+
 export const useRealtimeSocket = () => {
   const { token } = useUser()
-  const socket = useState<Socket | null>(SOCKET_KEY, () => null)
-  const isConnected = useState<boolean>(SOCKET_CONNECTED_KEY, () => false)
-  const isConnecting = useState<boolean>(SOCKET_CONNECTING_KEY, () => false)
   const guestSessionId = useStorage('chat_guest_session_id', createSessionId())
   const guestId = useStorage('chat_guest_id', '')
+
 
   const connectSocket = () => {
     if (!process.client) return
     if (socket.value && (socket.value.connected || isConnecting.value)) return
 
-    const baseUrl = import.meta.env.VITE_BASE_URL as string
+    const baseUrl = (import.meta.env.VITE_WS_URL || import.meta.env.VITE_BASE_URL || import.meta.env.VITE_API_BASE_URL) as string
     isConnecting.value = true
+
+
 
     socket.value = io(`${baseUrl}/realtime`, {
       path: '/socket.io/',

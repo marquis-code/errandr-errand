@@ -1,4 +1,7 @@
 import { io, Socket } from 'socket.io-client';
+import { useUser } from '@/composables/modules/auth/user';
+import { ref, computed, onUnmounted } from 'vue';
+
 
 export const useSocket = (namespace: string) => {
   const config = useRuntimeConfig();
@@ -7,7 +10,7 @@ export const useSocket = (namespace: string) => {
   let socket: Socket | null = null;
 
   const connect = () => {
-    if (socket?.connected) return socket;
+    if (socket) return socket;
 
     socket = io(`${config.public.wsBase}/${namespace}`, {
       query: {
@@ -35,12 +38,12 @@ export const useSocket = (namespace: string) => {
   };
 
   const emit = (event: string, data: any) => {
-    if (!socket?.connected) connect();
+    if (!socket) connect();
     socket?.emit(event, data);
   };
 
   const on = (event: string, callback: (...args: any[]) => void) => {
-    if (!socket?.connected) connect();
+    if (!socket) connect();
     socket?.on(event, callback);
   };
 

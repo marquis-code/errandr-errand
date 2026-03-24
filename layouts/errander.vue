@@ -1,246 +1,261 @@
 <template>
-  <FullScreenLoader />
-  <div class="min-h-screen bg-gray-50">
-    <!-- Desktop Sidebar -->
-    <aside class="hidden lg:block w-64 bg-white border-r-[0.5px] border-gray-50 min-h-screen fixed left-0 top-0 shadow-sm">
-      <!-- Logo -->
-      <div class="p-4 border-b border-gray-100 flex items-center gap-3">
-        <div class="w-10 h-10 bg-parentPrimary rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-sm">
-          E
-        </div>
-        <span class="text-xl font-black text-parentPrimary tracking-tighter">Errandr</span>
-      </div>
-      
-      <!-- Navigation -->
-      <nav class="p-4 space-y-1">
-        <NuxtLink
-          v-for="item in navItems"
-          :key="item.path"
-          :to="item.path"
-          class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all group"
-          :class="isActive(item.path) 
-            ? 'bg-parentPrimary text-white shadow-sm' 
-            : 'text-gray-700 hover:bg-gray-50 hover:text-parentPrimary'"
-        >
-          <component :is="item.icon" class="w-5 h-5 mr-3" />
-          {{ item.label }}
-        </NuxtLink>
-      </nav>
+ <div class="min-h-screen bg-[#f8f9fb]">
+ <!-- Desktop Sidebar -->
+ <aside class="hidden lg:flex flex-col w-64 bg-white border-r border-gray-100 min-h-screen fixed left-0 top-0 z-50">
+ <!-- Logo -->
+ <div class="p-6 pb-8 flex items-center gap-3">
+ <div class="w-10 h-10 bg-gradient-to-br from-[#065fdb] to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-[#065fdb]/20">
+ E
+ </div>
+ <div class="flex flex-col">
+ <span class="text-lg font-bold text-gray-900 tracking-tight leading-none">Errandr</span>
+ <span class="text-[10px] font-semibold text-[#065fdb] tracking-wide leading-none mt-0.5">Rider Portal</span>
+ </div>
+ </div>
 
-      <!-- Logout Button -->
-      <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100">
-        <button
-          @click="handleLogoutClick"
-          class="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-all"
-        >
-          <LogOut class="w-5 h-5 mr-3" />
-          Logout
-        </button>
-      </div>
-    </aside>
+ <!-- Rider Profile Card -->
+ <div class="px-4 mb-6">
+ <div class="p-4 rounded-2xl bg-gray-50 border border-gray-100 transition-all hover:bg-white hover:shadow-md">
+ <div class="flex items-center gap-3">
+ <div class="relative">
+ <div class="w-11 h-11 rounded-xl bg-[#065fdb] text-white flex items-center justify-center font-bold text-sm shadow-md shadow-[#065fdb]/20">
+ {{ userInitials }}
+ </div>
+ <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white" />
+ </div>
+ <div class="flex-1 min-w-0">
+ <h3 class="font-bold text-gray-900 text-sm truncate">{{ userDisplayName }}</h3>
+ <span class="text-[10px] font-medium text-emerald-600">Online</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ <!-- Navigation -->
+ <nav class="flex-1 px-4 space-y-1">
+ <p class="text-[10px] font-semibold text-gray-400 tracking-wider mb-3 px-3">Menu</p>
+ <NuxtLink
+ v-for="item in navItems"
+ :key="item.path"
+ :to="item.path"
+ class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all group"
+ :class="isActive(item.path) 
+ ? 'bg-[#065fdb] text-white shadow-md shadow-[#065fdb]/20' 
+ : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
+ >
+ <component :is="item.icon" class="w-[18px] h-[18px] mr-3 transition-transform group-hover:scale-110" />
+ {{ item.label }}
+ </NuxtLink>
+ </nav>
 
-    <!-- Mobile Header -->
-    <header class="lg:hidden bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm">
-      <div class="flex items-center justify-between px-4 py-3">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 bg-parentPrimary rounded-lg flex items-center justify-center text-white font-bold text-lg">
-            E
-          </div>
-          <span class="font-black text-parentPrimary tracking-tighter">Errandr</span>
-        </div>
-        <button
-          @click="showMobileMenu = !showMobileMenu"
-          class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-        >
-          <Menu class="w-6 h-6 text-gray-700" />
-        </button>
-      </div>
-    </header>
+ <!-- Logout -->
+ <div class="p-4 border-t border-gray-100">
+ <button
+ @click="handleLogoutClick"
+ class="flex items-center w-full px-4 py-3 text-sm font-medium text-rose-500 hover:bg-rose-50 rounded-xl transition-all group"
+ >
+ <LogOut class="w-[18px] h-[18px] mr-3 transition-transform group-hover:-translate-x-0.5" />
+ Log Out
+ </button>
+ </div>
+ </aside>
 
-    <!-- Mobile Menu Overlay -->
-    <Transition name="overlay">
-      <div
-        v-if="showMobileMenu"
-        class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40 backdrop-blur-sm"
-        @click="showMobileMenu = false"
-      ></div>
-    </Transition>
+ <!-- In-App Toast Mount -->
+ <InAppToast ref="toastRef" />
 
-    <!-- Mobile Sidebar -->
-    <Transition name="slide">
-      <aside
-        v-if="showMobileMenu"
-        class="lg:hidden w-72 bg-white min-h-screen fixed left-0 top-0 z-50 shadow-2xl"
-      >
-        <!-- Mobile Header -->
-        <div class="p-4 border-b border-gray-100 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-parentPrimary rounded-lg flex items-center justify-center text-white font-bold text-lg">
-              E
-            </div>
-            <span class="font-black text-parentPrimary tracking-tighter">Errandr</span>
-          </div>
-          <button
-            @click="showMobileMenu = false"
-            class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <X class="w-6 h-6 text-gray-700" />
-          </button>
-        </div>
+ <!-- Mobile Header -->
+ <header class="lg:hidden bg-white border-b border-gray-100 sticky top-0 z-40 px-5 py-3.5 flex items-center justify-between">
+ <div class="flex items-center gap-2.5">
+ <div class="w-9 h-9 bg-gradient-to-br from-[#065fdb] to-indigo-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md shadow-[#065fdb]/10">
+ E
+ </div>
+ <span class="text-lg font-bold text-gray-900 tracking-tight">Errandr</span>
+ </div>
+ <div class="flex items-center gap-2">
+ <NuxtLink to="/notifications" class="relative w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:text-gray-600 transition-all">
+ <Bell class="w-5 h-5" />
+ <div v-if="unreadCount > 0" class="absolute top-2 right-2 w-4 h-4 bg-[#065fdb] border-2 border-white rounded-full flex items-center justify-center">
+ <span class="text-[8px] font-bold text-white">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
+ </div>
+ </NuxtLink>
+ <button
+ @click="showMobileMenu = !showMobileMenu"
+ class="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-600 active:scale-95 transition-all"
+ >
+ <Menu class="w-5 h-5" />
+ </button>
+ </div>
+ </header>
 
-        <!-- User Info -->
-        <div class="p-4 bg-gradient-to-br from-parentPrimary/5 to-parentPrimary/10 border-b border-gray-100">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-full bg-parentPrimary text-white flex items-center justify-center font-semibold text-lg">
-              {{ userInitials }}
-            </div>
-            <div class="flex-1 min-w-0">
-              <h3 class="font-semibold text-gray-900 truncate">{{ userDisplayName }}</h3>
-              <p class="text-xs text-gray-500 truncate">{{ user?.email }}</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Mobile Navigation -->
-        <nav class="p-4 space-y-1 max-h-[calc(100vh-240px)] overflow-y-auto">
-          <NuxtLink
-            v-for="item in navItems"
-            :key="item.path"
-            :to="item.path"
-            class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all"
-            :class="isActive(item.path) 
-              ? 'bg-parentPrimary text-white shadow-sm' 
-              : 'text-gray-700 hover:bg-gray-50 hover:text-parentPrimary'"
-            @click="showMobileMenu = false"
-          >
-            <component :is="item.icon" class="w-5 h-5 mr-3 flex-shrink-0" />
-            {{ item.label }}
-          </NuxtLink>
-        </nav>
+ <!-- Mobile Overlay -->
+ <Transition name="overlay">
+ <div v-if="showMobileMenu" class="lg:hidden fixed inset-0 bg-black/30 z-40 backdrop-blur-sm" @click="showMobileMenu = false" />
+ </Transition>
 
-        <!-- Mobile Logout -->
-        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 bg-white">
-          <button
-            @click="handleLogoutClick"
-            class="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-all"
-          >
-            <LogOut class="w-5 h-5 mr-3" />
-            Logout
-          </button>
-        </div>
-      </aside>
-    </Transition>
+ <!-- Mobile Sidebar -->
+ <Transition name="slide">
+ <aside v-if="showMobileMenu" class="lg:hidden w-72 bg-white min-h-screen fixed left-0 top-0 z-50 shadow-2xl flex flex-col">
+ <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+ <div class="flex items-center gap-2.5">
+ <div class="w-9 h-9 bg-[#065fdb] rounded-lg flex items-center justify-center text-white font-bold text-sm">E</div>
+ <span class="text-lg font-bold text-gray-900 tracking-tight">Errandr</span>
+ </div>
+ <button @click="showMobileMenu = false" class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400"><X class="w-5 h-5" /></button>
+ </div>
 
-    <!-- Main Content -->
-    <main class="flex-1 lg:ml-64">
-      <!-- Dashboard Header -->
-      <div class="bg-white border-b border-gray-100 sticky top-0 z-30 shadow-sm hidden lg:block">
-        <div class="px-6 py-1.5">
-          <div class="flex items-center justify-between">
-            <div>
-              <h1 class="text-xl font-bold text-gray-900">{{ pageTitle }}</h1>
-              <p class="text-sm text-gray-500">{{ pageDescription }}</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <!-- User Profile -->
-              <div class="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl">
-                <div class="w-10 h-10 rounded-full bg-parentPrimary text-white flex items-center justify-center font-semibold">
-                  {{ userInitials }}
-                </div>
-                <div class="text-left">
-                  <p class="text-sm font-semibold text-gray-900">{{ userDisplayName }}</p>
-                  <p class="text-xs text-gray-500">{{ user?.email }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+ <div class="p-5 bg-gray-50 border-b border-gray-100">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 rounded-xl bg-[#065fdb] text-white flex items-center justify-center font-bold text-lg shadow-md shadow-[#065fdb]/20">
+ {{ userInitials }}
+ </div>
+ <div class="min-w-0">
+ <h3 class="font-bold text-gray-900 text-base tracking-tight truncate">{{ userDisplayName }}</h3>
+ <p class="text-xs text-gray-400 truncate">{{ user?.email }}</p>
+ </div>
+ </div>
+ </div>
+ 
+ <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+ <NuxtLink
+ v-for="item in navItems"
+ :key="item.path"
+ :to="item.path"
+ class="flex items-center px-4 py-3.5 text-sm font-medium rounded-xl transition-all"
+ :class="isActive(item.path) ? 'bg-[#065fdb] text-white shadow-md shadow-[#065fdb]/20' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
+ @click="showMobileMenu = false"
+ >
+ <component :is="item.icon" class="w-[18px] h-[18px] mr-3" />
+ {{ item.label }}
+ </NuxtLink>
+ </nav>
 
-      <!-- Page Content -->
-      <div class="bg-white p-6">
-        <slot />
-      </div>
-    </main>
+ <div class="p-5 border-t border-gray-100">
+ <button @click="handleLogoutClick" class="flex items-center w-full px-4 py-3.5 text-sm font-medium text-rose-500 hover:bg-rose-50 rounded-xl transition-all">
+ <LogOut class="w-[18px] h-[18px] mr-3" /> Log Out
+ </button>
+ </div>
+ </aside>
+ </Transition>
 
-     <Transition
-  enter-active-class="transition ease-out duration-300"
-  enter-from-class="opacity-0"
-  enter-to-class="opacity-100"
-  leave-active-class="transition ease-in duration-200"
-  leave-from-class="opacity-100"
-  leave-to-class="opacity-0"
->
-  <div
-    v-if="logoutModalOpen"
-    class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
-    @click.self="logoutModalOpen = false"
-  >
-    <Transition
-      enter-active-class="transition ease-out duration-300"
-      enter-from-class="opacity-0 scale-95"
-      enter-to-class="opacity-100 scale-100"
-      leave-active-class="transition ease-in duration-200"
-      leave-from-class="opacity-100 scale-100"
-      leave-to-class="opacity-0 scale-95"
-    >
-      <div
-        v-if="logoutModalOpen"
-        class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 sm:p-7 flex flex-col items-center text-center space-y-5"
-      >
-        <!-- Icon -->
-        <div class="w-14 h-14 rounded-full bg-rose-50 flex items-center justify-center">
-          <LogOut class="w-7 h-7 text-rose-500" />
-        </div>
+ <!-- Main Content -->
+ <main class="flex-1 lg:ml-64 flex flex-col min-h-screen">
+ <!-- Desktop Header -->
+ <header class="bg-white/80 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-30 px-8 py-5 hidden lg:flex items-center justify-between">
+ <div>
+ <h1 class="text-xl font-bold text-gray-900 tracking-tight leading-none">{{ pageTitle }}</h1>
+ <p class="text-xs text-gray-400 font-medium mt-1">{{ pageDescription }}</p>
+ </div>
+ 
+ <div class="flex items-center gap-4">
+ <NuxtLink to="/notifications" class="relative group">
+ <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-white group-hover:shadow-md group-hover:text-[#065fdb] transition-all border border-transparent group-hover:border-gray-100">
+ <Bell class="w-[18px] h-[18px]" />
+ </div>
+ <div v-if="unreadCount > 0" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-[#065fdb] border-2 border-white rounded-full flex items-center justify-center shadow-sm">
+ <span class="text-[8px] font-bold text-white">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
+ </div>
+ </NuxtLink>
 
-        <!-- Content -->
-        <div class="space-y-1">
-          <h3 class="text-xl font-semibold text-gray-900">
-            Leaving already?
-          </h3>
-          <p class="text-sm text-gray-600 leading-relaxed">
-            You’ll be signed out of your account.  
-            Don’t worry — your data will be waiting for you ✨
-          </p>
-        </div>
+ <div class="w-px h-8 bg-gray-100" />
+ 
+ <div class="flex items-center gap-3">
+ <div class="text-right">
+ <p class="text-sm font-semibold text-gray-900 leading-none mb-0.5">{{ userDisplayName }}</p>
+ <p class="text-[10px] font-medium text-gray-400">Rider</p>
+ </div>
+ <div class="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center text-white text-sm font-bold shadow-md">
+ {{ userInitials }}
+ </div>
+ </div>
+ </div>
+ </header>
 
-        <!-- Actions -->
-        <div class="flex gap-3 w-full pt-2">
-          <button
-            @click="logoutModalOpen = false"
-            class="w-full px-4 py-3 rounded-full text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
-          >
-            Stay logged in
-          </button>
+ <!-- Page Content -->
+ <div class="flex-1 p-5 md:p-8">
+ <slot />
+ </div>
+ 
+ <!-- Footer -->
+ <footer class="px-8 py-5 border-t border-gray-100 flex items-center justify-between">
+ <p class="text-xs text-gray-400 font-medium">© {{ new Date().getFullYear() }} Errandr</p>
+ <div class="flex items-center gap-5">
+ <a href="#" class="text-xs text-gray-400 hover:text-[#065fdb] font-medium transition-colors">Terms</a>
+ <a href="#" class="text-xs text-gray-400 hover:text-[#065fdb] font-medium transition-colors">Support</a>
+ </div>
+ </footer>
+ </main>
 
-          <button
-            @click="confirmLogout"
-            class="w-full px-4 py-3 rounded-full text-sm font-semibold text-white bg-rose-500 hover:bg-rose-600 transition-colors"
-          >
-            Log out
-          </button>
-        </div>
-      </div>
-    </Transition>
-  </div>
-</Transition>
+ <!-- Logout Confirmation Modal -->
+ <Transition name="fade">
+ <div v-if="logoutModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm px-6" @click.self="logoutModalOpen = false">
+ <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 flex flex-col items-center text-center space-y-6 animate-scale-in">
+ <div class="w-16 h-16 rounded-2xl bg-rose-50 flex items-center justify-center border border-rose-100">
+ <LogOut class="w-8 h-8 text-rose-500" />
+ </div>
 
-  </div>
+ <div class="space-y-2">
+ <h3 class="text-xl font-bold text-gray-900 tracking-tight">Log Out?</h3>
+ <p class="text-sm text-gray-500">
+ Are you sure you want to log out of your account?
+ </p>
+ </div>
+
+ <div class="flex flex-col gap-2.5 w-full">
+ <button @click="confirmLogout" class="w-full py-3.5 rounded-xl text-sm font-semibold text-white bg-rose-500 hover:bg-rose-600 shadow-md shadow-rose-500/20 transition-all active:scale-[0.98]">
+ Yes, Log Out
+ </button>
+ <button @click="logoutModalOpen = false" class="w-full py-3.5 rounded-xl text-sm font-semibold text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all">
+ Cancel
+ </button>
+ </div>
+ </div>
+ </div>
+ </Transition>
+
+ <!-- Chat Widget -->
+ <div class="fixed bottom-6 right-6 z-[99]">
+ <ChatWidget />
+ </div>
+ </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useUser } from '@/composables/modules/auth/user'
 import { useRouter, useRoute } from 'vue-router'
+import ChatWidget from '@/components/ChatWidget.vue'
 import { 
-  LayoutDashboard, 
-  Bike, 
-  Wallet, 
-  User, 
-  LogOut, 
-  Menu, 
-  X 
+ LayoutDashboard, 
+ Bike, 
+ Wallet, 
+ User, 
+ LogOut, 
+ Menu, 
+ X,
+ ChevronRight,
+ Bell
 } from 'lucide-vue-next'
+import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
+import { useNotifications } from '@/composables/modules/notifications/useNotifications'
+import InAppToast from '@/components/InAppToast.vue'
+
+const { toastQueue } = useRealtimeNotifications()
+const { unreadCount } = useNotifications()
+const toastRef = ref<any>(null)
+
+// Watch toastQueue to push to component
+watch(() => toastQueue.value.length, (newLen, oldLen) => {
+ if (newLen > oldLen) {
+ // Process all new items added since last watch trigger
+ const newItems = toastQueue.value.slice(oldLen, newLen)
+ newItems.forEach(item => {
+ if (toastRef.value) {
+ toastRef.value.addToast(item)
+ }
+ })
+ }
+})
+
 
 const route = useRoute()
 const router = useRouter()
@@ -249,92 +264,65 @@ const showMobileMenu = ref(false)
 const logoutModalOpen = ref(false)
 
 const navItems = [
-  { path: '/dashboard', label: 'Overview', icon: LayoutDashboard },
-  { path: '/deliveries', label: 'Deliveries', icon: Bike },
-  { path: '/earnings', label: 'Earnings', icon: Wallet },
-  { path: '/profile', label: 'My Profile', icon: User }
+ { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+ { path: '/deliveries', label: 'My Deliveries', icon: Bike },
+ { path: '/earnings', label: 'Earnings', icon: Wallet },
+ { path: '/notifications', label: 'Notifications', icon: Bell },
+ { path: '/profile', label: 'Profile', icon: User }
 ]
 
 const pageTitles: Record<string, { title: string; description: string }> = {
-  '/dashboard': { title: 'Errander Overview', description: 'Your delivery activity at a glance' },
-  '/deliveries': { title: 'Deliveries', description: 'Monitor and track your active deliveries' },
-  '/earnings': { title: 'Earnings', description: 'View your payouts and transaction history' },
-  '/profile': { title: 'My Profile', description: 'Manage your courier account details' }
+ '/dashboard': { title: 'Dashboard', description: 'Your delivery overview at a glance.' },
+ '/deliveries': { title: 'My Deliveries', description: 'Track and manage your active and past deliveries.' },
+ '/earnings': { title: 'Earnings', description: 'View your earnings, tips, and payout history.' },
+ '/notifications': { title: 'Notifications', description: 'Real-time updates and new delivery opportunities.' },
+ '/profile': { title: 'Profile', description: 'Manage your personal information and settings.' }
 }
 
-const pageTitle = computed(() => pageTitles[route.path]?.title || 'Courier Dashboard')
-const pageDescription = computed(() => pageTitles[route.path]?.description || 'Welcome back to Errandr')
+const pageTitle = computed(() => pageTitles[route.path]?.title || 'Dashboard')
+const pageDescription = computed(() => pageTitles[route.path]?.description || 'Welcome back!')
 
 const userDisplayName = computed(() => {
-  if (!user.value) return 'Errander'
-  return `${user.value.firstName || ''} ${user.value.lastName || ''}`.trim() || user.value.email || 'Errander'
+ if (!user.value) return 'Rider'
+ return `${user.value.firstName || ''} ${user.value.lastName || ''}`.trim() || user.value.email || 'Rider'
 })
 
 const userInitials = computed(() => {
-  if (!user.value) return 'E'
-  const first = user.value.firstName || ''
-  const last = user.value.lastName || ''
-  return (first[0] || last[0] || user.value.email?.[0] || 'E').toUpperCase()
+ if (!user.value) return 'R'
+ const first = user.value.firstName || ''
+ const last = user.value.lastName || ''
+ return (first[0] || last[0] || user.value.email?.[0] || 'R').toUpperCase()
 })
 
 const handleLogoutClick = () => {
-  logoutModalOpen.value = true
+ logoutModalOpen.value = true
 }
 
-const isActive = (path: string) => route.path === path
+const isActive = (path: string) => route.path === path || route.path.startsWith(path + '/')
 
 const confirmLogout = () => {
-  if (process.client) {
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
-    logoutModalOpen.value = false
-    window.location.reload()
-  }
+ logOut()
 }
 
 watch(() => route.path, () => showMobileMenu.value = false)
 </script>
 
 <style scoped>
-.overlay-enter-active,
-.overlay-leave-active {
-  transition: opacity 0.25s ease;
+.overlay-enter-active, .overlay-leave-active { transition: opacity 0.3s ease; }
+.overlay-enter-from, .overlay-leave-to { opacity: 0; }
+
+.slide-enter-active, .slide-leave-active { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.slide-enter-from, .slide-leave-to { transform: translateX(-100%); }
+
+.fade-enter-active, .fade-leave-active { transition: opacity 0.2s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+
+.animate-scale-in {
+ animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.overlay-enter-from,
-.overlay-leave-to {
-  opacity: 0;
-}
-
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.slide-enter-from,
-.slide-leave-to {
-  transform: translateX(-100%);
-}
-</style>
-
-<style scoped>
-.overlay-enter-active,
-.overlay-leave-active {
-  transition: opacity 0.25s ease;
-}
-
-.overlay-enter-from,
-.overlay-leave-to {
-  opacity: 0;
-}
-
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.slide-enter-from,
-.slide-leave-to {
-  transform: translateX(-100%);
+@keyframes scaleIn {
+ from { opacity: 0; transform: scale(0.95) translateY(8px); }
+ to { opacity: 1; transform: scale(1) translateY(0); }
 }
 </style>

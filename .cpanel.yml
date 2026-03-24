@@ -1,7 +1,7 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/erraezuq/errand.errandr.shop/
+    - export DEPLOYPATH=/home/erraezuq/dispatch.errandr.shop/
     - /bin/cp -R .output/public/* $DEPLOYPATH/
     - /bin/cp .htaccess $DEPLOYPATH/ 2>/dev/null || true
     - /bin/cp .env $DEPLOYPATH/ 2>/dev/null || true

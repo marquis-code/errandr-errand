@@ -1,0 +1,1 @@
+import{G as r}from"./DteDzJC5.js";const t={getStatistics:()=>r.get("/errandr/earnings"),getProfile:()=>r.get("/errandr/me"),toggleOnline:()=>r.put("/errandr/toggle-status"),getAssignedOrders:()=>r.get("/orders/errander"),getEarnings:()=>r.get("/errandr/earnings")};export{t as e};

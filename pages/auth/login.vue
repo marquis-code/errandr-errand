@@ -60,13 +60,21 @@
 
 <script setup lang="ts">
 import { Loader2, Bike } from 'lucide-vue-next'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useAuth } from '@/composables/modules/auth'
+import { useUser } from '@/composables/modules/auth/user'
 definePageMeta({ layout: false })
 const { login, loading } = useAuth()
+const { isLoggedIn } = useUser()
 const email = ref('')
 const password = ref('')
 const error = ref('')
+
+onMounted(() => {
+  if (isLoggedIn.value) {
+    navigateTo('/dashboard')
+  }
+})
 const handleLogin = async () => {
   error.value = ''
   try { await login({ email: email.value, password: password.value }) }

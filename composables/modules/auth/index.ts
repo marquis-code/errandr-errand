@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { auth_api } from '@/api_factory/modules/auth';
 import { useUser } from './user';
-// import { navigateTo } from '#imports';
+// import { navigateTo } from m;
 import { useCustomToast } from '@/composables/core/useCustomToast';
 
 export const useAuth = () => {
@@ -20,7 +20,7 @@ export const useAuth = () => {
         message: "You've successfully logged in.",
         toastType: "success",
       });
-      navigateTo('/');
+      navigateTo('/dashboard');
       return res.data;
     } catch (e: any) {
       // Error handled by axios interceptor
@@ -41,7 +41,7 @@ export const useAuth = () => {
         message: "Welcome to Errandr.",
         toastType: "success",
       });
-      navigateTo('/');
+      navigateTo('/dashboard');
       return res.data;
     } catch (e: any) {
       throw e;

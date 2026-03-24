@@ -11,11 +11,11 @@
     </div>
     
     <!-- Background Audio - Bottom Left -->
-    <ClientOnly>
+    <!-- <ClientOnly>
       <div class="fixed bottom-6 left-6 z-[999998]">
         <BackgroundAudio src="/audio/ambient-tranquility-serene-soundscapes-365048.mp3" />
       </div>
-    </ClientOnly>
+    </ClientOnly> -->
   </div>
 </template>
 
@@ -27,9 +27,21 @@ body {
 
 <script setup lang="ts">
 // Global app configuration
+import { onMounted } from 'vue'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
+import { useAuth } from '@/composables/modules/auth'
+import { useUser } from '@/composables/modules/auth/user'
+
+const { fetchProfile } = useAuth()
+const { token } = useUser()
 
 useRealtimeNotifications()
+
+onMounted(() => {
+  if (token.value) {
+    fetchProfile()
+  }
+})
 
 useHead({
   title: 'Errandr - Courier Portal',
