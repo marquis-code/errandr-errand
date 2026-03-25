@@ -31,13 +31,15 @@
       <!-- Delivery Info & Content -->
       <div class="lg:col-span-3 space-y-6">
         <!-- Delivery Points -->
-        <div class="bg-white p-6 rounded-2xl border border-gray-50 shadow-sm space-y-8 relative group">
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-8 relative group">
           <div class="flex items-start gap-6 relative">
             <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xl shadow-inner border border-amber-100/20 flex-shrink-0 group-hover:scale-105 transition-transform">🏪</div>
             <div class="min-w-0 pt-0.5">
-              <p class="text-[8px] font-bold text-amber-600 tracking-wider mb-1.5 leading-none">Pickup Location</p>
-              <p class="text-lg font-black text-gray-900 tracking-tight leading-none mb-1.5 truncate">{{ order.vendor?.storeName }}</p>
-              <p class="text-[10px] font-bold text-gray-400 leading-relaxed">{{ order.vendor?.address || 'Vendor Address' }}</p>
+              <p class="text-[8px] font-bold text-amber-600 tracking-wider mb-1.5 leading-none uppercase">Pickup Location</p>
+              <p class="text-lg font-black text-gray-900 tracking-tight leading-none mb-1.5 truncate">
+                {{ order.type === 'custom_errand' ? (order.customDetails?.pickupLocation || 'Custom Pickup') : order.vendor?.storeName }}
+              </p>
+              <p class="text-[10px] font-bold text-gray-400 leading-relaxed">{{ order.type === 'custom_errand' ? 'Special Request Pickup' : (order.vendor?.address || 'Vendor Address') }}</p>
             </div>
           </div>
           
@@ -46,20 +48,32 @@
           <div class="flex items-start gap-6 relative">
             <div class="w-10 h-10 rounded-xl bg-[#065fdb]/10 text-[#065fdb] flex items-center justify-center text-xl shadow-inner border border-[#065fdb]/20 flex-shrink-0 group-hover:scale-105 transition-transform">📍</div>
             <div class="min-w-0 pt-0.5">
-              <p class="text-[8px] font-bold text-[#065fdb] tracking-wider mb-1.5 leading-none">Drop-off Point</p>
+              <p class="text-[8px] font-bold text-[#065fdb] tracking-wider mb-1.5 leading-none uppercase">Drop-off Point</p>
               <p class="text-lg font-black text-gray-900 tracking-tight leading-none mb-1.5 truncate">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</p>
-              <p class="text-[10px] font-bold text-gray-400 leading-relaxed line-clamp-2">{{ order.deliveryAddress }}</p>
+              <p class="text-[10px] font-bold text-gray-400 leading-relaxed line-clamp-2">{{ order.deliveryAddress }} {{ order.type === 'custom_errand' ? `(${order.customDetails?.dropoffLocation})` : '' }}</p>
             </div>
           </div>
         </div>
 
-        <!-- Order Items -->
+        <!-- Order Items / Custom Description -->
         <div class="bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-xl relative overflow-hidden group">
           <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
-          <h3 class="text-[9px] font-bold text-gray-500 tracking-wider mb-6 flex items-center gap-3">
-            <div class="w-1.5 h-1.5 rounded-full bg-[#065fdb]" /> Order Content ({{ order.items?.length }} items)
+          <h3 class="text-[9px] font-bold text-gray-500 tracking-wider mb-6 flex items-center gap-3 uppercase">
+            <div class="w-1.5 h-1.5 rounded-full bg-[#065fdb]" /> 
+            {{ order.type === 'custom_errand' ? 'Request Details' : `Order Content (${order.items?.length} items)` }}
           </h3>
-          <div class="space-y-3">
+          
+          <div v-if="order.type === 'custom_errand'" class="space-y-4">
+            <div class="p-4 bg-white/5 rounded-xl border border-white/5 text-xs text-gray-200 leading-relaxed font-bold">
+              {{ order.customDetails?.description }}
+            </div>
+            <div class="flex items-center justify-between p-4 bg-parentPrimary/10 rounded-xl border border-parentPrimary/20">
+              <span class="text-[10px] font-black text-parentPrimary uppercase tracking-widest">Est. Item Cost</span>
+              <span class="text-sm font-black text-white">₦{{ order.customDetails?.estimatedItemCost?.toLocaleString() || 0 }}</span>
+            </div>
+          </div>
+
+          <div v-else class="space-y-3">
             <div v-for="item in order.items" :key="item._id" class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
               <span class="text-xs font-bold text-gray-200 tracking-tight">{{ item.name }}</span>
               <span class="text-[9px] font-bold text-white px-2.5 py-1 bg-[#065fdb] rounded-md shadow-md">x{{ item.quantity }}</span>
@@ -87,7 +101,7 @@
       <div class="lg:col-span-2 space-y-6">
         <!-- Customer Details -->
         <div class="bg-white p-6 rounded-2xl border border-gray-50 shadow-sm flex flex-col items-center text-center group hover:shadow-lg transition-all">
-          <div class="w-20 h-20 bg-gray-900 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-xl mb-4 group-hover:-translate-y-1 transition-transform border-4 border-white">
+          <div class="w-20 h-20 bg-gray-900 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-xl mb-4 group-hover:-translate-y-1 transition-transform border-2 border-white">
             {{ order.customer?.firstName?.[0] }}{{ order.customer?.lastName?.[0] }}
           </div>
           <p class="text-[8px] font-bold text-[#065fdb] tracking-wider mb-2 leading-none bg-[#065fdb]/5 px-2.5 py-1 rounded-full">Primary Contact</p>
@@ -106,14 +120,18 @@
         <!-- Status Update Actions -->
         <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup' || order.status === 'picked_up'" class="space-y-4">
           <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup'" class="animate-bounce-subtle">
-            <button @click="updateStatus('picked_up')" class="w-full py-5 bg-[#065fdb] text-white rounded-xl text-[11px] font-black tracking-widest shadow-xl hover:brightness-110 transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
-              <span class="text-xl group-hover:rotate-12 transition-transform">📦</span> Confirm Pickup
+            <button @click="updateStatus('picked_up')" :disabled="updatingStatus" class="w-full py-5 bg-[#065fdb] text-white rounded-xl text-[11px] font-black tracking-widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
+              <Loader2 v-if="updatingStatus" class="w-5 h-5 animate-spin" />
+              <span v-else class="text-xl group-hover:rotate-12 transition-transform">📦</span> 
+              {{ updatingStatus ? 'UPDATING...' : 'Confirm Pickup' }}
             </button>
           </div>
           
           <div v-if="order.status === 'picked_up'" class="space-y-4">
-            <button @click="updateStatus('in_transit')" class="w-full py-5 bg-indigo-600 text-white rounded-xl text-[11px] font-black tracking-widest shadow-xl hover:brightness-110 transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
-              <span class="text-xl group-hover:scale-125 transition-transform">🚀</span> Start Delivery
+            <button @click="updateStatus('in_transit')" :disabled="updatingStatus" class="w-full py-5 bg-indigo-600 text-white rounded-xl text-[11px] font-black tracking-widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
+              <Loader2 v-if="updatingStatus" class="w-5 h-5 animate-spin" />
+              <span v-else class="text-xl group-hover:scale-125 transition-transform">🚀</span> 
+              {{ updatingStatus ? 'UPDATING...' : 'Start Delivery' }}
             </button>
             <p class="text-[8px] text-gray-400 text-center font-bold tracking-wider">Update status once you depart.</p>
           </div>
@@ -134,7 +152,7 @@
               type="text"
               maxlength="6"
               placeholder="000000"
-              class="bg-white/5 text-white text-2xl font-black text-center tracking-widest w-full py-4 rounded-xl border-2 border-white/10 focus:border-[#065fdb]/50 focus:bg-white/10 transition-all focus:outline-none placeholder:text-white/5 shadow-inner"
+              class="bg-white/5 text-white text-2xl font-black text-center tracking-widest w-full py-4 rounded-xl border border-white/10 focus:border-[#065fdb]/50 focus:bg-white/10 transition-all focus:outline-none placeholder:text-white/5 shadow-inner"
             />
           </div>
           
@@ -143,8 +161,9 @@
             :disabled="verificationCode.length !== 6 || completing"
             class="w-full py-4 bg-white text-gray-900 rounded-xl text-[10px] font-black tracking-widest shadow-xl hover:bg-[#065fdb] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 transition-all relative z-10 group"
           >
-            <div v-if="completing" class="w-4 h-4 border-2 border-gray-900/10 border-t-gray-900 rounded-full animate-spin group-hover:border-white/10 group-hover:border-t-white" />
-            <span v-else class="text-base">✅</span> {{ completing ? 'Verifying...' : 'Finalize Delivery' }}
+            <Loader2 v-if="completing" class="w-5 h-5 animate-spin flex-shrink-0" />
+            <span v-else class="text-base">✅</span> 
+            {{ completing ? 'VERIFYING...' : 'Finalize Delivery' }}
           </button>
         </div>
 
@@ -154,7 +173,7 @@
           <div class="absolute -right-16 -bottom-16 w-38 h-38 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
            
           <div class="relative z-10 space-y-6">
-            <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto text-3xl shadow-lg border-2 border-emerald-50 text-emerald-600 transform rotate-6 animate-pulse">💰</div>
+            <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto text-3xl shadow-lg border border-emerald-50 text-emerald-600 transform rotate-6 animate-pulse">💰</div>
             <div>
               <h3 class="text-white font-black text-2xl tracking-tight leading-none mb-3">Delivery Completed</h3>
               <p class="text-white/90 font-black text-xl tracking-tight leading-none">+ ₦{{ order.deliveryFee?.toLocaleString() }} Earned</p>
@@ -192,7 +211,7 @@ import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 import StatusBadge from '@/components/ui/StatusBadge.vue';
 import OrderChat from '@/components/core/OrderChat.vue';
 import { useUser } from '@/composables/modules/auth/user';
-import { Phone, MessageSquare } from 'lucide-vue-next';
+import { Phone, MessageSquare, Loader2 } from 'lucide-vue-next';
 import { ref, computed, onMounted } from 'vue';
 
 const { user } = useUser();
@@ -224,12 +243,29 @@ const openChat = (receiverId: string | undefined, name: string, avatar?: string)
   isChatOpen.value = true;
 };
 
+const { showToast } = useCustomToast();
+
+const updatingStatus = ref(false);
+
 const updateStatus = async (status: string) => {
+  updatingStatus.value = true;
   try {
     const res = await api.put<any>(`/orders/${route.params.id}/status`, { status });
     order.value = res.data;
     emit('orderStatusUpdate', { orderId: route.params.id, status });
-  } catch (e: any) { alert(e.data?.message || 'Update failed'); }
+    showToast({
+      title: 'Status Updated',
+      message: `Order is now ${status.replace(/_/g, ' ')}`,
+      toastType: 'success'
+    });
+  } catch (e: any) { 
+    showToast({
+      title: 'Update Failed',
+      message: e.data?.message || 'Failed to update order status',
+      toastType: 'error'
+    });
+  }
+  finally { updatingStatus.value = false; }
 };
 
 const completeOrder = async () => {
@@ -241,8 +277,17 @@ const completeOrder = async () => {
     });
     order.value = res.data;
     emit('orderStatusUpdate', { orderId: route.params.id, status: 'delivered' });
+    showToast({
+      title: 'Delivery Confirmed',
+      message: 'Order completed successfully!',
+      toastType: 'success'
+    });
   } catch (e: any) { 
-    alert(e.data?.message || 'Invalid code. Verify and try again.'); 
+    showToast({
+      title: 'Verification Failed',
+      message: e.data?.message || 'Invalid code. Verify and try again.',
+      toastType: 'error'
+    });
   } finally {
     completing.value = false;
   }

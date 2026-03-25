@@ -13,7 +13,7 @@
           :class="{
             'bg-gradient-to-r from-[#065fdb] to-blue-500': toast.type === 'NEW_ORDER_AVAILABLE',
             'bg-gradient-to-r from-emerald-500 to-green-500': toast.type === 'ORDER_ACCEPTED',
-            'bg-gradient-to-r from-amber-500 to-orange-500': toast.type === 'ORDER_STATUS_UPDATE',
+            'bg-gradient-to-r from-parentPrimary to-accent': toast.type === 'ORDER_STATUS_UPDATE',
             'bg-gradient-to-r from-gray-700 to-gray-900': !['NEW_ORDER_AVAILABLE', 'ORDER_ACCEPTED', 'ORDER_STATUS_UPDATE'].includes(toast.type),
           }"
           class="h-1"
@@ -26,7 +26,7 @@
               :class="{
                 'bg-blue-50 text-blue-600': toast.type === 'NEW_ORDER_AVAILABLE',
                 'bg-emerald-50 text-emerald-600': toast.type === 'ORDER_ACCEPTED',
-                'bg-amber-50 text-amber-600': toast.type === 'ORDER_STATUS_UPDATE',
+                'bg-secondary text-parentPrimary': toast.type === 'ORDER_STATUS_UPDATE',
                 'bg-gray-50 text-gray-600': !['NEW_ORDER_AVAILABLE', 'ORDER_ACCEPTED', 'ORDER_STATUS_UPDATE'].includes(toast.type),
               }"
               class="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"

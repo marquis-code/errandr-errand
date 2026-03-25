@@ -1,43 +1,98 @@
 <template>
-  <div class="min-h-screen bg-white">
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 py-4">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-        <NuxtLink to="/" class="flex items-center gap-2"><div class="w-8 h-8 rounded-lg bg-[#065fdb] flex items-center justify-center"><Bike class="w-4 h-4 text-white" /></div><span class="text-lg font-black text-gray-900 tracking-tight">Errandr <span class="text-gray-400 font-medium text-sm">Riders</span></span></NuxtLink>
-        <div class="flex items-center gap-6 text-sm font-semibold text-gray-500">
-          <NuxtLink to="/about" class="hover:text-[#065fdb]">About</NuxtLink><NuxtLink to="/contact" class="hover:text-[#065fdb]">Contact</NuxtLink><NuxtLink to="/faq" class="hover:text-[#065fdb]">FAQ</NuxtLink><NuxtLink to="/terms" class="hover:text-[#065fdb]">Terms</NuxtLink>
+  <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth">
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-2xl border-b border-gray-100 py-4">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 flex justify-between items-center">
+        <NuxtLink to="/" class="flex items-center gap-3 group">
+          <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
+          <span class="text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 bg-gray-50 px-3 py-1 rounded-lg">Dispatch</span>
+        </NuxtLink>
+        <div class="flex items-center gap-8 text-[11px] font-black tracking-widest uppercase text-gray-400">
+          <NuxtLink to="/about" class="hover:text-parentPrimary transition-colors">About</NuxtLink>
+          <NuxtLink to="/faq" class="text-parentPrimary border-b-2 border-parentPrimary pb-1">Help Center</NuxtLink>
+          <NuxtLink to="/auth/login" class="px-8 py-3 bg-gray-900 text-white rounded-2xl hover:bg-parentPrimary transition-all shadow-xl shadow-black/5">Sign In</NuxtLink>
         </div>
       </div>
     </nav>
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-      <h1 class="text-4xl font-black text-gray-900 tracking-tight mb-2">Rider FAQ</h1>
-      <p class="text-lg text-gray-500 mb-10">Common questions about delivering with Errandr.</p>
-      <div class="space-y-6">
-        <div v-for="(faq, i) in faqs" :key="i" class="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
-          <button @click="openIndex = openIndex === i ? -1 : i" class="w-full flex items-center justify-between p-6 text-left">
-            <span class="font-bold text-gray-900">{{ faq.q }}</span>
-            <ChevronDown class="w-5 h-5 text-gray-400 transition-transform" :class="{ 'rotate-180': openIndex === i }" />
-          </button>
-          <div v-show="openIndex === i" class="px-6 pb-6 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4">{{ faq.a }}</div>
+
+    <!-- Hero Section -->
+    <section class="relative pt-40 pb-20 overflow-hidden bg-gray-50/20">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-gray-100 text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 mb-8 shadow-sm">
+          <HelpCircle class="w-3.5 h-3.5 text-parentPrimary" />
+          Rider Knowledge Base
+        </div>
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] text-gray-900 mb-6 max-w-4xl mx-auto">
+          Rider <span class="text-parentPrimary italic">Intel.</span>
+        </h1>
+        <p class="text-xl text-gray-500 font-bold max-w-2xl mx-auto leading-relaxed tracking-tight">
+          Master the art of the 15-minute campus dash. Insights for our dispatch community.
+        </p>
+      </div>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="py-24 bg-white font-sans">
+      <div class="max-w-4xl mx-auto px-6 sm:px-10">
+        <div class="space-y-4">
+          <div v-for="(faq, i) in faqs" :key="i" class="group border border-gray-100 rounded-[2rem] overflow-hidden transition-all duration-500" :class="{ 'bg-gray-50/50 border-parentPrimary/20 shadow-xl shadow-parentPrimary/5': openIndex === i }">
+            <button @click="openIndex = openIndex === i ? -1 : i" class="w-full flex items-center justify-between p-8 text-left outline-none">
+              <span class="text-xl font-black text-gray-900 tracking-tight group-hover:text-parentPrimary transition-colors">{{ faq.q }}</span>
+              <div class="w-10 h-10 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-400 group-hover:text-parentPrimary transition-all" :class="{ 'rotate-180 bg-parentPrimary text-white border-transparent': openIndex === i }">
+                <ChevronDown class="w-5 h-5" />
+              </div>
+            </button>
+            <transition name="fade">
+              <div v-show="openIndex === i" class="px-8 pb-8">
+                <div class="h-px bg-gray-200/50 mb-6"></div>
+                <p class="text-lg text-gray-500 font-bold leading-relaxed tracking-tight">{{ faq.a }}</p>
+              </div>
+            </transition>
+          </div>
         </div>
       </div>
-    </main>
-    <footer class="bg-gray-50 border-t border-gray-200 py-8"><div class="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-400 font-medium"><p>&copy; {{ new Date().getFullYear() }} Errandr Inc.</p><div class="flex items-center gap-6"><NuxtLink to="/about" class="hover:text-gray-600">About</NuxtLink><NuxtLink to="/contact" class="hover:text-gray-600">Contact</NuxtLink><NuxtLink to="/faq" class="hover:text-gray-600">FAQ</NuxtLink><NuxtLink to="/terms" class="hover:text-gray-600">Terms</NuxtLink></div></div></footer>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-100 py-16 mt-20">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 flex flex-col md:flex-row justify-between items-center gap-10">
+        <NuxtLink to="/" class="group">
+           <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
+        </NuxtLink>
+        <div class="flex items-center gap-10 text-[10px] font-black tracking-[0.15em] uppercase text-gray-400">
+          <NuxtLink to="/about" class="hover:text-gray-900 transition-colors">About Community</NuxtLink>
+          <NuxtLink to="/terms" class="hover:text-gray-900 transition-colors">Rider Terms</NuxtLink>
+          <NuxtLink to="/faq" class="text-parentPrimary font-black">Help Center</NuxtLink>
+          <NuxtLink to="/contact" class="hover:text-gray-900 transition-colors">Support</NuxtLink>
+        </div>
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">© {{ new Date().getFullYear() }} Errandr Dispatch • Lead the Way</p>
+      </div>
+    </footer>
   </div>
 </template>
+
 <script setup lang="ts">
-import { Bike, ChevronDown } from 'lucide-vue-next'
+import { HelpCircle, ChevronDown } from 'lucide-vue-next'
 import { ref } from 'vue'
 definePageMeta({ layout: false })
-useHead({ title: 'FAQ - Errandr Riders' })
+useHead({ 
+  title: 'Rider Help Center - FAQ',
+  meta: [{ name: 'description', content: 'Answers to common questions for Errandr riders about earnings, delivery rules, and account support.' }] 
+})
+
 const openIndex = ref(0)
 const faqs = [
-  { q: 'How do I become a rider?', a: 'Create an account on the Errandr Riders portal, complete your profile with your student details, and upload a valid student ID. Our team will verify your identity within 24 hours. Once approved, you can start accepting deliveries immediately.' },
-  { q: 'Do I need a bike or vehicle?', a: 'No. Most campus deliveries are within walking distance. You can use a bicycle, skateboard, or simply walk. The important thing is delivering orders promptly and in good condition.' },
-  { q: 'How much can I earn?', a: 'Earnings vary based on how many deliveries you complete and the delivery fees set by vendors. Most active riders earn between ₦5,000 and ₦15,000 per week during peak meal times. Bonus incentives are offered during high-demand periods.' },
-  { q: 'When do I get paid?', a: 'Delivery fees are credited to your Errandr wallet instantly after each delivery is confirmed. You can withdraw to your bank account at any time — there is no minimum withdrawal amount.' },
-  { q: 'Can I choose which orders to accept?', a: 'Yes! You have full control over which orders you accept. When an order is available, you will see the pickup location, drop-off location, and delivery fee before deciding.' },
-  { q: 'What if the vendor takes too long to prepare the order?', a: 'If you have been waiting for more than 15 minutes past the estimated preparation time, you can report it through the app. You will not be penalized for vendor delays.' },
-  { q: 'What happens if a student is unavailable at delivery?', a: 'Attempt to contact the student via the in-app chat. If they do not respond within 10 minutes, mark the order as "Customer Unavailable." You will still receive your delivery fee.' },
-  { q: 'Can I ride on multiple campuses?', a: 'Yes, if Errandr is active on multiple campuses near you. Simply toggle between campuses from your app settings to start receiving orders at a different campus.' },
+  { q: 'Onboarding & Verification', a: 'Join the community by creating an account and uploading your student ID. Verification is typically completed within 24 hours, giving you immediate access to campus gigs.' },
+  { q: 'Vehicle Requirements', a: 'Zero. Most campus deliveries are within a 15-minute walk. You can use your feet, a bicycle, or a skateboard — we just prioritize safety and speed.' },
+  { q: 'Earnings Potential', a: 'Payouts are performance-based. Top riders on active campuses earn between ₦10,000 and ₦25,000 weekly by focusing on peak lunch and dinner spikes.' },
+  { q: 'Instant Wallet Payouts', a: 'No waiting periods. Your delivery fee is credited to your Errandr wallet the second the order is marked as delivered by the customer.' },
+  { q: 'Order Autonomy', a: 'You are an independent partner. See the pickup, drop-off, and payout amount upfront, and decide which orders fit your route on campus.' },
+  { q: 'Safety Standards', a: 'Safety first. All deliveries are tracked, and we provide a 24/7 emergency support line for any transit incidents within university grounds.' }
 ]
 </script>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+</style>
+

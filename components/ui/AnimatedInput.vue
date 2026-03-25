@@ -124,7 +124,7 @@
                 <select 
                   v-model="currentMonth" 
                   @click.stop
-                  class="px-4 py-2.5 bg-gray-50 hover:bg-gray-100 border-2 border-transparent hover:border-[#033958] rounded-xl font-bold focus:outline-none focus:border-[#033958] transition-all"
+                  class="px-4 py-2.5 bg-gray-50 hover:bg-gray-100 border border-transparent hover:border-[#033958] rounded-xl font-bold focus:outline-none focus:border-[#033958] transition-all"
                 >
                   <option v-for="(m, i) in months" :key="i" :value="i">{{ m }}</option>
                 </select>
@@ -132,7 +132,7 @@
                 <select 
                   v-model="currentYear" 
                   @click.stop
-                  class="px-4 py-2.5 bg-gray-50 hover:bg-gray-100 border-2 border-transparent hover:border-[#033958] rounded-xl font-bold focus:outline-none focus:border-[#033958] transition-all"
+                  class="px-4 py-2.5 bg-gray-50 hover:bg-gray-100 border border-transparent hover:border-[#033958] rounded-xl font-bold focus:outline-none focus:border-[#033958] transition-all"
                 >
                   <option v-for="y in yearRange" :key="y" :value="y">{{ y }}</option>
                 </select>
@@ -169,7 +169,7 @@
             <button 
               type="button" 
               @click.stop="setToday" 
-              class="px-5 py-2.5 text-sm text-[#033958] hover:text-white hover:bg-[#033958] font-bold rounded-xl transition-all border-2 border-[#033958]"
+              class="px-5 py-2.5 text-sm text-[#033958] hover:text-white hover:bg-[#033958] font-bold rounded-xl transition-all border border-[#033958]"
             >
               Today
             </button>
@@ -227,7 +227,7 @@
                   @focus="$event.target.select()" 
                   @click.stop 
                   maxlength="2"
-                  class="w-20 text-center text-4xl font-bold border-2 border-gray-200 focus:border-[#033958] rounded-2xl py-4 focus:outline-none focus:ring-4 focus:ring-[#033958]/20 transition-all bg-gray-50"
+                  class="w-20 text-center text-4xl font-bold border border-gray-200 focus:border-[#033958] rounded-2xl py-4 focus:outline-none focus:ring-4 focus:ring-[#033958]/20 transition-all bg-gray-50"
                 />
                 <button type="button" @click.stop="decHour" class="p-3 hover:bg-gray-100 rounded-xl mt-3 transition-all group">
                   <ChevronDown :size="20" stroke-width="3" class="group-hover:scale-110 transition-transform" />
@@ -247,7 +247,7 @@
                   @focus="$event.target.select()" 
                   @click.stop 
                   maxlength="2"
-                  class="w-20 text-center text-4xl font-bold border-2 border-gray-200 focus:border-[#033958] rounded-2xl py-4 focus:outline-none focus:ring-4 focus:ring-[#033958]/20 transition-all bg-gray-50"
+                  class="w-20 text-center text-4xl font-bold border border-gray-200 focus:border-[#033958] rounded-2xl py-4 focus:outline-none focus:ring-4 focus:ring-[#033958]/20 transition-all bg-gray-50"
                 />
                 <button type="button" @click.stop="decMin" class="p-3 hover:bg-gray-100 rounded-xl mt-3 transition-all group">
                   <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" class="group-hover:scale-110 transition-transform">
@@ -289,7 +289,7 @@
             <button 
               type="button" 
               @click.stop="setNow"
-              class="px-5 py-2.5 text-sm text-[#033958] hover:text-white hover:bg-[#033958] font-bold rounded-xl transition-all border-2 border-[#033958]"
+              class="px-5 py-2.5 text-sm text-[#033958] hover:text-white hover:bg-[#033958] font-bold rounded-xl transition-all border border-[#033958]"
             >
               Now
             </button>
@@ -352,10 +352,10 @@
                   <ChevronLeft :size="18" stroke-width="2.5" />
                 </button>
                 <div class="flex gap-2">
-                  <select v-model="currentMonth" @click.stop class="px-3 py-2 bg-gray-50 border-2 border-transparent hover:border-[#033958] rounded-xl font-bold text-sm">
+                  <select v-model="currentMonth" @click.stop class="px-3 py-2 bg-gray-50 border border-transparent hover:border-[#033958] rounded-xl font-bold text-sm">
                     <option v-for="(m, i) in months" :key="i" :value="i">{{ m.slice(0,3) }}</option>
                   </select>
-                  <select v-model="currentYear" @click.stop class="px-3 py-2 bg-gray-50 border-2 border-transparent hover:border-[#033958] rounded-xl font-bold text-sm">
+                  <select v-model="currentYear" @click.stop class="px-3 py-2 bg-gray-50 border border-transparent hover:border-[#033958] rounded-xl font-bold text-sm">
                     <option v-for="y in yearRange" :key="y" :value="y">{{ y }}</option>
                   </select>
                 </div>
@@ -398,7 +398,7 @@
                     @focus="$event.target.select()" 
                     @click.stop 
                     maxlength="2"
-                    class="w-16 text-center text-3xl font-bold border-2 border-gray-200 focus:border-[#033958] rounded-xl py-3 focus:outline-none bg-gray-50"
+                    class="w-16 text-center text-3xl font-bold border border-gray-200 focus:border-[#033958] rounded-xl py-3 focus:outline-none bg-gray-50"
                   />
                   <button type="button" @click.stop="decHour" class="p-2 hover:bg-gray-100 rounded-lg mt-2">
                     <ChevronDown :size="16" stroke-width="2.5" />
@@ -418,7 +418,7 @@
                     @focus="$event.target.select()" 
                     @click.stop 
                     maxlength="2"
-                    class="w-16 text-center text-3xl font-bold border-2 border-gray-200 focus:border-[#033958] rounded-xl py-3 focus:outline-none bg-gray-50"
+                    class="w-16 text-center text-3xl font-bold border border-gray-200 focus:border-[#033958] rounded-xl py-3 focus:outline-none bg-gray-50"
                   />
                   <button type="button" @click.stop="decMin" class="p-2 hover:bg-gray-100 rounded-lg mt-2">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -451,7 +451,7 @@
             <button 
               type="button" 
               @click.stop="setDTNow"
-              class="px-5 py-2.5 text-sm text-[#033958] hover:text-white hover:bg-[#033958] font-bold rounded-xl transition-all border-2 border-[#033958]"
+              class="px-5 py-2.5 text-sm text-[#033958] hover:text-white hover:bg-[#033958] font-bold rounded-xl transition-all border border-[#033958]"
             >
               Now
             </button>
@@ -646,7 +646,7 @@ function getDTDayClass(day: CalendarDay) {
   return [
     'aspect-square p-2 text-xs font-medium rounded-lg transition-all',
     day.isCurrentMonth ? 'hover:bg-gray-100 cursor-pointer' : 'text-gray-300 opacity-30 cursor-not-allowed',
-    day.isToday && !day.isSelected ? 'border-2 border-[#033958] text-[#033958] font-bold' : '',
+    day.isToday && !day.isSelected ? 'border border-[#033958] text-[#033958] font-bold' : '',
     day.isSelected ? 'bg-[#033958] text-white shadow-md' : ''
   ]
 }

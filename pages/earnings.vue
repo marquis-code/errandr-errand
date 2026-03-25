@@ -214,10 +214,10 @@ import { ref, onMounted } from 'vue';
 import { useWallet } from '@/composables/modules/wallets';
 import { wallets_api } from '@/api_factory/modules/wallets';
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { useCustomToast } from '@/composables/core/useCustomToast';
 import SideDrawer from '@/components/ui/SideDrawer.vue';
-import EmptyState from '@/components/core/EmptyState.vue';
-import { ShieldCheck, ChevronRight, History } from 'lucide-vue-next';
 
+const { showToast } = useCustomToast();
 const { balance, wallet, fetchWallet, withdrawFunds, updatePreferences } = useWallet();
 const transactions = ref<any[]>([]);
 const loading = ref(true);
@@ -278,7 +278,11 @@ const resolveAccount = async () => {
  bankForm.value.accountName = res.data.account_name;
  isAccountVerified.value = true;
  } catch (e: any) {
- alert(e.data?.message || 'Failed to resolve account');
+ showToast({
+   title: 'Verification Failed',
+   message: e.data?.message || 'Failed to resolve account',
+   toastType: 'error'
+ });
  } finally {
  resolving.value = false;
  }

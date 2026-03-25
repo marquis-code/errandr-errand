@@ -21,7 +21,7 @@
  <div class="w-11 h-11 rounded-xl bg-[#065fdb] text-white flex items-center justify-center font-bold text-sm shadow-md shadow-[#065fdb]/20">
  {{ userInitials }}
  </div>
- <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white" />
+ <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border border-white" />
  </div>
  <div class="flex-1 min-w-0">
  <h3 class="font-bold text-gray-900 text-sm truncate">{{ userDisplayName }}</h3>
@@ -74,7 +74,7 @@
  <div class="flex items-center gap-2">
  <NuxtLink to="/notifications" class="relative w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:text-gray-600 transition-all">
  <Bell class="w-5 h-5" />
- <div v-if="unreadCount > 0" class="absolute top-2 right-2 w-4 h-4 bg-[#065fdb] border-2 border-white rounded-full flex items-center justify-center">
+ <div v-if="unreadCount > 0" class="absolute top-2 right-2 w-4 h-4 bg-[#065fdb] border border-white rounded-full flex items-center justify-center">
  <span class="text-[8px] font-bold text-white">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
  </div>
  </NuxtLink>
@@ -151,7 +151,7 @@
  <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-white group-hover:shadow-md group-hover:text-[#065fdb] transition-all border border-transparent group-hover:border-gray-100">
  <Bell class="w-[18px] h-[18px]" />
  </div>
- <div v-if="unreadCount > 0" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-[#065fdb] border-2 border-white rounded-full flex items-center justify-center shadow-sm">
+ <div v-if="unreadCount > 0" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-[#065fdb] border border-white rounded-full flex items-center justify-center shadow-sm">
  <span class="text-[8px] font-bold text-white">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
  </div>
  </NuxtLink>

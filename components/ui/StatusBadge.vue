@@ -19,14 +19,14 @@ const props = defineProps<{
 }>()
 
 const config = computed(() => {
- const s = props.status.toLowerCase()
+ const s = String(props.status || '').toLowerCase()
  
  if (['approved', 'active', 'online', 'completed', 'delivered', 'paid', 'success', 'resolved'].includes(s)) {
  return { bg: 'bg-emerald-50/50', text: 'text-emerald-600', border: 'border-emerald-100 hover:bg-emerald-50' }
  }
  
  if (['pending', 'processing', 'ongoing', 'investigating', 'waiting'].includes(s)) {
- return { bg: 'bg-amber-50/50', text: 'text-amber-600', border: 'border-amber-100 hover:bg-amber-50' }
+ return { bg: 'bg-secondary/50', text: 'text-parentPrimary', border: 'border-secondary hover:bg-secondary' }
  }
  
  if (['suspended', 'rejected', 'cancelled', 'failed', 'offline', 'error', 'dismissed'].includes(s)) {

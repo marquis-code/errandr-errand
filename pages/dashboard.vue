@@ -32,43 +32,49 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Active Delivery + Recent Deliveries -->
       <div class="lg:col-span-2 space-y-6">
-        <!-- Active Delivery Card -->
+        <!-- Active Deliveries Section -->
         <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
-            <h3 class="text-base font-bold text-gray-900">Active Delivery</h3>
-            <span v-if="activeOrder" class="text-[10px] font-semibold text-[#065fdb] bg-[#065fdb]/5 px-3 py-1 rounded-full border border-[#065fdb]/10">In Progress</span>
+            <h3 class="text-base font-bold text-gray-900">Active Deliveries</h3>
+            <div v-if="batchStatus?.isActive" class="flex items-center gap-2 px-3 py-1 bg-parentPrimary/10 border border-parentPrimary/20 rounded-full animate-pulse">
+              <span class="w-1.5 h-1.5 rounded-full bg-parentPrimary"></span>
+              <span class="text-[10px] font-black text-parentPrimary uppercase tracking-widest">Batch mode active</span>
+            </div>
+            <span v-else-if="activeOrders.length > 0" class="text-[10px] font-semibold text-[#065fdb] bg-[#065fdb]/5 px-3 py-1 rounded-full border border-[#065fdb]/10">In Progress</span>
           </div>
 
           <div v-if="loadingOrders" class="p-8">
             <div class="h-20 bg-gray-50 rounded-xl animate-pulse"></div>
           </div>
-          <div v-else-if="activeOrder" class="p-6">
-            <div class="flex flex-col md:flex-row gap-6 items-start">
-              <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-2xl flex-shrink-0">
-                {{ statusEmoji(activeOrder.status) }}
-              </div>
-              
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h4 class="text-lg font-bold text-gray-900 tracking-tight mb-1">Order #{{ activeOrder.orderNumber }}</h4>
-                  <p class="text-xs text-gray-400">{{ activeOrder.vendor?.storeName || 'Store' }} → {{ activeOrder.deliveryAddress || 'Delivery' }}</p>
+          <div v-else-if="activeOrders.length > 0" class="divide-y divide-gray-50">
+            <div v-for="order in activeOrders" :key="order._id" class="p-6 hover:bg-gray-50/30 transition-colors">
+              <div class="flex flex-col md:flex-row gap-6 items-start">
+                <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-2xl flex-shrink-0">
+                  {{ statusEmoji(order.status) }}
                 </div>
                 
-                <div class="flex flex-wrap gap-3">
-                  <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg text-xs font-medium text-gray-600">
-                    <div class="w-1.5 h-1.5 rounded-full bg-[#065fdb]" />
-                    {{ activeOrder.vendor?.storeName || 'Pick-up' }}
+                <div class="flex-1 space-y-4">
+                  <div>
+                    <h4 class="text-lg font-bold text-gray-900 tracking-tight mb-1">Order #{{ order.orderNumber }}</h4>
+                    <p class="text-xs text-gray-400">{{ order.vendor?.storeName || 'Store' }} → {{ order.deliveryAddress || 'Delivery' }}</p>
                   </div>
-                  <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg text-xs font-medium text-gray-600">
-                    <div class="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                    {{ activeOrder.deliveryAddress || 'Drop-off' }}
+                  
+                  <div class="flex flex-wrap gap-3">
+                    <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg text-xs font-medium text-gray-600">
+                      <div class="w-1.5 h-1.5 rounded-full bg-[#065fdb]" />
+                      {{ order.vendor?.storeName || 'Pick-up' }}
+                    </div>
+                    <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg text-xs font-medium text-gray-600">
+                      <div class="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                      {{ order.deliveryAddress || 'Drop-off' }}
+                    </div>
                   </div>
                 </div>
+                
+                <NuxtLink :to="`/deliveries/${order._id}`" class="px-6 py-3 bg-gray-900 text-white rounded-xl font-semibold text-sm shadow-md hover:bg-black hover:shadow-lg transition-all flex-shrink-0">
+                  Manage Dispatch
+                </NuxtLink>
               </div>
-              
-              <NuxtLink :to="`/deliveries/${activeOrder._id}`" class="px-6 py-3 bg-gray-900 text-white rounded-xl font-semibold text-sm shadow-md hover:bg-black hover:shadow-lg transition-all flex-shrink-0">
-                View Details
-              </NuxtLink>
             </div>
           </div>
           
@@ -77,7 +83,7 @@
             <h4 class="text-base font-bold text-gray-900 mb-1">No active deliveries</h4>
             <p class="text-sm text-gray-400 mb-6">You don't have any deliveries in progress right now.</p>
             <NuxtLink to="/deliveries" class="inline-block px-6 py-3 bg-[#065fdb] text-white rounded-xl font-semibold text-sm shadow-md shadow-[#065fdb]/20 hover:brightness-110 transition-all">
-              View All Deliveries
+              View Available Errands
             </NuxtLink>
           </div>
         </div>
@@ -207,12 +213,14 @@ const stats = computed(() => [
   { label: 'Active Orders', value: orders.value.filter(o => !['delivered', 'cancelled'].includes(o.status)).length || '0', emoji: '📦', bgClass: 'bg-blue-50' },
 ])
 
-const activeOrder = computed(() => {
-  return orders.value.find(o => !['delivered', 'cancelled'].includes(o.status)) || null
+const activeOrders = computed(() => {
+  return orders.value.filter(o => !['delivered', 'cancelled'].includes(o.status))
 })
 
+const batchStatus = ref<any>(null)
+
 const recentOrders = computed(() => {
-  return orders.value.slice(0, 5)
+  return orders.value.filter(o => ['delivered', 'cancelled'].includes(o.status)).slice(0, 5)
 })
 
 const statusEmoji = (s: string) => ({
@@ -281,6 +289,16 @@ const loadDashboard = async () => {
     console.error('Failed to load stats:', e)
   } finally {
     loadingStats.value = false
+  }
+
+  // Load batch status
+  try {
+    const res = await api.get('/orders/batch/status')
+    if (res && res.data) {
+      batchStatus.value = res.data
+    }
+  } catch (e) {
+    console.error('Failed to load batch status:', e)
   }
 }
 

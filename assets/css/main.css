@@ -79,8 +79,8 @@ input[type=number] {
 }
 
 .custom-checkbox:checked {
-  background-color: #005967;
-  border-color: #005967;
+  background-color: #065fdb;
+  border-color: #065fdb;
 }
 
 .custom-checkbox:checked::after {
@@ -90,23 +90,20 @@ input[type=number] {
   top: 50%;
   transform: translate(-50%, -50%) rotate(45deg);
   width: 5px;
-  /* Increased from 3px */
   height: 9px;
-  /* Increased from 6px */
   border: solid white;
   border-width: 0 2.5px 2.5px 0;
-  /* Increased from 2px */
 }
 
 .custom-checkbox:hover {
-  border-color: #005967;
+  border-color: #065fdb;
 }
 
 .custom-checkbox:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  box-shadow: 0 0 0 3px rgba(6, 95, 219, 0.1);
 }
 
 .custom-input {
-  @apply w-full px-4 py-3.5 text-sm outline-none focus:border focus:border-[#005967] rounded-xl bg-[#1A1A1B09] focus:bg-white pr-10
+  @apply w-full px-4 py-3.5 text-sm outline-none focus:border focus:border-parentPrimary rounded-xl bg-gray-50 focus:bg-white pr-10;
 }
