@@ -22,18 +22,23 @@ export const useRealtimeSocket = () => {
     if (!process.client) return
     if (socket.value && (socket.value.connected || isConnecting.value)) return
 
-    const baseUrl = (import.meta.env.VITE_WS_URL || import.meta.env.VITE_BASE_URL || import.meta.env.VITE_API_BASE_URL) as string
+    const rawUrl = (import.meta.env.VITE_WS_URL || import.meta.env.VITE_BASE_URL || import.meta.env.VITE_API_BASE_URL || '') as string
+    const baseUrl = rawUrl.endsWith('/') ? rawUrl.slice(0, -1) : rawUrl
     isConnecting.value = true
 
-
+    const authPayload: any = {
+      token: token.value || undefined,
+      sessionId: guestSessionId.value,
+    }
+    
+    // Pass userId if available to help backend identify the socket
+    const { user } = useUser()
+    if (user.value?._id) authPayload.userId = user.value._id
 
     socket.value = io(`${baseUrl}/realtime`, {
       path: '/socket.io/',
-      transports: ['websocket', 'polling'],
-      auth: {
-        token: token.value || undefined,
-        sessionId: guestSessionId.value,
-      },
+      transports: ['websocket'], // Force websocket to bypass Render sticky-session issues
+      auth: authPayload,
     })
 
     socket.value.on('connect', () => {

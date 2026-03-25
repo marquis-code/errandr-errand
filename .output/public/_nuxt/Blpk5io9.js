@@ -1,1 +1,0 @@
-import{_ as c,p as t,o as _,c as a,b as e,Z as r}from"./a3tnexi4.js";const s={};function l(m,p){const n=t("FullScreenLoader"),o=r;return _(),a("main",null,[e(n),e(o)])}const d=c(s,[["render",l]]);export{d as default};
