@@ -1,5 +1,5 @@
 <template>
- <div class="space-y-6 animate-fade-in max-w-3xl mx-auto pb-16">
+ <div class="space-y-6 animate-fade-in max-w-7xl mx-auto pb-16">
  <!-- Header -->
  <div>
  <h1 class="text-2xl font-bold text-gray-900 tracking-tight mb-1">My Profile</h1>

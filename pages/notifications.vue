@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 animate-fade-in max-w-3xl mx-auto pb-16">
+  <div class="space-y-6 animate-fade-in max-w-7xl mx-auto pb-16">
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div>

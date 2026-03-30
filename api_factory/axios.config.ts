@@ -1,7 +1,7 @@
 import axios, { type AxiosResponse } from "axios";
 import { useUser } from "@/composables/modules/auth/user";
 import { useCustomToast } from '@/composables/core/useCustomToast'
-const { showToast } = useCustomToast();
+// const { showToast } = useCustomToast(); // Removed top-level call
 
 const { token, logOut } = useUser();
 
@@ -74,7 +74,7 @@ instanceArray.forEach((instance) => {
     },
     (err: any) => {
       if (typeof err.response === "undefined") {
-        showToast({
+        useCustomToast().showToast({
           title: "Error",
           message: "kindly check your network connection",
           toastType: "error",
@@ -92,7 +92,7 @@ instanceArray.forEach((instance) => {
         if (token.value && !isOnAuthPage) {
           logOut();
         }
-        showToast({
+        useCustomToast().showToast({
           title: "Error",
           message: err?.response?.data?.message || err?.response?.data?.error || "An error occured",
           toastType: "error",
@@ -104,7 +104,7 @@ instanceArray.forEach((instance) => {
         };
       } else if (statusCodeStartsWith(err.response.status, 4)) {
         if (err.response.data.message) {
-          showToast({
+          useCustomToast().showToast({
             title: "Error",
             message: err?.response?.data?.message || err?.response?.data?.error || "An error occured",
             toastType: "error",
@@ -116,7 +116,7 @@ instanceArray.forEach((instance) => {
           ...err.response,
         };
       } else if (err.response.status === 500) {
-        showToast({
+        useCustomToast().showToast({
           title: "Error",
           message: err?.response?.data?.message || err?.response?.data?.error || "An error occured",
           toastType: "error",
@@ -127,7 +127,7 @@ instanceArray.forEach((instance) => {
           ...err.response,
         };
       } else if (err.response.status === 409) {
-        showToast({
+        useCustomToast().showToast({
           title: "Error",
           message: err?.response?.data?.message || err?.response?.data?.error || "An error occured",
           toastType: "error",

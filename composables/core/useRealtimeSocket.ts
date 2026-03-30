@@ -22,9 +22,16 @@ export const useRealtimeSocket = () => {
     if (!process.client) return
     if (socket.value && (socket.value.connected || isConnecting.value)) return
 
-    const rawUrl = (import.meta.env.VITE_WS_URL || import.meta.env.VITE_BASE_URL || import.meta.env.VITE_API_BASE_URL || '') as string
-    const baseUrl = rawUrl.endsWith('/') ? rawUrl.slice(0, -1) : rawUrl
+    const rawUrl = (import.meta.env.VITE_WS_URL || import.meta.env.VITE_API_BASE_URL || window.location.origin) as string
+    let baseUrl = rawUrl.replace(/\/$/, '') // Remove trailing slash
+    
+    // Ensure protocol for websockets
+    if (!baseUrl.startsWith('http')) {
+      baseUrl = `https://${baseUrl}` 
+    }
+
     isConnecting.value = true
+    console.log(`[Socket] Connecting to ${baseUrl}/realtime...`)
 
     const authPayload: any = {
       token: token.value || undefined,
@@ -37,21 +44,26 @@ export const useRealtimeSocket = () => {
 
     socket.value = io(`${baseUrl}/realtime`, {
       path: '/socket.io/',
-      transports: ['websocket'], // Force websocket to bypass Render sticky-session issues
+      transports: ['websocket'], // Force websocket for Render compatibility
+      reconnectionAttempts: 5,
+      timeout: 10000,
       auth: authPayload,
     })
 
     socket.value.on('connect', () => {
+      console.log('[Socket] Connected successfully')
       isConnected.value = true
       isConnecting.value = false
     })
 
-    socket.value.on('disconnect', () => {
+    socket.value.on('disconnect', (reason) => {
+      console.warn(`[Socket] Disconnected: ${reason}`)
       isConnected.value = false
       isConnecting.value = false
     })
 
-    socket.value.on('connect_error', () => {
+    socket.value.on('connect_error', (err) => {
+      console.error('[Socket] Connection Error:', err.message)
       isConnected.value = false
       isConnecting.value = false
     })

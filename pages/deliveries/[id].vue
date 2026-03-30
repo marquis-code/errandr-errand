@@ -211,6 +211,7 @@ import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 import StatusBadge from '@/components/ui/StatusBadge.vue';
 import OrderChat from '@/components/core/OrderChat.vue';
 import { useUser } from '@/composables/modules/auth/user';
+import { useCustomToast } from "@/composables/core/useCustomToast"
 import { Phone, MessageSquare, Loader2 } from 'lucide-vue-next';
 import { ref, computed, onMounted } from 'vue';
 

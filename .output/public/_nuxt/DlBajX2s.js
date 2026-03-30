@@ -1,0 +1,1 @@
+import{_ as c,p as t,o as a,c as _,b as e,a2 as r}from"./DLK95QHk.js";const s={};function l(m,p){const n=t("FullScreenLoader"),o=r;return a(),_("main",null,[e(n),e(o)])}const d=c(s,[["render",l]]);export{d as default};

@@ -233,7 +233,8 @@ import {
  Menu, 
  X,
  ChevronRight,
- Bell
+ Bell,
+ Layers
 } from 'lucide-vue-next'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
@@ -265,6 +266,7 @@ const logoutModalOpen = ref(false)
 
 const navItems = [
  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+ { path: '/deliveries/pool', label: 'Available Errands', icon: Layers },
  { path: '/deliveries', label: 'My Deliveries', icon: Bike },
  { path: '/earnings', label: 'Earnings', icon: Wallet },
  { path: '/notifications', label: 'Notifications', icon: Bell },
@@ -273,6 +275,7 @@ const navItems = [
 
 const pageTitles: Record<string, { title: string; description: string }> = {
  '/dashboard': { title: 'Dashboard', description: 'Your delivery overview at a glance.' },
+ '/deliveries/pool': { title: 'Order Pool', description: 'Real-time pool of pending orders awaiting a rider.' },
  '/deliveries': { title: 'My Deliveries', description: 'Track and manage your active and past deliveries.' },
  '/earnings': { title: 'Earnings', description: 'View your earnings, tips, and payout history.' },
  '/notifications': { title: 'Notifications', description: 'Real-time updates and new delivery opportunities.' },
@@ -298,7 +301,10 @@ const handleLogoutClick = () => {
  logoutModalOpen.value = true
 }
 
-const isActive = (path: string) => route.path === path || route.path.startsWith(path + '/')
+const isActive = (path: string) => {
+  if (path === '/deliveries' && route.path === '/deliveries/pool') return false
+  return route.path === path || route.path.startsWith(path + '/')
+}
 
 const confirmLogout = () => {
  logOut()
