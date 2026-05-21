@@ -17,12 +17,8 @@
       >
         <!-- Logo -->
         <NuxtLink to="/" class="flex items-center gap-3 group relative z-10">
-          <div class="relative overflow-hidden rounded-xl p-1 backdrop-blur-sm">
-             <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
-          </div>
-          <div class="hidden sm:flex flex-col">
-            <span class="text-sm font-black tracking-tight leading-none text-gray-900">Errandr</span>
-            <span class="text-[9px] font-bold uppercase tracking-[0.25em] text-parentPrimary">Dispatch</span>
+                 <div class="flex items-center justify-center group-hover:scale-110 transition-transform">
+            <img src="@/assets/img/logo-light.png" class="w-auto h-10" alt="Errandr" />
           </div>
         </NuxtLink>
         
