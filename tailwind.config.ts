@@ -17,7 +17,10 @@ module.exports = {
         'custom-bg': "url('/heroBg.png')",
       },
       animation: {
-        marquee: 'marquee linear infinite',
+        marquee: 'marquee 25s linear infinite',
+        'marquee-fast': 'marquee 15s linear infinite',
+        'marquee-slow': 'marquee 40s linear infinite',
+        'marquee-reverse': 'marquee-reverse 30s linear infinite',
         'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       colors: {
@@ -104,6 +107,10 @@ module.exports = {
         marquee: {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
+        },
+        'marquee-reverse': {
+          '0%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(0)' },
         },
       },
     },
