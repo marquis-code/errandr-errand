@@ -4,12 +4,12 @@
  <aside class="hidden lg:flex flex-col w-64 bg-white border-r border-gray-100 min-h-screen fixed left-0 top-0 z-50">
  <!-- Logo -->
  <div class="p-6 pb-8 flex items-center gap-3">
- <div class="w-10 h-10 bg-gradient-to-br from-[#065fdb] to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-[#065fdb]/20">
+ <div class="w-10 h-10 bg-gradient-to-br from-[#FF5C1A] to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-[#FF5C1A]/20">
  E
  </div>
  <div class="flex flex-col">
  <span class="text-lg font-bold text-gray-900 tracking-tight leading-none">Errandr</span>
- <span class="text-[10px] font-semibold text-[#065fdb] tracking-wide leading-none mt-0.5">Rider Portal</span>
+ <span class="text-[10px] font-semibold text-[#FF5C1A] tracking-wide leading-none mt-0.5">Rider Portal</span>
  </div>
  </div>
 
@@ -18,7 +18,7 @@
  <div class="p-4 rounded-2xl bg-gray-50 border border-gray-100 transition-all hover:bg-white hover:shadow-md">
  <div class="flex items-center gap-3">
  <div class="relative">
- <div class="w-11 h-11 rounded-xl bg-[#065fdb] text-white flex items-center justify-center font-bold text-sm shadow-md shadow-[#065fdb]/20">
+ <div class="w-11 h-11 rounded-xl bg-[#FF5C1A] text-white flex items-center justify-center font-bold text-sm shadow-md shadow-[#FF5C1A]/20">
  {{ userInitials }}
  </div>
  <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border border-white" />
@@ -40,7 +40,7 @@
  :to="item.path"
  class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all group"
  :class="isActive(item.path) 
- ? 'bg-[#065fdb] text-white shadow-md shadow-[#065fdb]/20' 
+ ? 'bg-[#FF5C1A] text-white shadow-md shadow-[#FF5C1A]/20' 
  : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
  >
  <component :is="item.icon" class="w-[18px] h-[18px] mr-3 transition-transform group-hover:scale-110" />
@@ -66,7 +66,7 @@
  <!-- Mobile Header -->
  <header class="lg:hidden bg-white border-b border-gray-100 sticky top-0 z-40 px-5 py-3.5 flex items-center justify-between">
  <div class="flex items-center gap-2.5">
- <div class="w-9 h-9 bg-gradient-to-br from-[#065fdb] to-indigo-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md shadow-[#065fdb]/10">
+ <div class="w-9 h-9 bg-gradient-to-br from-[#FF5C1A] to-indigo-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md shadow-[#FF5C1A]/10">
  E
  </div>
  <span class="text-lg font-bold text-gray-900 tracking-tight">Errandr</span>
@@ -74,7 +74,7 @@
  <div class="flex items-center gap-2">
  <NuxtLink to="/notifications" class="relative w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:text-gray-600 transition-all">
  <Bell class="w-5 h-5" />
- <div v-if="unreadCount > 0" class="absolute top-2 right-2 w-4 h-4 bg-[#065fdb] border border-white rounded-full flex items-center justify-center">
+ <div v-if="unreadCount > 0" class="absolute top-2 right-2 w-4 h-4 bg-[#FF5C1A] border border-white rounded-full flex items-center justify-center">
  <span class="text-[8px] font-bold text-white">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
  </div>
  </NuxtLink>
@@ -97,7 +97,7 @@
  <aside v-if="showMobileMenu" class="lg:hidden w-72 bg-white min-h-screen fixed left-0 top-0 z-50 shadow-2xl flex flex-col">
  <div class="p-5 border-b border-gray-100 flex items-center justify-between">
  <div class="flex items-center gap-2.5">
- <div class="w-9 h-9 bg-[#065fdb] rounded-lg flex items-center justify-center text-white font-bold text-sm">E</div>
+ <div class="w-9 h-9 bg-[#FF5C1A] rounded-lg flex items-center justify-center text-white font-bold text-sm">E</div>
  <span class="text-lg font-bold text-gray-900 tracking-tight">Errandr</span>
  </div>
  <button @click="showMobileMenu = false" class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400"><X class="w-5 h-5" /></button>
@@ -105,7 +105,7 @@
 
  <div class="p-5 bg-gray-50 border-b border-gray-100">
  <div class="flex items-center gap-4">
- <div class="w-12 h-12 rounded-xl bg-[#065fdb] text-white flex items-center justify-center font-bold text-lg shadow-md shadow-[#065fdb]/20">
+ <div class="w-12 h-12 rounded-xl bg-[#FF5C1A] text-white flex items-center justify-center font-bold text-lg shadow-md shadow-[#FF5C1A]/20">
  {{ userInitials }}
  </div>
  <div class="min-w-0">
@@ -121,7 +121,7 @@
  :key="item.path"
  :to="item.path"
  class="flex items-center px-4 py-3.5 text-sm font-medium rounded-xl transition-all"
- :class="isActive(item.path) ? 'bg-[#065fdb] text-white shadow-md shadow-[#065fdb]/20' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
+ :class="isActive(item.path) ? 'bg-[#FF5C1A] text-white shadow-md shadow-[#FF5C1A]/20' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
  @click="showMobileMenu = false"
  >
  <component :is="item.icon" class="w-[18px] h-[18px] mr-3" />
@@ -148,10 +148,10 @@
  
  <div class="flex items-center gap-4">
  <NuxtLink to="/notifications" class="relative group">
- <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-white group-hover:shadow-md group-hover:text-[#065fdb] transition-all border border-transparent group-hover:border-gray-100">
+ <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-white group-hover:shadow-md group-hover:text-[#FF5C1A] transition-all border border-transparent group-hover:border-gray-100">
  <Bell class="w-[18px] h-[18px]" />
  </div>
- <div v-if="unreadCount > 0" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-[#065fdb] border border-white rounded-full flex items-center justify-center shadow-sm">
+ <div v-if="unreadCount > 0" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-[#FF5C1A] border border-white rounded-full flex items-center justify-center shadow-sm">
  <span class="text-[8px] font-bold text-white">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
  </div>
  </NuxtLink>
@@ -179,8 +179,8 @@
  <footer class="px-8 py-5 border-t border-gray-100 flex items-center justify-between">
  <p class="text-xs text-gray-400 font-medium">© {{ new Date().getFullYear() }} Errandr</p>
  <div class="flex items-center gap-5">
- <a href="#" class="text-xs text-gray-400 hover:text-[#065fdb] font-medium transition-colors">Terms</a>
- <a href="#" class="text-xs text-gray-400 hover:text-[#065fdb] font-medium transition-colors">Support</a>
+ <a href="#" class="text-xs text-gray-400 hover:text-[#FF5C1A] font-medium transition-colors">Terms</a>
+ <a href="#" class="text-xs text-gray-400 hover:text-[#FF5C1A] font-medium transition-colors">Support</a>
  </div>
  </footer>
  </main>

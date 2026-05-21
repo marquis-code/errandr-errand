@@ -9,7 +9,7 @@
       <button
         v-if="notifications.length > 0 && unreadCount > 0"
         @click="markAllAsRead"
-        class="text-xs font-semibold text-[#065fdb] hover:underline"
+        class="text-xs font-semibold text-[#FF5C1A] hover:underline"
       >
         Mark all as read
       </button>
@@ -32,7 +32,7 @@
       <div
         v-for="notif in notifications"
         :key="notif.id"
-        :class="notif.read ? 'bg-white' : 'bg-[#065fdb]/[0.02] border-[#065fdb]/10'"
+        :class="notif.read ? 'bg-white' : 'bg-[#FF5C1A]/[0.02] border-[#FF5C1A]/10'"
         class="rounded-2xl border border-gray-100 overflow-hidden transition-all hover:shadow-md group cursor-pointer"
         @click="handleNotifClick(notif)"
       >
@@ -56,7 +56,7 @@
               <h4 class="text-sm font-bold text-gray-900">{{ notif.title }}</h4>
               <div class="flex items-center gap-2 flex-shrink-0">
                 <span class="text-[10px] text-gray-400 whitespace-nowrap">{{ formatTime(notif.createdAt) }}</span>
-                <div v-if="!notif.read" class="w-2 h-2 rounded-full bg-[#065fdb] flex-shrink-0" />
+                <div v-if="!notif.read" class="w-2 h-2 rounded-full bg-[#FF5C1A] flex-shrink-0" />
               </div>
             </div>
             <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">{{ notif.body }}</p>
@@ -73,7 +73,7 @@
               <button
                 @click.stop="acceptNotifOrder(notif)"
                 :disabled="notif.accepting"
-                class="px-4 py-2 text-xs font-bold text-white bg-[#065fdb] rounded-xl hover:brightness-110 transition-all shadow-sm disabled:opacity-50"
+                class="px-4 py-2 text-xs font-bold text-white bg-[#FF5C1A] rounded-xl hover:brightness-110 transition-all shadow-sm disabled:opacity-50"
               >
                 {{ notif.accepting ? 'Accepting...' : 'Accept Order' }}
               </button>

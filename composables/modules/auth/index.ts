@@ -30,7 +30,7 @@ export const useAuth = () => {
     }
   };
 
-  const register = async (payload: any) => {
+  const register = async (payload: any, options: { redirect?: boolean } = { redirect: true }) => {
     loading.value = true;
     try {
       const res = await auth_api.register(payload);
@@ -41,7 +41,9 @@ export const useAuth = () => {
         message: "Welcome to Errandr.",
         toastType: "success",
       });
-      navigateTo('/dashboard');
+      if (options.redirect) {
+        navigateTo('/dashboard');
+      }
       return res.data;
     } catch (e: any) {
       throw e;

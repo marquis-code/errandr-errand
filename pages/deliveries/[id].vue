@@ -2,11 +2,11 @@
   <div class="max-w-4xl mx-auto space-y-10 pb-32 animate-fade-in mt-6" v-if="order">
     <!-- Delivery Header -->
     <div class="bg-white p-6 rounded-2xl border border-gray-50 shadow-sm relative overflow-hidden group">
-      <div class="absolute -right-16 -top-16 w-48 h-48 bg-[#065fdb]/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000" />
+      <div class="absolute -right-16 -top-16 w-48 h-48 bg-[#FF5C1A]/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000" />
       
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 relative z-10">
         <div class="space-y-1">
-          <p class="text-[9px] font-bold text-[#065fdb] tracking-wider leading-none mb-2">Delivery Details</p>
+          <p class="text-[9px] font-bold text-[#FF5C1A] tracking-wider leading-none mb-2">Delivery Details</p>
           <h1 class="text-2xl font-black text-gray-900 tracking-tight leading-none">Order #{{ order.orderNumber }}</h1>
         </div>
         <div class="flex items-center gap-3">
@@ -17,10 +17,10 @@
       <div class="space-y-4 relative z-10">
         <div class="flex items-center justify-between">
           <span class="text-[9px] font-bold text-gray-400 tracking-wider">Delivery Progress</span>
-          <span class="text-[9px] font-bold text-[#065fdb] tracking-wider">Step {{ currentStep + 1 }} / 4</span>
+          <span class="text-[9px] font-bold text-[#FF5C1A] tracking-wider">Step {{ currentStep + 1 }} / 4</span>
         </div>
         <div class="flex items-center gap-2">
-          <div v-for="(step, i) in steps" :key="step" class="flex-1 h-2 rounded-full transition-all duration-1000 relative overflow-hidden border border-gray-50" :class="currentStep >= i ? 'bg-[#065fdb]' : 'bg-gray-100'">
+          <div v-for="(step, i) in steps" :key="step" class="flex-1 h-2 rounded-full transition-all duration-1000 relative overflow-hidden border border-gray-50" :class="currentStep >= i ? 'bg-[#FF5C1A]' : 'bg-gray-100'">
             <div v-if="currentStep === i" class="absolute inset-0 bg-white/20 animate-pulse" />
           </div>
         </div>
@@ -46,9 +46,9 @@
           <div class="absolute left-[1.75rem] top-20 bottom-24 w-px border-l-2 border-dashed border-gray-100" />
           
           <div class="flex items-start gap-6 relative">
-            <div class="w-10 h-10 rounded-xl bg-[#065fdb]/10 text-[#065fdb] flex items-center justify-center text-xl shadow-inner border border-[#065fdb]/20 flex-shrink-0 group-hover:scale-105 transition-transform">📍</div>
+            <div class="w-10 h-10 rounded-xl bg-[#FF5C1A]/10 text-[#FF5C1A] flex items-center justify-center text-xl shadow-inner border border-[#FF5C1A]/20 flex-shrink-0 group-hover:scale-105 transition-transform">📍</div>
             <div class="min-w-0 pt-0.5">
-              <p class="text-[8px] font-bold text-[#065fdb] tracking-wider mb-1.5 leading-none uppercase">Drop-off Point</p>
+              <p class="text-[8px] font-bold text-[#FF5C1A] tracking-wider mb-1.5 leading-none uppercase">Drop-off Point</p>
               <p class="text-lg font-black text-gray-900 tracking-tight leading-none mb-1.5 truncate">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</p>
               <p class="text-[10px] font-bold text-gray-400 leading-relaxed line-clamp-2">{{ order.deliveryAddress }} {{ order.type === 'custom_errand' ? `(${order.customDetails?.dropoffLocation})` : '' }}</p>
             </div>
@@ -59,7 +59,7 @@
         <div class="bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-xl relative overflow-hidden group">
           <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
           <h3 class="text-[9px] font-bold text-gray-500 tracking-wider mb-6 flex items-center gap-3 uppercase">
-            <div class="w-1.5 h-1.5 rounded-full bg-[#065fdb]" /> 
+            <div class="w-1.5 h-1.5 rounded-full bg-[#FF5C1A]" /> 
             {{ order.type === 'custom_errand' ? 'Request Details' : `Order Content (${order.items?.length} items)` }}
           </h3>
           
@@ -76,7 +76,7 @@
           <div v-else class="space-y-3">
             <div v-for="item in order.items" :key="item._id" class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
               <span class="text-xs font-bold text-gray-200 tracking-tight">{{ item.name }}</span>
-              <span class="text-[9px] font-bold text-white px-2.5 py-1 bg-[#065fdb] rounded-md shadow-md">x{{ item.quantity }}</span>
+              <span class="text-[9px] font-bold text-white px-2.5 py-1 bg-[#FF5C1A] rounded-md shadow-md">x{{ item.quantity }}</span>
             </div>
           </div>
         </div>
@@ -88,7 +88,7 @@
           
           <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
             <div class="relative mb-4">
-              <div class="absolute inset-0 bg-[#065fdb] rounded-full animate-ping opacity-20" />
+              <div class="absolute inset-0 bg-[#FF5C1A] rounded-full animate-ping opacity-20" />
               <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl shadow-lg relative z-10 border border-gray-50">📍</div>
             </div>
             <p class="text-[8px] font-bold text-gray-400 tracking-wider mb-1">Live Location Tracking</p>
@@ -104,14 +104,14 @@
           <div class="w-20 h-20 bg-gray-900 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-xl mb-4 group-hover:-translate-y-1 transition-transform border-2 border-white">
             {{ order.customer?.firstName?.[0] }}{{ order.customer?.lastName?.[0] }}
           </div>
-          <p class="text-[8px] font-bold text-[#065fdb] tracking-wider mb-2 leading-none bg-[#065fdb]/5 px-2.5 py-1 rounded-full">Primary Contact</p>
+          <p class="text-[8px] font-bold text-[#FF5C1A] tracking-wider mb-2 leading-none bg-[#FF5C1A]/5 px-2.5 py-1 rounded-full">Primary Contact</p>
           <h4 class="text-xl font-black text-gray-900 tracking-tight mb-6 truncate w-full leading-none">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</h4>
           
           <div class="flex flex-col gap-2 w-full">
             <a :href="`tel:${order.customer?.phone}`" class="w-full py-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-[9px] font-bold tracking-wider hover:bg-emerald-600 hover:text-white transition-all transform active:scale-95 border border-emerald-100 flex items-center justify-center gap-2.5">
               <Phone class="w-4 h-4" /> Call Customer
             </a>
-            <button @click="openChat(order.customer?._id, order.customer?.firstName + ' ' + order.customer?.lastName, order.customer?.avatar)" class="w-full py-3.5 bg-[#065fdb]/5 text-[#065fdb] rounded-xl text-[9px] font-bold tracking-wider hover:bg-[#065fdb] hover:text-white transition-all transform active:scale-95 border border-[#065fdb]/10 flex items-center justify-center gap-2.5">
+            <button @click="openChat(order.customer?._id, order.customer?.firstName + ' ' + order.customer?.lastName, order.customer?.avatar)" class="w-full py-3.5 bg-[#FF5C1A]/5 text-[#FF5C1A] rounded-xl text-[9px] font-bold tracking-wider hover:bg-[#FF5C1A] hover:text-white transition-all transform active:scale-95 border border-[#FF5C1A]/10 flex items-center justify-center gap-2.5">
               <MessageSquare class="w-4 h-4" /> Message Customer
             </button>
           </div>
@@ -120,7 +120,7 @@
         <!-- Status Update Actions -->
         <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup' || order.status === 'picked_up'" class="space-y-4">
           <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup'" class="animate-bounce-subtle">
-            <button @click="updateStatus('picked_up')" :disabled="updatingStatus" class="w-full py-5 bg-[#065fdb] text-white rounded-xl text-[11px] font-black tracking-widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
+            <button @click="updateStatus('picked_up')" :disabled="updatingStatus" class="w-full py-5 bg-[#FF5C1A] text-white rounded-xl text-[11px] font-black tracking-widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
               <Loader2 v-if="updatingStatus" class="w-5 h-5 animate-spin" />
               <span v-else class="text-xl group-hover:rotate-12 transition-transform">📦</span> 
               {{ updatingStatus ? 'UPDATING...' : 'Confirm Pickup' }}
@@ -139,7 +139,7 @@
 
         <!-- Verification Interface -->
         <div v-if="order.status === 'in_transit' || order.status === 'picked_up'" class="bg-gray-900 rounded-2xl p-6 space-y-6 shadow-xl relative overflow-hidden group border border-white/5">
-          <div class="absolute -right-32 -top-32 w-64 h-64 bg-[#065fdb]/20 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000" />
+          <div class="absolute -right-32 -top-32 w-64 h-64 bg-[#FF5C1A]/20 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000" />
            
           <div class="text-center space-y-2 relative z-10">
             <h3 class="text-white text-lg font-black tracking-tight leading-none">Verification Code</h3>
@@ -152,14 +152,14 @@
               type="text"
               maxlength="6"
               placeholder="000000"
-              class="bg-white/5 text-white text-2xl font-black text-center tracking-widest w-full py-4 rounded-xl border border-white/10 focus:border-[#065fdb]/50 focus:bg-white/10 transition-all focus:outline-none placeholder:text-white/5 shadow-inner"
+              class="bg-white/5 text-white text-2xl font-black text-center tracking-widest w-full py-4 rounded-xl border border-white/10 focus:border-[#FF5C1A]/50 focus:bg-white/10 transition-all focus:outline-none placeholder:text-white/5 shadow-inner"
             />
           </div>
           
           <button 
             @click="completeOrder" 
             :disabled="verificationCode.length !== 6 || completing"
-            class="w-full py-4 bg-white text-gray-900 rounded-xl text-[10px] font-black tracking-widest shadow-xl hover:bg-[#065fdb] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 transition-all relative z-10 group"
+            class="w-full py-4 bg-white text-gray-900 rounded-xl text-[10px] font-black tracking-widest shadow-xl hover:bg-[#FF5C1A] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 transition-all relative z-10 group"
           >
             <Loader2 v-if="completing" class="w-5 h-5 animate-spin flex-shrink-0" />
             <span v-else class="text-base">✅</span> 

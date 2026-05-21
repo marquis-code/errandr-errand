@@ -1,9 +1,10 @@
 <template>
-  <div class="min-h-screen w-full flex flex-col md:flex-row bg-white overflow-hidden">
+  <div class="relative min-h-screen w-full flex flex-col md:flex-row bg-gradient-to-b from-slate-50/80 via-white to-white overflow-hidden">
+  <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
     <!-- Left Side: Image Panel -->
     <div class="hidden md:block w-1/2 relative overflow-hidden">
       <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&h=1600&fit=crop" alt="Campus delivery rider" class="absolute inset-0 w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-gradient-to-b from-[#065fdb]/80 via-[#065fdb]/70 to-black/80"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-[#FF5C1A]/80 via-[#FF5C1A]/70 to-black/80"></div>
       <div class="relative z-10 flex flex-col justify-between h-full p-12 lg:p-16">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/30">
@@ -22,7 +23,7 @@
     <div class="w-full md:w-1/2 flex flex-col justify-center px-6 sm:px-12 md:px-20 lg:px-28 py-12 relative z-10">
       <div class="mb-12">
         <div class="flex items-center gap-2 mb-8 md:hidden">
-          <div class="w-8 h-8 rounded-lg bg-[#065fdb] flex items-center justify-center"><Bike class="w-4 h-4 text-white" /></div>
+          <div class="w-8 h-8 rounded-lg bg-[#FF5C1A] flex items-center justify-center"><Bike class="w-4 h-4 text-white" /></div>
           <span class="text-xl font-bold text-gray-900 tracking-tight">Errandr</span>
         </div>
         <h1 class="text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">Rider Login</h1>
@@ -33,19 +34,19 @@
         <UiAnimatedInput v-model="email" type="email" label="Email" required />
         <UiAnimatedInput v-model="password" type="password" label="Password" required />
         <div class="flex items-center justify-between">
-          <NuxtLink to="/auth/forgot-password" class="text-sm font-semibold text-[#065fdb] hover:underline">Forgot your password?</NuxtLink>
+          <NuxtLink to="/auth/forgot-password" class="text-sm font-semibold text-[#FF5C1A] hover:underline">Forgot your password?</NuxtLink>
         </div>
 
         <p v-if="error" class="text-red-500 text-sm font-medium">{{ error }}</p>
 
         <button type="submit" :disabled="loading"
-          class="w-full py-3 bg-[#065fdb] hover:bg-[#054ec0] text-white rounded-xl font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-[#065fdb]/20">
+          class="w-full py-3 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-xl font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-[#FF5C1A]/20">
           <Loader2 v-if="loading" class="animate-spin w-6 h-6" />
           {{ loading ? 'Signing in...' : 'Sign In' }}
         </button>
 
         <p class="text-center text-gray-600 font-medium mt-8">
-          Want to become a rider? <NuxtLink to="/auth/register" class="text-[#065fdb] font-bold hover:underline">Apply Now</NuxtLink>
+          Want to become a rider? <NuxtLink to="/auth/register" class="text-[#FF5C1A] font-bold hover:underline">Apply Now</NuxtLink>
         </p>
       </form>
 

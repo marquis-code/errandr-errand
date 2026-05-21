@@ -61,7 +61,7 @@
                   <div>
                     <h3 class="text-sm font-black text-gray-900 mb-1 line-clamp-1">{{ order.vendor?.storeName || 'Custom Errand' }}</h3>
                     <div class="flex items-center gap-2">
-                      <span class="text-[9px] font-black tracking-widest text-[#065fdb] uppercase bg-[#065fdb]/5 px-2 py-0.5 rounded">#{{ order.orderNumber?.slice(-8) }}</span>
+                      <span class="text-[9px] font-black tracking-widest text-[#FF5C1A] uppercase bg-[#FF5C1A]/5 px-2 py-0.5 rounded">#{{ order.orderNumber?.slice(-8) }}</span>
                       <span class="text-[9px] font-bold text-gray-400 flex items-center gap-1">
                         <Clock class="w-2.5 h-2.5" /> {{ formatTime(order.createdAt) }}
                       </span>
@@ -150,7 +150,7 @@
             </div>
           </div>
           <div class="flex gap-4 pl-1">
-            <div class="z-10 w-6 h-6 rounded-lg bg-[#065fdb] flex items-center justify-center text-[10px] flex-shrink-0 text-white shadow-lg shadow-[#065fdb]/20">D</div>
+            <div class="z-10 w-6 h-6 rounded-lg bg-[#FF5C1A] flex items-center justify-center text-[10px] flex-shrink-0 text-white shadow-lg shadow-[#FF5C1A]/20">D</div>
             <div>
               <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Delivery Point</p>
               <p class="text-sm font-bold text-gray-900">{{ selectedOrder.deliveryAddress || 'Customer Location' }}</p>
@@ -174,7 +174,7 @@
         </div>
 
         <!-- Customer Note -->
-        <div v-if="selectedOrder.recipientName" class="p-5 bg-[#065fdb]/[0.02] border border-[#065fdb]/10 rounded-[2rem] space-y-2">
+        <div v-if="selectedOrder.recipientName" class="p-5 bg-[#FF5C1A]/[0.02] border border-[#FF5C1A]/10 rounded-[2rem] space-y-2">
           <div class="flex items-center gap-2">
             <User class="w-3.5 h-3.5 text-parentPrimary" />
             <h4 class="text-[10px] font-black text-parentPrimary uppercase tracking-widest">Customer Details</h4>

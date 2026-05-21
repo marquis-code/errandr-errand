@@ -14,7 +14,7 @@
  <!-- Avatar & Name -->
  <div class="bg-white rounded-2xl border border-gray-100 p-6">
  <div class="flex items-center gap-5">
- <div class="w-20 h-20 rounded-2xl bg-[#065fdb] text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-[#065fdb]/20 flex-shrink-0">
+ <div class="w-20 h-20 rounded-2xl bg-[#FF5C1A] text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-[#FF5C1A]/20 flex-shrink-0">
  {{ userInitials }}
  </div>
  <div class="flex-1 min-w-0">
@@ -34,9 +34,9 @@
  <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
  <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
  <h3 class="text-base font-bold text-gray-900">Personal Information</h3>
- <button v-if="!isEditing" @click="startEdit" class="text-xs font-semibold text-[#065fdb] hover:underline">Edit</button>
+ <button v-if="!isEditing" @click="startEdit" class="text-xs font-semibold text-[#FF5C1A] hover:underline">Edit</button>
  <div v-else class="flex gap-2">
- <button @click="saveProfile" :disabled="saving" class="text-xs font-semibold text-white bg-[#065fdb] px-4 py-1.5 rounded-lg hover:brightness-110 transition-all disabled:opacity-50">
+ <button @click="saveProfile" :disabled="saving" class="text-xs font-semibold text-white bg-[#FF5C1A] px-4 py-1.5 rounded-lg hover:brightness-110 transition-all disabled:opacity-50">
  {{ saving ? 'Saving...' : 'Save' }}
  </button>
  <button @click="cancelEdit" class="text-xs font-semibold text-gray-500 hover:text-gray-700">Cancel</button>
@@ -50,7 +50,7 @@
  <input 
  v-model="form.firstName"
  :disabled="!isEditing"
- class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#065fdb]/20 focus:bg-white focus:border-[#065fdb]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+ class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#FF5C1A]/20 focus:bg-white focus:border-[#FF5C1A]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
  />
  </div>
  <div>
@@ -58,7 +58,7 @@
  <input 
  v-model="form.lastName"
  :disabled="!isEditing"
- class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#065fdb]/20 focus:bg-white focus:border-[#065fdb]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+ class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#FF5C1A]/20 focus:bg-white focus:border-[#FF5C1A]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
  />
  </div>
  </div>
@@ -75,7 +75,7 @@
  <input 
  v-model="form.phone"
  :disabled="!isEditing"
- class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#065fdb]/20 focus:bg-white focus:border-[#065fdb]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+ class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#FF5C1A]/20 focus:bg-white focus:border-[#FF5C1A]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
  placeholder="Enter your phone number"
  />
  </div>

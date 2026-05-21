@@ -17,7 +17,7 @@
  v-model="searchQuery"
  type="text" 
  placeholder="Search by order ID or store name..." 
- class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#065fdb]/20 focus:border-[#065fdb]/30 transition-all"
+ class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#FF5C1A]/20 focus:border-[#FF5C1A]/30 transition-all"
  />
  </div>
  
@@ -27,7 +27,7 @@
  :key="status.key" 
  @click="activeFilter = status.key"
  class="px-4 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap"
- :class="activeFilter === status.key ? 'bg-[#065fdb] text-white shadow-sm' : 'text-gray-500 hover:bg-gray-100 bg-white border border-gray-200'"
+ :class="activeFilter === status.key ? 'bg-[#FF5C1A] text-white shadow-sm' : 'text-gray-500 hover:bg-gray-100 bg-white border border-gray-200'"
  >
  {{ status.label }}
  </button>
@@ -44,7 +44,7 @@
  <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">📦</div>
  <h3 class="text-base font-bold text-gray-900 mb-1">{{ activeFilter === 'all' ? 'No deliveries yet' : `No ${activeFilter} deliveries` }}</h3>
  <p class="text-sm text-gray-400 mb-6">{{ activeFilter === 'all' ? 'Accept orders from the marketplace to get started!' : 'Check back later for updates.' }}</p>
- <NuxtLink v-if="activeFilter === 'all'" to="/" class="inline-block px-6 py-2.5 bg-[#065fdb] text-white rounded-xl font-semibold text-sm shadow-sm shadow-[#065fdb]/20 hover:brightness-110 transition-all">
+ <NuxtLink v-if="activeFilter === 'all'" to="/" class="inline-block px-6 py-2.5 bg-[#FF5C1A] text-white rounded-xl font-semibold text-sm shadow-sm shadow-[#FF5C1A]/20 hover:brightness-110 transition-all">
  Browse Marketplace
  </NuxtLink>
  </div>
@@ -140,7 +140,7 @@
  <div class="w-6 h-6 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-[10px] shadow-sm">📍</div>
  <div>
  <p class="text-[9px] text-gray-400 font-bold tracking-widest mb-0.5 whitespace-nowrap">Destination: Customer</p>
- <p class="text-sm font-black text-[#065fdb] tracking-tight">{{ selectedOrder.deliveryAddress }}</p>
+ <p class="text-sm font-black text-[#FF5C1A] tracking-tight">{{ selectedOrder.deliveryAddress }}</p>
  <p class="text-[11px] font-medium text-gray-400 mt-0.5">{{ selectedOrder.customer?.firstName }} {{ selectedOrder.customer?.lastName }}</p>
  </div>
  </div>

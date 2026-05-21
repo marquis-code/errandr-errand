@@ -11,7 +11,7 @@
         <!-- Colored top bar based on type -->
         <div
           :class="{
-            'bg-gradient-to-r from-[#065fdb] to-blue-500': toast.type === 'NEW_ORDER_AVAILABLE',
+            'bg-gradient-to-r from-[#FF5C1A] to-blue-500': toast.type === 'NEW_ORDER_AVAILABLE',
             'bg-gradient-to-r from-emerald-500 to-green-500': toast.type === 'ORDER_ACCEPTED',
             'bg-gradient-to-r from-parentPrimary to-accent': toast.type === 'ORDER_STATUS_UPDATE',
             'bg-gradient-to-r from-gray-700 to-gray-900': !['NEW_ORDER_AVAILABLE', 'ORDER_ACCEPTED', 'ORDER_STATUS_UPDATE'].includes(toast.type),
@@ -60,14 +60,14 @@
           <div v-if="toast.type === 'NEW_ORDER_AVAILABLE'" class="flex items-center gap-2 mt-3">
             <button
               @click="viewManifest(toast)"
-              class="flex-1 py-2.5 text-xs font-semibold text-[#065fdb] bg-[#065fdb]/5 border border-[#065fdb]/10 rounded-xl hover:bg-[#065fdb]/10 transition-all"
+              class="flex-1 py-2.5 text-xs font-semibold text-[#FF5C1A] bg-[#FF5C1A]/5 border border-[#FF5C1A]/10 rounded-xl hover:bg-[#FF5C1A]/10 transition-all"
             >
               View Details
             </button>
             <button
               @click="acceptOrder(toast)"
               :disabled="toast.accepting"
-              class="flex-1 py-2.5 text-xs font-bold text-white bg-[#065fdb] rounded-xl hover:brightness-110 transition-all shadow-md shadow-[#065fdb]/20 disabled:opacity-50"
+              class="flex-1 py-2.5 text-xs font-bold text-white bg-[#FF5C1A] rounded-xl hover:brightness-110 transition-all shadow-md shadow-[#FF5C1A]/20 disabled:opacity-50"
             >
               {{ toast.accepting ? 'Accepting...' : '✅ Accept Order' }}
             </button>
@@ -78,7 +78,7 @@
             <NuxtLink
               :to="`/deliveries/${toast.data.orderId}`"
               @click="dismissToast(toast.id)"
-              class="block w-full py-2 text-xs font-semibold text-center text-[#065fdb] bg-[#065fdb]/5 border border-[#065fdb]/10 rounded-xl hover:bg-[#065fdb]/10 transition-all"
+              class="block w-full py-2 text-xs font-semibold text-center text-[#FF5C1A] bg-[#FF5C1A]/5 border border-[#FF5C1A]/10 rounded-xl hover:bg-[#FF5C1A]/10 transition-all"
             >
               View Order →
             </NuxtLink>

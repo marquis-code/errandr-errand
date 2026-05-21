@@ -1,19 +1,6 @@
 <template>
   <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth">
-    <!-- Navbar -->
-    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-2xl border-b border-gray-100 py-4">
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 flex justify-between items-center">
-        <NuxtLink to="/" class="flex items-center gap-3 group">
-          <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
-          <span class="text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 bg-gray-50 px-3 py-1 rounded-lg">Dispatch</span>
-        </NuxtLink>
-        <div class="flex items-center gap-8 text-[11px] font-black tracking-widest uppercase text-gray-400">
-          <NuxtLink to="/about" class="hover:text-parentPrimary transition-colors">About</NuxtLink>
-          <NuxtLink to="/terms" class="text-parentPrimary border-b-2 border-parentPrimary pb-1">Terms</NuxtLink>
-          <NuxtLink to="/auth/login" class="px-8 py-3 bg-gray-900 text-white rounded-2xl hover:bg-parentPrimary transition-all shadow-xl shadow-black/5">Sign In</NuxtLink>
-        </div>
-      </div>
-    </nav>
+
 
     <!-- Hero Section -->
     <section class="relative pt-40 pb-20 overflow-hidden bg-gray-50/30">
@@ -52,27 +39,13 @@
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-50 border-t border-gray-100 py-16 mt-20">
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 flex flex-col md:flex-row justify-between items-center gap-10">
-        <NuxtLink to="/" class="group">
-          <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
-        </NuxtLink>
-        <div class="flex items-center gap-10 text-[10px] font-black tracking-[0.15em] uppercase text-gray-400">
-          <NuxtLink to="/about" class="hover:text-gray-900 transition-colors">About Community</NuxtLink>
-          <NuxtLink to="/terms" class="text-parentPrimary font-black">Rider Terms</NuxtLink>
-          <NuxtLink to="/faq" class="hover:text-gray-900 transition-colors">Help Center</NuxtLink>
-          <NuxtLink to="/contact" class="hover:text-gray-900 transition-colors">Support</NuxtLink>
-        </div>
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">© {{ new Date().getFullYear() }} Errandr Dispatch • Lead the Way</p>
-      </div>
-    </footer>
+
   </div>
 </template>
 
 <script setup lang="ts">
 import { ShieldCheck } from 'lucide-vue-next'
-definePageMeta({ layout: false })
+definePageMeta({ layout: 'landing' })
 useHead({ 
   title: 'Rider Agreement - Errandr Dispatch',
   meta: [{ name: 'description', content: 'Legal framework and safety guidelines for student dispatchers on the Errandr campus platform.' }] 
