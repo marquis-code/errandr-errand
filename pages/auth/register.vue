@@ -1,68 +1,60 @@
 <template>
-  <div class="relative min-h-screen w-full flex flex-col md:flex-row bg-gradient-to-b from-slate-50/80 via-white to-white overflow-hidden">
-  <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
-    <!-- Left Side: Image Panel -->
-    <div class="hidden md:block w-1/2 relative overflow-hidden">
-      <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1200&h=1600&fit=crop" alt="Campus life students" class="absolute inset-0 w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-gradient-to-b from-[#FF5C1A]/80 via-[#FF5C1A]/70 to-black/80"></div>
-      <div class="relative z-10 flex flex-col justify-between h-full p-12 lg:p-16">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/30">
-            <Bike class="w-5 h-5 text-white" />
-          </div>
-          <span class="text-xl font-black text-white tracking-tighter">Errandr</span>
-        </div>
-        <div class="max-w-md">
-          <h2 class="text-5xl font-black text-white leading-[1.1] tracking-tighter mb-6">Earn money. Set your own hours.</h2>
-          <p class="text-white/70 text-lg font-medium leading-relaxed">Register as a campus rider and start earning from deliveries between lectures.</p>
-        </div>
-      </div>
-    </div>
+  <div class="min-h-screen w-full bg-white flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden">
+    <div class="w-full max-w-[500px] relative z-10">
+      
+      <!-- Back to Login -->
+      <NuxtLink v-if="!showSuccess" to="/auth/login" class="absolute -top-12 left-0 flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">
+        <ArrowLeft class="w-4 h-4" /> Back to login
+      </NuxtLink>
 
-    <!-- Right Side: Form -->
-    <div class="w-full md:w-1/2 flex flex-col justify-center px-6 sm:px-12 md:px-20 lg:px-28 py-12 relative z-10 overflow-y-auto">
       <transition name="fade" mode="out-in">
-        <div v-if="!showSuccess" class="w-full max-w-md mx-auto">
-          <div class="mb-10">
-        <div class="flex items-center gap-2 mb-6 md:hidden">
-          <div class="w-8 h-8 rounded-lg bg-[#FF5C1A] flex items-center justify-center"><Bike class="w-4 h-4 text-white" /></div>
-          <span class="text-xl font-bold text-gray-900 tracking-tight">Errandr</span>
-        </div>
-        <h1 class="text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">Become a Rider</h1>
-        <p class="text-gray-500 text-lg">Create your account and start delivering</p>
-      </div>
+        <div v-if="!showSuccess" class="w-full">
+          <!-- Header -->
+          <div class="text-center mb-8">
+                    <div class="flex items-center justify-center group-hover:scale-110 transition-transform">
+            <img src="@/assets/img/logo-light.png" class="w-auto h-10" alt="Errandr" />
+          </div>
+            <h1 class="text-3xl font-black text-gray-900 tracking-tight mb-2">Become a Rider</h1>
+            <p class="text-gray-500 font-medium text-sm">Create your account and start delivering</p>
+          </div>
 
-      <form @submit.prevent="handleRegister" class="space-y-5 max-w-md">
-        <div class="grid grid-cols-2 gap-4">
-          <UiAnimatedInput v-model="form.firstName" type="text" label="First Name" required />
-          <UiAnimatedInput v-model="form.lastName" type="text" label="Last Name" required />
-        </div>
-        <UiAnimatedInput v-model="form.email" type="email" label="Email" required />
-        <UiAnimatedInput v-model="form.phone" type="tel" label="Phone Number" />
-        <UiAnimatedInput v-model="form.password" type="password" label="Password" required minlength="6" />
+          <form @submit.prevent="handleRegister" class="space-y-5">
+            <div class="grid grid-cols-2 gap-4">
+              <UiAnimatedInput v-model="form.firstName" type="text" label="First Name" required />
+              <UiAnimatedInput v-model="form.lastName" type="text" label="Last Name" required />
+            </div>
+            <UiAnimatedInput v-model="form.email" type="email" label="Email Address" required />
+            <UiAnimatedInput v-model="form.phone" type="tel" label="Phone Number" />
+            <UiAnimatedInput v-model="form.password" type="password" label="Password" required minlength="6" />
 
-        <p v-if="error" class="text-red-500 text-sm font-medium">{{ error }}</p>
+            <transition name="fade">
+              <div v-if="error" class="flex items-center gap-2 p-4 bg-red-50 border border-red-100 rounded-2xl text-[13px] font-bold text-red-600">
+                <AlertCircle class="w-4 h-4 shrink-0" />
+                {{ error }}
+              </div>
+            </transition>
 
-        <button type="submit" :disabled="loading"
-          class="w-full py-3 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-xl font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-[#FF5C1A]/20 mt-4">
-          <Loader2 v-if="loading" class="animate-spin w-6 h-6" />
-          {{ loading ? 'Applying...' : 'Apply to Ride' }}
-        </button>
+            <button type="submit" :disabled="loading"
+              class="w-full py-4 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-2xl font-black text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-xl shadow-[#FF5C1A]/20 active:scale-[0.98] group mt-4">
+              <Loader2 v-if="loading" class="animate-spin w-5 h-5" />
+              <span v-else>Apply to Ride</span>
+              <ArrowRight v-if="!loading" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
 
-        <p class="text-center text-gray-600 font-medium">
-          Already have an account? <NuxtLink to="/auth/login" class="text-[#FF5C1A] font-bold hover:underline">Sign in</NuxtLink>
-        </p>
-      </form>
-
-      <div class="mt-12 pt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-400 font-medium border-t border-gray-50">
-        <p>&copy; {{ new Date().getFullYear() }} Errandr</p>
-        <NuxtLink to="/terms" class="hover:text-gray-600">Terms</NuxtLink>
-            <NuxtLink to="/terms" class="hover:text-gray-600">Privacy</NuxtLink>
+            <p class="text-center text-gray-500 text-sm font-medium mt-6">
+              Already have an account? <NuxtLink to="/auth/login" class="text-[#FF5C1A] font-bold hover:underline">Sign in</NuxtLink>
+            </p>
+          </form>
+          
+          <div class="mt-8 text-center flex items-center justify-center gap-4 text-sm font-bold text-gray-400 border-t border-gray-100 pt-8">
+            <p>&copy; {{ new Date().getFullYear() }} Errandr</p>
+            <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+            <NuxtLink to="/terms" class="hover:text-gray-600 transition-colors">Terms & Privacy</NuxtLink>
           </div>
         </div>
 
         <!-- Success Modal -->
-        <div v-else class="w-full flex flex-col items-center justify-center text-center space-y-6 min-h-[400px] bg-white rounded-[2rem] relative z-20 border border-gray-100 shadow-[0_20px_60px_-15px_rgba(255,92,26,0.1)] p-8 max-w-md mx-auto">
+        <div v-else class="w-full flex flex-col items-center justify-center text-center space-y-6 min-h-[400px] bg-white rounded-[2rem] relative z-20 border border-gray-100 shadow-[0_20px_60px_-15px_rgba(255,92,26,0.1)] p-8">
           <div class="relative w-28 h-28 flex items-center justify-center mb-4">
             <div class="absolute inset-0 bg-[#FF5C1A]/10 rounded-full animate-ping" style="animation-duration: 2s;"></div>
             <div class="absolute inset-2 bg-[#FF5C1A]/20 rounded-full animate-ping" style="animation-duration: 2s; animation-delay: 0.5s;"></div>
@@ -81,7 +73,7 @@
           </div>
 
           <div class="w-full pt-8 mt-auto">
-            <button @click="proceedToDashboard" class="w-full py-4.5 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-2xl font-black text-[17px] transition-all flex items-center justify-center gap-2 shadow-xl shadow-[#FF5C1A]/25 active:scale-[0.98] group">
+            <button @click="proceedToDashboard" class="w-full py-4 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-2xl font-black text-[17px] transition-all flex items-center justify-center gap-2 shadow-xl shadow-[#FF5C1A]/25 active:scale-[0.98] group">
               Proceed to Dashboard <ArrowRight class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
@@ -92,11 +84,14 @@
 </template>
 
 <script setup lang="ts">
-import { Loader2, Bike, ArrowRight, Check } from 'lucide-vue-next'
+import { Loader2, Bike, ArrowRight, ArrowLeft, Check, AlertCircle } from 'lucide-vue-next'
 import { ref, reactive, nextTick } from 'vue'
 import confetti from 'canvas-confetti'
 import { useAuth } from '@/composables/modules/auth'
+
 definePageMeta({ layout: false })
+useHead({ title: 'Become a Rider - Errandr' })
+
 const { register, loading } = useAuth()
 const error = ref('')
 const showSuccess = ref(false)
@@ -144,15 +139,9 @@ const triggerConfetti = () => {
 const proceedToDashboard = () => {
   navigateTo('/dashboard')
 }
-
-useHead({ title: 'Become a Rider - Errandr' })
 </script>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>

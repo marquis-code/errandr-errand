@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { auth_api } from '@/api_factory/modules/auth';
 import { useUser } from './user';
-// import { navigateTo } from m;
+import { navigateTo, useRoute } from '#imports';
 import { useCustomToast } from '@/composables/core/useCustomToast';
 
 export const useAuth = () => {
@@ -9,7 +9,8 @@ export const useAuth = () => {
   const { showToast } = useCustomToast();
   const loading = ref(false);
 
-  const login = async (payload: any) => {
+  const login = async (payload: any, options: { redirect?: boolean } = { redirect: true }) => {
+    const route = useRoute();
     loading.value = true;
     try {
       const res = await auth_api.login(payload);
@@ -20,10 +21,12 @@ export const useAuth = () => {
         message: "You've successfully logged in.",
         toastType: "success",
       });
-      navigateTo('/dashboard');
+      if (options.redirect) {
+        const redirectPath = (route.query.redirect as string) || '/dashboard';
+        await navigateTo(redirectPath);
+      }
       return res.data;
     } catch (e: any) {
-      // Error handled by axios interceptor
       throw e;
     } finally {
       loading.value = false;
@@ -61,11 +64,68 @@ export const useAuth = () => {
     }
   };
 
+  const forgotPassword = async (email: string) => {
+    loading.value = true;
+    try {
+      const res = await auth_api.forgotPassword(email);
+      showToast({
+        title: "Code Sent!",
+        message: res.data?.message || "Check your inbox for the reset code.",
+        toastType: "success",
+      });
+      navigateTo(`/auth/verify-reset-otp?email=${encodeURIComponent(email)}`);
+      return res.data;
+    } catch (e: any) {
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const verifyResetOTP = async (email: string, otp: string) => {
+    loading.value = true;
+    try {
+      const res = await auth_api.verifyResetOtp({ email, otp });
+      showToast({
+        title: "Code Verified!",
+        message: res.data?.message || "Perfect! Now set your new password.",
+        toastType: "success",
+      });
+      navigateTo(`/auth/reset-password?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`);
+      return res.data;
+    } catch (e: any) {
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const resetPassword = async (payload: any) => {
+    loading.value = true;
+    try {
+      const res = await auth_api.resetPassword(payload);
+      showToast({
+        title: "Password Changed!",
+        message: "You can now log in securely.",
+        toastType: "success",
+      });
+      navigateTo('/auth/login');
+      return res.data;
+    } catch (e: any) {
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     loading,
     login,
     register,
     fetchProfile,
+    forgotPassword,
+    verifyResetOTP,
+    resetPassword,
     logOut
   };
 };
