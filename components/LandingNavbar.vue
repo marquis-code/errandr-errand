@@ -1,115 +1,167 @@
 <template>
-  <nav class="fixed w-full z-50 transition-all duration-500" :class="navClasses">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16 md:h-20">
+  <header 
+    class="fixed w-full top-0 z-[100] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+    :class="[scrolled ? 'py-4' : 'py-6']"
+  >
+    <div 
+      class="mx-auto transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+      :class="[scrolled ? 'max-w-5xl px-2 sm:px-6' : 'max-w-7xl px-6 sm:px-10']"
+    >
+      <nav 
+        class="flex items-center justify-between transition-all duration-500 relative"
+        :class="[
+          scrolled 
+            ? 'bg-white/70 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 rounded-[2rem] px-4 py-3' 
+            : 'bg-transparent'
+        ]"
+      >
         <!-- Logo -->
-        <div class="flex items-center gap-3 cursor-pointer group" @click="router.push('/')">
-          <div class="relative">
-            <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-9 w-auto object-contain transition-all duration-500 group-hover:scale-110" />
+        <NuxtLink to="/" class="flex items-center gap-3 group relative z-10">
+          <div class="relative overflow-hidden rounded-xl p-1 backdrop-blur-sm">
+             <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
           </div>
           <div class="hidden sm:flex flex-col">
             <span class="text-sm font-black tracking-tight leading-none text-gray-900">Errandr</span>
             <span class="text-[9px] font-bold uppercase tracking-[0.25em] text-parentPrimary">Dispatch</span>
           </div>
+        </NuxtLink>
+        
+        <!-- Desktop Links -->
+        <div class="hidden lg:flex items-center gap-1">
+           <NuxtLink 
+             v-for="link in links" 
+             :key="link.path" 
+             :to="link.path"
+             class="relative px-5 py-2.5 text-[15px] font-bold transition-colors group"
+             :class="[
+               scrolled ? 'text-gray-600 hover:text-gray-900' : 'text-gray-900 hover:text-parentPrimary',
+               { '!text-gray-900': route.path === link.path }
+             ]"
+           >
+             {{ link.name }}
+             <span class="absolute inset-x-4 bottom-1.5 h-0.5 bg-parentPrimary scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 rounded-full"></span>
+           </NuxtLink>
         </div>
 
-        <!-- Desktop Nav Links -->
-        <div class="hidden md:flex items-center">
-          <div class="flex items-center gap-1 p-1 rounded-2xl" :class="scrolled ? 'bg-gray-100' : 'bg-gray-50/80 backdrop-blur-sm'">
-            <a href="#benefits" class="px-4 py-2 rounded-xl text-xs font-bold transition-all hover:bg-gray-200 text-gray-600 hover:text-gray-900">Benefits</a>
-            <a href="#how-it-works" class="px-4 py-2 rounded-xl text-xs font-bold transition-all hover:bg-gray-200 text-gray-600 hover:text-gray-900">How it works</a>
-            <a href="#earnings" class="px-4 py-2 rounded-xl text-xs font-bold transition-all hover:bg-gray-200 text-gray-600 hover:text-gray-900">Earnings</a>
-          </div>
-        </div>
-
-        <!-- Right Actions -->
-        <div class="flex items-center gap-3">
+        <!-- Desktop Actions -->
+        <div class="hidden lg:flex items-center gap-4 relative z-10">
           <template v-if="!isLoggedIn">
-            <NuxtLink to="/auth/login" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all text-gray-700 hover:bg-gray-100">
-              <LogIn class="w-3.5 h-3.5" /> Sign in
+            <NuxtLink to="/auth/login" class="text-sm font-bold transition-colors px-4 py-2 text-gray-900 hover:text-parentPrimary">
+              Log In
             </NuxtLink>
-            <NuxtLink to="/auth/register" class="group relative px-5 py-2.5 bg-parentPrimary text-white text-xs font-black rounded-xl overflow-hidden shadow-lg shadow-parentPrimary/25 hover:shadow-xl hover:shadow-parentPrimary/30 hover:-translate-y-0.5 transition-all flex items-center gap-2">
-              <span class="relative z-10">Apply Now</span>
-              <ArrowRight class="w-3.5 h-3.5 relative z-10 group-hover:translate-x-1 transition-transform" />
-              <div class="absolute inset-0 bg-gradient-to-r from-parentPrimary to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <NuxtLink to="/auth/register" class="relative group overflow-hidden px-7 py-2.5 rounded-full bg-gray-900 text-white text-sm font-bold shadow-[0_0_40px_-10px_rgba(0,0,0,0.5)] hover:shadow-[0_0_60px_-15px_rgba(0,0,0,0.7)] transition-all duration-300">
+              <span class="relative z-10 flex items-center gap-2">
+                Apply Now <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </span>
+              <div class="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-900 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500"></div>
             </NuxtLink>
           </template>
           <template v-else>
-            <NuxtLink to="/dashboard" class="group px-5 py-2.5 bg-parentPrimary text-white text-xs font-black rounded-xl shadow-lg shadow-parentPrimary/25 hover:-translate-y-0.5 transition-all flex items-center gap-2">
-              Dashboard <ArrowRight class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            <NuxtLink to="/dashboard" class="relative group overflow-hidden px-7 py-2.5 rounded-full bg-parentPrimary text-white text-sm font-bold shadow-[0_0_40px_-10px_rgba(0,0,0,0.5)] hover:shadow-[0_0_60px_-15px_rgba(0,0,0,0.7)] transition-all duration-300">
+              <span class="relative z-10 flex items-center gap-2">
+                Dashboard <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </span>
+              <div class="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500"></div>
             </NuxtLink>
           </template>
-
-          <!-- Mobile Menu Toggle -->
-          <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-xl transition-colors text-gray-700 hover:bg-gray-100">
-            <component :is="mobileOpen ? X : Menu" class="w-5 h-5" />
-          </button>
         </div>
-      </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button 
+          @click="isMobileMenuOpen = !isMobileMenuOpen" 
+          class="lg:hidden relative z-50 w-12 h-12 flex items-center justify-center rounded-full border focus:outline-none shadow-sm transition-colors"
+          :class="[scrolled ? 'bg-white border-gray-100 text-gray-900' : 'border-gray-200 text-gray-900 bg-white/50 backdrop-blur-md']"
+        >
+          <Menu v-if="!isMobileMenuOpen" class="w-5 h-5" />
+          <X v-else class="w-5 h-5" />
+        </button>
+      </nav>
     </div>
 
-    <!-- Mobile Drawer -->
-    <transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0 -translate-y-4"
-      enter-to-class="opacity-100 translate-y-0"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="opacity-0 -translate-y-4"
-    >
-      <div v-if="mobileOpen" class="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-gray-200 shadow-2xl">
-        <div class="px-6 py-6 space-y-2">
-          <a href="#benefits" @click="mobileOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-700 hover:bg-parentPrimary/5 hover:text-parentPrimary transition-colors">
-            <Sparkles class="w-4 h-4 text-parentPrimary" /> Benefits
-          </a>
-          <a href="#how-it-works" @click="mobileOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-700 hover:bg-parentPrimary/5 hover:text-parentPrimary transition-colors">
-            <Zap class="w-4 h-4 text-parentPrimary" /> How it works
-          </a>
-          <a href="#earnings" @click="mobileOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-700 hover:bg-parentPrimary/5 hover:text-parentPrimary transition-colors">
-            <TrendingUp class="w-4 h-4 text-parentPrimary" /> Earnings
-          </a>
-          <div class="pt-4 border-t border-gray-100 space-y-2">
-            <NuxtLink v-if="!isLoggedIn" to="/auth/login" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-100 transition-colors">
-              <LogIn class="w-4 h-4" /> Sign in
-            </NuxtLink>
-            <NuxtLink :to="isLoggedIn ? '/dashboard' : '/auth/register'" class="flex items-center justify-center gap-2 px-4 py-3 bg-parentPrimary text-white rounded-xl text-sm font-black shadow-lg shadow-parentPrimary/20">
-              {{ isLoggedIn ? 'Go to Dashboard' : 'Apply Now' }} <ArrowRight class="w-4 h-4" />
-            </NuxtLink>
-          </div>
+    <!-- Mobile Menu Overlay -->
+    <transition name="menu-fade">
+      <div v-if="isMobileMenuOpen" class="fixed inset-0 z-40 bg-white/95 backdrop-blur-3xl lg:hidden flex flex-col pt-32 px-8 pb-10 overflow-y-auto">
+        <div class="flex flex-col gap-6 mb-12">
+           <NuxtLink 
+             v-for="link in links" 
+             :key="link.path" 
+             :to="link.path"
+             @click="isMobileMenuOpen = false"
+             class="text-4xl font-black text-gray-900 tracking-tighter hover:text-parentPrimary transition-colors"
+           >
+             {{ link.name }}
+           </NuxtLink>
+        </div>
+        
+        <div class="mt-auto flex flex-col gap-4">
+          <NuxtLink 
+            v-if="!isLoggedIn"
+            to="/auth/login" 
+            @click="isMobileMenuOpen = false"
+            class="w-full py-3 text-center text-sm font-bold text-gray-600 bg-gray-50 rounded-2xl border border-gray-100"
+          >
+            Log In to Dashboard
+          </NuxtLink>
+          <NuxtLink 
+            :to="isLoggedIn ? '/dashboard' : '/auth/register'" 
+            @click="isMobileMenuOpen = false"
+            class="w-full py-3 text-center text-sm font-bold text-white bg-parentPrimary rounded-2xl shadow-xl shadow-parentPrimary/20 flex items-center justify-center gap-2"
+          >
+            {{ isLoggedIn ? 'Go to Dashboard' : 'Apply Now' }} <ArrowRight class="w-5 h-5" />
+          </NuxtLink>
         </div>
       </div>
     </transition>
-  </nav>
+  </header>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { ArrowRight, Menu, X } from 'lucide-vue-next'
 import { useUser } from '@/composables/modules/auth/user'
-import { LogIn, ArrowRight, Menu, X, Sparkles, Zap, TrendingUp } from 'lucide-vue-next'
 
 const { isLoggedIn } = useUser()
-const router = useRouter()
-
+const route = useRoute()
 const scrolled = ref(false)
-const mobileOpen = ref(false)
+const isMobileMenuOpen = ref(false)
 
-const navClasses = computed(() => {
-  if (scrolled.value) {
-    return 'bg-white/90 backdrop-blur-xl border-b border-gray-200/50 shadow-sm'
-  }
-  return 'bg-transparent'
-})
+const links = [
+  { name: 'Benefits', path: '/#benefits' },
+  { name: 'How it works', path: '/#how-it-works' },
+  { name: 'Earnings', path: '/#earnings' }
+]
 
 const handleScroll = () => {
-  scrolled.value = window.scrollY > 50
+  scrolled.value = window.scrollY > 40
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  handleScroll()
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
 })
+
+watch(isMobileMenuOpen, (val) => {
+  if (val) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = ''
+  }
+})
 </script>
+
+<style scoped>
+.menu-fade-enter-active,
+.menu-fade-leave-active {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.menu-fade-enter-from,
+.menu-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.98);
+}
+</style>
