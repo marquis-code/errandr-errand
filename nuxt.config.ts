@@ -22,6 +22,13 @@ export default defineNuxtConfig({
     }
   },
 
+  imports: {
+    dirs: [
+      'composables',
+      'composables/**'
+    ]
+  },
+
   postcss: {
     plugins: {
       "postcss-import": {},
