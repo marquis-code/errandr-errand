@@ -9,11 +9,11 @@
       </div>
 
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 mb-8">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-[10px] font-medium tracking-[0.2em] uppercase text-gray-400 mb-8">
           <Bike class="w-3.5 h-3.5 text-parentPrimary" />
           Rider Community
         </div>
-        <h1 class="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] text-gray-900 mb-10 max-w-4xl mx-auto">
+        <h1 class="text-6xl md:text-8xl font-medium tracking-tighter leading-[0.9] text-gray-900 mb-10 max-w-4xl mx-auto">
           Earn on <br />
           <span class="text-parentPrimary italic bg-parentPrimary/5 px-6 rounded-3xl">your terms.</span>
         </h1>
@@ -32,9 +32,9 @@
             <div class="w-16 h-16 bg-blue-50 rounded-[1.5rem] flex items-center justify-center text-parentPrimary mb-8 group-hover:scale-110 transition-transform">
               <Zap class="w-8 h-8" />
             </div>
-            <h3 class="text-2xl font-black text-gray-900 tracking-tight mb-4">Pure Flexibility</h3>
+            <h3 class="text-2xl font-medium text-gray-900 tracking-tight mb-4">Pure Flexibility</h3>
             <p class="text-gray-500 font-bold leading-relaxed mb-6">No shifts, no bosses. Go online when you have a free hour between classes and offline when you need to study.</p>
-            <div class="flex items-center gap-2 text-[10px] font-black text-parentPrimary uppercase tracking-widest">
+            <div class="flex items-center gap-2 text-[10px] font-medium text-parentPrimary uppercase tracking-widest">
               <div class="h-px flex-1 bg-parentPrimary/10"></div>
               Your Schedule
             </div>
@@ -45,9 +45,9 @@
             <div class="w-16 h-16 bg-emerald-50 rounded-[1.5rem] flex items-center justify-center text-emerald-600 mb-8 group-hover:scale-110 transition-transform">
               <MapPin class="w-8 h-8" />
             </div>
-            <h3 class="text-2xl font-black text-gray-900 tracking-tight mb-4">Campus-Only</h3>
+            <h3 class="text-2xl font-medium text-gray-900 tracking-tight mb-4">Campus-Only</h3>
             <p class="text-gray-500 font-bold leading-relaxed mb-6">Deliver within the CMUL environs. Most orders are walkable or bike-friendly, keeping you within the safety of campus.</p>
-            <div class="flex items-center gap-2 text-[10px] font-black text-emerald-600 uppercase tracking-widest">
+            <div class="flex items-center gap-2 text-[10px] font-medium text-emerald-600 uppercase tracking-widest">
               <div class="h-px flex-1 bg-emerald-500/10"></div>
               Hyper-Local
             </div>
@@ -58,9 +58,9 @@
             <div class="w-16 h-16 bg-amber-50 rounded-[1.5rem] flex items-center justify-center text-amber-600 mb-8 group-hover:scale-110 transition-transform">
               <Wallet class="w-8 h-8" />
             </div>
-            <h3 class="text-2xl font-black text-gray-900 tracking-tight mb-4">Instant Cash</h3>
+            <h3 class="text-2xl font-medium text-gray-900 tracking-tight mb-4">Instant Cash</h3>
             <p class="text-gray-500 font-bold leading-relaxed mb-6">Your earnings hit your wallet immediately after every successful delivery. Withdraw to your bank account anytime.</p>
-            <div class="flex items-center gap-2 text-[10px] font-black text-amber-600 uppercase tracking-widest">
+            <div class="flex items-center gap-2 text-[10px] font-medium text-amber-600 uppercase tracking-widest">
               <div class="h-px flex-1 bg-amber-500/10"></div>
               Real-time Payouts
             </div>
@@ -74,7 +74,7 @@
       <div class="max-w-7xl mx-auto px-6 sm:px-10">
         <div class="flex flex-col lg:flex-row items-center gap-20">
           <div class="flex-1 space-y-10 text-center lg:text-left">
-            <h2 class="text-5xl md:text-6xl font-black tracking-tighter leading-[0.95] text-gray-900">
+            <h2 class="text-5xl md:text-6xl font-medium tracking-tighter leading-[0.95] text-gray-900">
               Fueling the <br />
               <span class="text-parentPrimary italic">next generation.</span>
             </h2>
@@ -82,7 +82,7 @@
               Errandr Dispatch isn't just a delivery app — it's a platform for students to gain financial independence while serving their own community at CMUL.
             </p>
             <div class="pt-6">
-              <NuxtLink to="/auth/register" class="inline-flex items-center gap-4 px-10 py-5 bg-gray-900 text-white rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-2xl hover:bg-parentPrimary transition-all group">
+              <NuxtLink to="/auth/register" class="inline-flex items-center gap-4 px-10 py-5 bg-gray-900 text-white rounded-[2rem] font-medium text-sm uppercase tracking-widest shadow-2xl hover:bg-parentPrimary transition-all group">
                 Apply to ride
                 <ArrowRight class="w-5 h-5 group-hover:translate-x-2 transition-transform" />
               </NuxtLink>
@@ -92,9 +92,9 @@
             <div class="absolute inset-0 bg-parentPrimary/5 blur-[100px] rounded-full animate-pulse-slow"></div>
             <div class="relative z-10 space-y-8">
               <div v-for="item in steps" :key="item.t" class="flex gap-6 items-start text-left">
-                <div class="w-10 h-10 rounded-full bg-white border border-gray-100 flex items-center justify-center text-sm font-black text-parentPrimary shadow-sm">{{ item.n }}</div>
+                <div class="w-10 h-10 rounded-full bg-white border border-gray-100 flex items-center justify-center text-sm font-medium text-parentPrimary shadow-sm">{{ item.n }}</div>
                 <div>
-                   <h4 class="font-black text-gray-900 mb-2 uppercase text-[12px] tracking-widest">{{ item.t }}</h4>
+                   <h4 class="font-medium text-gray-900 mb-2 uppercase text-[12px] tracking-widest">{{ item.t }}</h4>
                    <p class="text-gray-500 font-bold text-sm">{{ item.d }}</p>
                 </div>
               </div>

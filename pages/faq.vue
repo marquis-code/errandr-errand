@@ -5,11 +5,11 @@
     <!-- Hero Section -->
     <section class="relative pt-40 pb-20 overflow-hidden bg-gray-50/20">
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-gray-100 text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 mb-8 shadow-sm">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-gray-100 text-[10px] font-medium tracking-[0.2em] uppercase text-gray-400 mb-8 shadow-sm">
           <HelpCircle class="w-3.5 h-3.5 text-parentPrimary" />
           Rider Knowledge Base
         </div>
-        <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] text-gray-900 mb-6 max-w-4xl mx-auto">
+        <h1 class="text-5xl md:text-7xl font-medium tracking-tighter leading-[0.9] text-gray-900 mb-6 max-w-4xl mx-auto">
           Rider <span class="text-parentPrimary italic">Intel.</span>
         </h1>
         <p class="text-xl text-gray-500 font-bold max-w-2xl mx-auto leading-relaxed tracking-tight">
@@ -24,7 +24,7 @@
         <div class="space-y-4">
           <div v-for="(faq, i) in faqs" :key="i" class="group border border-gray-100 rounded-[2rem] overflow-hidden transition-all duration-500" :class="{ 'bg-gray-50/50 border-parentPrimary/20 shadow-xl shadow-parentPrimary/5': openIndex === i }">
             <button @click="openIndex = openIndex === i ? -1 : i" class="w-full flex items-center justify-between p-8 text-left outline-none">
-              <span class="text-xl font-black text-gray-900 tracking-tight group-hover:text-parentPrimary transition-colors">{{ faq.q }}</span>
+              <span class="text-xl font-medium text-gray-900 tracking-tight group-hover:text-parentPrimary transition-colors">{{ faq.q }}</span>
               <div class="w-10 h-10 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-400 group-hover:text-parentPrimary transition-all" :class="{ 'rotate-180 bg-parentPrimary text-white border-transparent': openIndex === i }">
                 <ChevronDown class="w-5 h-5" />
               </div>

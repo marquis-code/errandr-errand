@@ -89,7 +89,7 @@
  </td>
  <td class="py-3.5 px-5 text-right">
  <div class="flex flex-col items-end">
- <p class="text-sm font-black text-gray-900 tracking-tight">₦{{ order.total?.toLocaleString() }}</p>
+ <p class="text-sm font-medium text-gray-900 tracking-tight">₦{{ order.total?.toLocaleString() }}</p>
  <p class="text-[9px] font-bold text-emerald-600 tracking-widest mt-0.5">Earn ₦{{ (order.deliveryFee || 0).toLocaleString() }}</p>
  </div>
  </td>
@@ -114,7 +114,7 @@
  <div class="w-14 h-14 bg-white rounded-[1.25rem] shadow-sm border border-gray-50 flex items-center justify-center text-2xl mb-3">
  {{ statusEmoji(selectedOrder.status) }}
  </div>
- <h3 class="text-lg font-black text-gray-900 tracking-tighter">Delivery #{{ selectedOrder.orderNumber }}</h3>
+ <h3 class="text-lg font-medium text-gray-900 tracking-tighter">Delivery #{{ selectedOrder.orderNumber }}</h3>
  <span :class="getStatusClasses(selectedOrder.status)" class="mt-2 text-[10px] font-bold px-3 py-1 rounded-xl capitalize border">
  {{ selectedOrder.status?.replace(/_/g, ' ') }}
  </span>
@@ -123,7 +123,7 @@
  <div class="py-6 space-y-6">
  <!-- Route Info -->
  <div class="bg-gray-50/50 rounded-2xl p-5 border border-gray-100 space-y-4">
- <p class="text-[10px] font-black text-gray-400 tracking-widest mb-2">Delivery Intelligence</p>
+ <p class="text-[10px] font-medium text-gray-400 tracking-widest mb-2">Delivery Intelligence</p>
  
  <div class="space-y-4 relative">
  <div class="absolute left-3 top-4 bottom-4 w-px border-l-2 border-dashed border-gray-200"></div>
@@ -132,7 +132,7 @@
  <div class="w-6 h-6 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-[10px] shadow-sm">🏪</div>
  <div>
  <p class="text-[9px] text-gray-400 font-bold tracking-widest mb-0.5 whitespace-nowrap">Source: Prep Station</p>
- <p class="text-sm font-black text-gray-900 tracking-tight">{{ selectedOrder.vendor?.storeName || 'Store' }}</p>
+ <p class="text-sm font-medium text-gray-900 tracking-tight">{{ selectedOrder.vendor?.storeName || 'Store' }}</p>
  </div>
  </div>
  
@@ -140,7 +140,7 @@
  <div class="w-6 h-6 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-[10px] shadow-sm">📍</div>
  <div>
  <p class="text-[9px] text-gray-400 font-bold tracking-widest mb-0.5 whitespace-nowrap">Destination: Customer</p>
- <p class="text-sm font-black text-[#FF5C1A] tracking-tight">{{ selectedOrder.deliveryAddress }}</p>
+ <p class="text-sm font-medium text-[#FF5C1A] tracking-tight">{{ selectedOrder.deliveryAddress }}</p>
  <p class="text-[11px] font-medium text-gray-400 mt-0.5">{{ selectedOrder.customer?.firstName }} {{ selectedOrder.customer?.lastName }}</p>
  </div>
  </div>
@@ -152,8 +152,8 @@
  <span class="text-gray-900">₦{{ selectedOrder.total?.toLocaleString() }}</span>
  </div>
  <div class="flex justify-between items-center">
- <span class="text-xs text-gray-500 font-black tracking-wider">Your Earnings</span>
- <span class="text-2xl font-black text-emerald-600 tracking-tight">₦{{ (selectedOrder.deliveryFee || 0).toLocaleString() }}</span>
+ <span class="text-xs text-gray-500 font-medium tracking-wider">Your Earnings</span>
+ <span class="text-2xl font-medium text-emerald-600 tracking-tight">₦{{ (selectedOrder.deliveryFee || 0).toLocaleString() }}</span>
  </div>
  </div>
  </div>

@@ -83,7 +83,7 @@
              :key="link.path" 
              :to="link.path"
              @click="isMobileMenuOpen = false"
-             class="text-4xl font-black text-gray-900 tracking-tighter hover:text-parentPrimary transition-colors"
+             class="text-4xl font-medium text-gray-900 tracking-tighter hover:text-parentPrimary transition-colors"
            >
              {{ link.name }}
            </NuxtLink>

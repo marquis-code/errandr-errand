@@ -9,14 +9,14 @@
       </div>
 
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-gray-100 text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 mb-8 shadow-sm">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-gray-100 text-[10px] font-medium tracking-[0.2em] uppercase text-gray-400 mb-8 shadow-sm">
           <ShieldCheck class="w-3.5 h-3.5 text-parentPrimary" />
           Rider Agreement
         </div>
-        <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] text-gray-900 mb-6 max-w-4xl mx-auto">
+        <h1 class="text-5xl md:text-7xl font-medium tracking-tighter leading-[0.9] text-gray-900 mb-6 max-w-4xl mx-auto">
           Dispatch <span class="text-parentPrimary italic">Mandate.</span>
         </h1>
-        <p class="text-[11px] font-black text-gray-400 tracking-[0.2em] uppercase">Last updated: January 26, 2026</p>
+        <p class="text-[11px] font-medium text-gray-400 tracking-[0.2em] uppercase">Last updated: January 26, 2026</p>
       </div>
     </section>
 
@@ -26,11 +26,11 @@
         <div class="space-y-16">
           <div v-for="(section, index) in termsSections" :key="index" class="group">
             <div class="flex gap-8">
-              <span class="text-4xl font-black text-parentPrimary/10 group-hover:text-parentPrimary/20 transition-colors tabular-nums">
+              <span class="text-4xl font-medium text-parentPrimary/10 group-hover:text-parentPrimary/20 transition-colors tabular-nums">
                 {{ (index + 1).toString().padStart(2, '0') }}
               </span>
               <div class="space-y-4 text-left">
-                <h2 class="text-2xl font-black text-gray-900 tracking-tight">{{ section.title }}</h2>
+                <h2 class="text-2xl font-medium text-gray-900 tracking-tight">{{ section.title }}</h2>
                 <div class="text-lg text-gray-500 font-bold leading-relaxed tracking-tight" v-html="section.content"></div>
               </div>
             </div>

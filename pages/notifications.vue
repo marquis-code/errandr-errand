@@ -119,6 +119,7 @@ const getEmoji = (type: string) => ({
   NEW_ORDER_AVAILABLE: '🚀',
   ORDER_ACCEPTED: '✅',
   ORDER_STATUS_UPDATE: '📦',
+  NEW_CHAT_MESSAGE: '💬',
 }[type] || '🔔')
 
 const formatTime = (dateStr: string) => {
@@ -139,6 +140,10 @@ const formatTime = (dateStr: string) => {
 const handleNotifClick = (notif: any) => {
   if (!notif.read) {
     markAsRead(notif.id)
+  }
+  if (notif.type === 'NEW_CHAT_MESSAGE' && notif.data?.orderId) {
+    navigateTo(`/deliveries/chats?orderId=${notif.data.orderId}`)
+    return
   }
   if (notif.data?.orderId) {
     navigateTo(`/deliveries/${notif.data.orderId}`)

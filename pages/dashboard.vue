@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-8 animate-fade-in max-w-7xl mx-auto pb-16 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] bg-gradient-to-b from-slate-50/80 via-white to-white bg-white/70 backdrop-blur-md rounded-2xl border border-white/20 overflow-hidden">
+  <div class="space-y-8 animate-fade-in max-w-7xl mx-auto pb-16 from-slate-50/80 via-white to-white bg-white/70 backdrop-blur-md rounded-2xl border border-white/20 overflow-hidden">
     <!-- Welcome Header -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
       <div>
@@ -16,7 +16,7 @@
       <div 
         v-for="stat in stats" 
         :key="stat.label" 
-        class="bg-white/70 backdrop-blur-md rounded-2xl border border-white/20 hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
+        class="bg-white/70 backdrop-blur-md rounded-2xl border border-[0.5px] border-gray-50 p-4 transition-all duration-300 transform hover:scale-105 group"
       >
         <div class="flex items-center justify-between mb-4">
           <div :class="stat.bgClass" class="w-10 h-10 rounded-xl flex items-center justify-center text-lg">
@@ -38,7 +38,7 @@
             <h3 class="text-base font-bold text-gray-900">Active Deliveries</h3>
             <div v-if="batchStatus?.isActive" class="flex items-center gap-2 px-3 py-1 bg-parentPrimary/10 border border-parentPrimary/20 rounded-full animate-pulse">
               <span class="w-1.5 h-1.5 rounded-full bg-parentPrimary"></span>
-              <span class="text-[10px] font-black text-parentPrimary uppercase tracking-widest">Batch mode active</span>
+              <span class="text-[10px] font-medium text-parentPrimary uppercase tracking-widest">Batch mode active</span>
             </div>
             <span v-else-if="activeOrders.length > 0" class="text-[10px] font-semibold text-[#FF5C1A] bg-[#FF5C1A]/5 px-3 py-1 rounded-full border border-[#FF5C1A]/10">In Progress</span>
           </div>

@@ -5,6 +5,15 @@ import { useUser } from '@/composables/modules/auth/user'
 
 const LISTENERS_KEY = 'realtime_notification_listeners_v2'
 
+const playNotificationSound = () => {
+  try {
+    const audio = new Audio('/sounds/notification.wav')
+    audio.play().catch(e => console.warn('Audio playback failed', e))
+  } catch (error) {
+    // ignore
+  }
+}
+
 /**
  * Connects to the /realtime WebSocket namespace and listens for all
  * notification events. Must be called once in the layout/app root.
@@ -24,6 +33,7 @@ export const useRealtimeNotifications = () => {
 
 
   const pushToast = (notification: any) => {
+    playNotificationSound()
     toastQueue.value.push(notification)
     // Also add to persistent notifications store
     addNotification(notification)

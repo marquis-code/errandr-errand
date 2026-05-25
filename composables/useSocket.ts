@@ -1,59 +1,72 @@
 import { io, Socket } from 'socket.io-client';
 import { useUser } from '@/composables/modules/auth/user';
-import { ref, computed, onUnmounted } from 'vue';
+import { ref, computed } from 'vue';
 
+// Global singleton sockets per namespace — NEVER recreated
+const sockets: Record<string, Socket> = {};
 
 export const useSocket = (namespace: string) => {
   const config = useRuntimeConfig();
   const { user } = useUser();
 
-  let socket: Socket | null = null;
-
   const connect = () => {
-    if (socket) return socket;
+    if (sockets[namespace]?.connected) return sockets[namespace];
 
-    socket = io(`${config.public.wsBase}/${namespace}`, {
+    // If socket exists but disconnected, reconnect
+    if (sockets[namespace]) {
+      sockets[namespace].connect();
+      return sockets[namespace];
+    }
+
+    const connectionId = user.value?._id;
+
+    const s = io(`${config.public.wsBase}/${namespace}`, {
       query: {
-        userId: user.value?._id,
+        userId: connectionId,
       },
       transports: ['websocket', 'polling'],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
     });
 
-    socket.on('connect', () => {
-      console.log(`Connected to ${namespace} namespace`);
+    s.on('connect', () => {
+      console.log(`[useSocket] Connected to ${namespace} namespace, socketId=${s.id}`);
     });
 
-    socket.on('disconnect', () => {
-      console.log(`Disconnected from ${namespace} namespace`);
+    s.on('disconnect', (reason) => {
+      console.log(`[useSocket] Disconnected from ${namespace}: ${reason}`);
     });
 
-    return socket;
+    sockets[namespace] = s;
+    return s;
   };
 
   const disconnect = () => {
-    if (socket) {
-      socket.disconnect();
-      socket = null;
-    }
+    // Intentionally NO-OP. We never kill the global socket.
+  };
+
+  const getSocket = (): Socket | null => {
+    return sockets[namespace] || null;
   };
 
   const emit = (event: string, data: any) => {
-    if (!socket) connect();
-    socket?.emit(event, data);
+    if (!sockets[namespace]) connect();
+    sockets[namespace]?.emit(event, data);
   };
 
   const on = (event: string, callback: (...args: any[]) => void) => {
-    if (!socket) connect();
-    socket?.on(event, callback);
+    if (!sockets[namespace]) connect();
+    sockets[namespace]?.on(event, callback);
   };
 
-  const off = (event: string) => {
-    socket?.off(event);
+  const off = (event: string, callback?: (...args: any[]) => void) => {
+    if (callback) {
+      sockets[namespace]?.off(event, callback);
+    } else {
+      sockets[namespace]?.off(event);
+    }
   };
 
-  onUnmounted(() => {
-    disconnect();
-  });
-
-  return { connect, disconnect, emit, on, off, socket: computed(() => socket) };
+  return { connect, disconnect, emit, on, off, getSocket, socket: computed(() => sockets[namespace] || null) };
 };

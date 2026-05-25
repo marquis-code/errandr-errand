@@ -14,7 +14,7 @@
                     <div class="flex items-center justify-center group-hover:scale-110 transition-transform">
             <img src="@/assets/img/logo-light.png" class="w-auto h-10" alt="Errandr" />
           </div>
-            <h1 class="text-3xl font-black text-gray-900 tracking-tight mb-2">Become a Rider</h1>
+            <h1 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Become a Rider</h1>
             <p class="text-gray-500 font-medium text-sm">Create your account and start delivering</p>
           </div>
 
@@ -35,7 +35,7 @@
             </transition>
 
             <button type="submit" :disabled="loading"
-              class="w-full py-4 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-2xl font-black text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-xl shadow-[#FF5C1A]/20 active:scale-[0.98] group mt-4">
+              class="w-full py-4 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-2xl font-medium text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-xl shadow-[#FF5C1A]/20 active:scale-[0.98] group mt-4">
               <Loader2 v-if="loading" class="animate-spin w-5 h-5" />
               <span v-else>Apply to Ride</span>
               <ArrowRight v-if="!loading" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -64,7 +64,7 @@
           </div>
           
           <div class="space-y-3">
-            <h2 class="text-3xl font-black text-gray-900 tracking-tight">Welcome to the fleet! 🎉</h2>
+            <h2 class="text-3xl font-medium text-gray-900 tracking-tight">Welcome to the fleet! 🎉</h2>
             <div class="relative">
               <p class="text-gray-500 font-medium leading-relaxed max-w-[300px] mx-auto text-[15px]">
                 You're officially a campus rider. Get ready to hit the road and start earning! 🚀
@@ -73,7 +73,7 @@
           </div>
 
           <div class="w-full pt-8 mt-auto">
-            <button @click="proceedToDashboard" class="w-full py-4 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-2xl font-black text-[17px] transition-all flex items-center justify-center gap-2 shadow-xl shadow-[#FF5C1A]/25 active:scale-[0.98] group">
+            <button @click="proceedToDashboard" class="w-full py-4 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-2xl font-medium text-[17px] transition-all flex items-center justify-center gap-2 shadow-xl shadow-[#FF5C1A]/25 active:scale-[0.98] group">
               Proceed to Dashboard <ArrowRight class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>

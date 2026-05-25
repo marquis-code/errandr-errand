@@ -14,7 +14,7 @@
                    <div class="flex items-center justify-center group-hover:scale-110 transition-transform">
             <img src="@/assets/img/logo-light.png" class="w-auto h-10" alt="Errandr" />
           </div>
-          <h1 class="text-3xl font-black text-gray-900 tracking-tight mb-2">Rider Login</h1>
+          <h1 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Rider Login</h1>
           <p class="text-gray-500 font-medium text-sm">Sign in to your rider dashboard</p>
         </div>
 
@@ -53,7 +53,7 @@
           </transition>
 
           <button type="submit" :disabled="loading"
-            class="w-full py-4 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-2xl font-black text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-xl shadow-[#FF5C1A]/20 group active:scale-[0.98]">
+            class="w-full py-4 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-2xl font-medium text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-xl shadow-[#FF5C1A]/20 group active:scale-[0.98]">
             <Loader2 v-if="loading" class="animate-spin w-5 h-5" />
             <span v-else>Sign In</span>
             <ArrowRight v-if="!loading" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />

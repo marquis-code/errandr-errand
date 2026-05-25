@@ -24,23 +24,23 @@
             <div class="w-20 h-20 bg-[#FF5C1A]/20 text-[#FF5C1A] rounded-3xl flex items-center justify-center mx-auto mb-6 border border-[#FF5C1A]/20 shadow-inner">
               <User class="w-10 h-10" />
             </div>
-            <h2 class="text-3xl font-black text-white tracking-tighter">Become a Rider</h2>
+            <h2 class="text-3xl font-medium text-white tracking-tighter">Become a Rider</h2>
             <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Let's build your delivery profile</p>
           </div>
 
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
               <div class="space-y-1.5">
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">First Name</label>
+                <label class="block text-[10px] font-medium text-gray-500 uppercase tracking-widest ml-1">First Name</label>
                 <input v-model="form.firstName" type="text" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white font-bold focus:ring-4 focus:ring-[#FF5C1A]/20 outline-none transition-all" placeholder="John" />
               </div>
               <div class="space-y-1.5">
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Last Name</label>
+                <label class="block text-[10px] font-medium text-gray-500 uppercase tracking-widest ml-1">Last Name</label>
                 <input v-model="form.lastName" type="text" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white font-bold focus:ring-4 focus:ring-[#FF5C1A]/20 outline-none transition-all" placeholder="Doe" />
               </div>
             </div>
             <div class="space-y-1.5">
-              <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Phone Number</label>
+              <label class="block text-[10px] font-medium text-gray-500 uppercase tracking-widest ml-1">Phone Number</label>
               <input v-model="form.phone" type="tel" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white font-bold focus:ring-4 focus:ring-[#FF5C1A]/20 outline-none transition-all" placeholder="0801 234 5678" />
             </div>
           </div>
@@ -52,7 +52,7 @@
             <div class="w-20 h-20 bg-emerald-500/20 text-emerald-400 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-emerald-400/20 shadow-inner">
               <Bike class="w-10 h-10" />
             </div>
-            <h2 class="text-3xl font-black text-white tracking-tighter">How do you deliver?</h2>
+            <h2 class="text-3xl font-medium text-white tracking-tighter">How do you deliver?</h2>
             <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Select your primary mode of transport</p>
           </div>
 
@@ -84,7 +84,7 @@
             <div class="w-20 h-20 bg-purple-500/20 text-purple-400 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-purple-400/20 shadow-inner">
               <ShieldCheck class="w-10 h-10" />
             </div>
-            <h2 class="text-3xl font-black text-white tracking-tighter">Verification</h2>
+            <h2 class="text-3xl font-medium text-white tracking-tighter">Verification</h2>
             <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Ensure you are a verified student</p>
           </div>
 
@@ -99,15 +99,15 @@
             
             <div class="flex items-center gap-4 p-5 bg-[#FF5C1A]/10 rounded-2xl border border-[#FF5C1A]/20">
               <Info class="w-5 h-5 text-[#FF5C1A] flex-shrink-0" />
-              <p class="text-[10px] text-[#FF5C1A] font-black leading-tight uppercase tracking-wider">Verification usually takes less than 2 hours during session.</p>
+              <p class="text-[10px] text-[#FF5C1A] font-medium leading-tight uppercase tracking-wider">Verification usually takes less than 2 hours during session.</p>
             </div>
           </div>
         </div>
 
         <!-- Nav Buttons -->
         <div class="flex gap-4 mt-12 pt-6 border-t border-white/10">
-          <button v-if="step > 1" @click="step--" class="flex-1 py-5 bg-white/5 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Back</button>
-          <button @click="nextStep" class="flex-[2] py-5 bg-[#FF5C1A] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-xl shadow-[#FF5C1A]/20">
+          <button v-if="step > 1" @click="step--" class="flex-1 py-5 bg-white/5 text-white rounded-2xl text-[10px] font-medium uppercase tracking-widest hover:bg-white/10 transition-all">Back</button>
+          <button @click="nextStep" class="flex-[2] py-5 bg-[#FF5C1A] text-white rounded-2xl text-[10px] font-medium uppercase tracking-widest hover:brightness-110 transition-all shadow-xl shadow-[#FF5C1A]/20">
             {{ step === 3 ? 'Start My Journey' : 'Continue' }}
           </button>
         </div>

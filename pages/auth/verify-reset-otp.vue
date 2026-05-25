@@ -10,7 +10,7 @@
           <div class="inline-flex items-center justify-center w-16 h-16 rounded-[1.5rem] bg-[#FF5C1A]/10 text-[#FF5C1A] mb-6 shadow-inner">
             <Mail class="w-8 h-8" />
           </div>
-          <h1 class="text-3xl font-black text-gray-900 tracking-tight mb-2">Check your email</h1>
+          <h1 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Check your email</h1>
           <p class="text-gray-500 font-medium text-sm leading-relaxed">
             We sent a 6-digit verification code to <br>
             <strong class="text-gray-900">{{ email }}</strong>
@@ -29,7 +29,7 @@
             type="text" 
             maxlength="1" 
             inputmode="numeric" 
-            class="w-12 h-14 text-center text-2xl font-black bg-gray-50 border border-gray-200 rounded-xl focus:border-[#FF5C1A] focus:ring-4 focus:ring-[#FF5C1A]/10 outline-none transition-all" 
+            class="w-12 h-14 text-center text-2xl font-medium bg-gray-50 border border-gray-200 rounded-xl focus:border-[#FF5C1A] focus:ring-4 focus:ring-[#FF5C1A]/10 outline-none transition-all" 
           />
         </div>
 
@@ -43,7 +43,7 @@
         <button 
           @click="verifyOTP" 
           :disabled="loading || otpDigits.join('').length < 6" 
-          class="w-full py-4 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-2xl font-black text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-xl shadow-[#FF5C1A]/20 active:scale-[0.98]">
+          class="w-full py-4 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-2xl font-medium text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-xl shadow-[#FF5C1A]/20 active:scale-[0.98]">
           <Loader2 v-if="loading" class="animate-spin w-5 h-5" />
           <span v-else>Verify Code</span>
         </button>

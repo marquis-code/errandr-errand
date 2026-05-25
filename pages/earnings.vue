@@ -194,9 +194,9 @@
  <div class="space-y-2">
  <div class="relative">
  <span class="absolute left-6 top-1/2 -translate-y-1/2 text-xl font-bold text-gray-400">₦</span>
- <input v-model.number="withdrawAmount" type="number" class="w-full pl-12 pr-6 py-6 bg-gray-50 border border-gray-100 rounded-3xl text-3xl font-bold text-center focus:ring-4 focus:ring-parentPrimary/10 focus:bg-white transition-all shadow-inner" placeholder="0">
+ <input v-model="formattedWithdrawAmount" type="text" class="w-full pl-12 pr-6 py-6 bg-gray-50 border border-gray-100 rounded-3xl text-3xl font-bold text-center focus:ring-4 focus:ring-parentPrimary/10 focus:bg-white transition-all shadow-inner" placeholder="0">
  </div>
- <p class="text-[10px] text-gray-400 font-black tracking-widest text-center">Available: ₦{{ balance?.toLocaleString() }}</p>
+ <p class="text-[10px] text-gray-400 font-medium tracking-widest text-center">Available: ₦{{ balance?.toLocaleString() }}</p>
  </div>
 
  <div class="pt-6 border-t border-gray-100 flex flex-col gap-3">
@@ -210,7 +210,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useWallet } from '@/composables/modules/wallets';
 import { wallets_api } from '@/api_factory/modules/wallets';
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
@@ -224,6 +224,16 @@ const loading = ref(true);
 const showWithdrawDrawer = ref(false);
 const showBankDrawer = ref(false);
 const withdrawAmount = ref(0);
+const formattedWithdrawAmount = computed({
+  get() {
+    if (withdrawAmount.value === 0 || withdrawAmount.value === null || withdrawAmount.value === undefined) return '';
+    return withdrawAmount.value.toLocaleString('en-US');
+  },
+  set(val) {
+    const clean = val.replace(/[^0-9.]/g, '');
+    withdrawAmount.value = clean ? Number(clean) : 0;
+  }
+});
 const banks = ref<any[]>([]);
 const resolving = ref(false);
 const isAccountVerified = ref(false);

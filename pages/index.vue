@@ -14,7 +14,7 @@
               Active at UNILAG, LASU & YABATECH
             </div>
             
-            <h1 class="text-4xl sm:text-5xl lg:text-[4.5rem] font-black tracking-tight leading-[1.05] text-slate-900">
+            <h1 class="text-4xl sm:text-5xl lg:text-[4.5rem] font-medium tracking-tight leading-[1.05] text-slate-900">
               Deliver the <span class="text-parentPrimary">Campus.</span><br />
               Earn Cash Instantly.
             </h1>
@@ -58,11 +58,11 @@
               <div class="bg-slate-50/60 rounded-3xl p-5 border border-slate-100 space-y-1 mb-5">
                 <div class="flex justify-between items-center text-slate-400 text-[10px] font-bold uppercase tracking-wider">
                   <span>Today's Earnings</span>
-                  <span class="text-emerald-600 font-black flex items-center gap-0.5 text-[11px]">
+                  <span class="text-emerald-600 font-medium flex items-center gap-0.5 text-[11px]">
                     <TrendingUp class="w-3 h-3" /> 14 Trips
                   </span>
                 </div>
-                <h4 class="text-3xl font-black text-slate-950 tracking-tight">₦9,800</h4>
+                <h4 class="text-3xl font-medium text-slate-950 tracking-tight">₦9,800</h4>
                 <p class="text-[10px] text-slate-400 font-medium">Available for instant withdrawal</p>
               </div>
 
@@ -93,17 +93,17 @@
 
               <!-- Decorative Floating Widgets -->
               <div class="absolute -top-4 -right-4 bg-white border border-slate-100 rounded-2xl p-2.5 shadow-md flex items-center gap-2 animate-bounce [animation-duration:4s]">
-                <div class="w-7 h-7 rounded-lg bg-yellow-50 text-yellow-500 flex items-center justify-center font-black text-xs">⭐</div>
+                <div class="w-7 h-7 rounded-lg bg-yellow-50 text-yellow-500 flex items-center justify-center font-medium text-xs">⭐</div>
                 <div>
-                  <p class="text-[11px] font-black text-slate-900">Top Rated</p>
+                  <p class="text-[11px] font-medium text-slate-900">Top Rated</p>
                   <p class="text-[9px] font-bold text-slate-400">4.9 Star Average</p>
                 </div>
               </div>
 
               <div class="absolute -bottom-4 -left-4 bg-white border border-slate-100 rounded-2xl p-2.5 shadow-md flex items-center gap-2.5 animate-bounce [animation-duration:5s]">
-                <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center font-black text-xs">⚡</div>
+                <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center font-medium text-xs">⚡</div>
                 <div>
-                  <p class="text-[11px] font-black text-slate-900">Instant Cash</p>
+                  <p class="text-[11px] font-medium text-slate-900">Instant Cash</p>
                   <p class="text-[9px] font-bold text-slate-400">Payout settled instantly</p>
                 </div>
               </div>
@@ -116,11 +116,11 @@
       <div class="mt-24 relative bg-slate-900 overflow-hidden py-3 transform -rotate-1 shadow-md border-y border-slate-800 z-10">
         <div class="flex animate-marquee-fast w-max items-center">
           <div class="flex items-center gap-12 px-6" v-for="i in 6" :key="i">
-            <span class="text-2xl font-black text-white tracking-tight">Flexible Hours</span>
+            <span class="text-2xl font-medium text-white tracking-tight">Flexible Hours</span>
             <Star class="w-6 h-6 text-yellow-300 fill-current" />
-            <span class="text-2xl font-black text-white tracking-tight outline-text">Work Between Classes</span>
+            <span class="text-2xl font-medium text-white tracking-tight outline-text">Work Between Classes</span>
             <Zap class="w-6 h-6 text-yellow-300 fill-current" />
-            <span class="text-2xl font-black text-white tracking-tight">Zero Commission</span>
+            <span class="text-2xl font-medium text-white tracking-tight">Zero Commission</span>
             <TrendingUp class="w-6 h-6 text-yellow-300 stroke-[3]" />
           </div>
         </div>
@@ -143,10 +143,10 @@
     <section id="features" class="py-32 bg-gray-50/50">
       <div class="max-w-7xl mx-auto px-6 sm:px-10">
         <div class="text-center mb-20 max-w-3xl mx-auto">
-          <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-100/50 text-emerald-600 text-sm font-black  mb-6">
+          <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-100/50 text-emerald-600 text-sm font-medium  mb-6">
             <Zap class="w-4 h-4" /> The Rider Toolkit
           </div>
-          <h2 class="text-4xl lg:text-5xl font-black text-gray-900 tracking-tighter leading-tight mb-6">
+          <h2 class="text-4xl lg:text-5xl font-medium text-gray-900 tracking-tighter leading-tight mb-6">
             Everything you need to <br/><span class="text-parentPrimary">earn on the go.</span>
           </h2>
           <p class="text-gray-500 font-bold text-lg leading-relaxed">
@@ -174,7 +174,7 @@
       <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
       
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 mb-12 text-center">
-        <h2 class="text-3xl lg:text-4xl font-black text-slate-900 tracking-tighter">Loved by student riders.</h2>
+        <h2 class="text-3xl lg:text-4xl font-medium text-slate-900 tracking-tighter">Loved by student riders.</h2>
         <p class="text-slate-500 font-medium mt-3 text-sm">Hear from students who are funding their campus life with Errander.</p>
       </div>
       
@@ -213,11 +213,11 @@
       <!-- Soft Minimalist Grid Dot Overlay -->
       <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
 
-      <div class="absolute inset-0 z-0 flex whitespace-nowrap opacity-[0.03] font-black text-[12rem] leading-none text-slate-950 overflow-hidden items-center pointer-events-none gap-8 select-none tracking-tight">
+      <div class="absolute inset-0 z-0 flex whitespace-nowrap opacity-[0.03] font-medium text-[12rem] leading-none text-slate-950 overflow-hidden items-center pointer-events-none gap-8 select-none tracking-tight">
         Start Earning • Start Earning • Start Earning
       </div>
       <div class="max-w-4xl mx-auto px-4 text-center relative z-10 flex flex-col items-center">
-        <h2 class="text-4xl md:text-6xl font-black text-slate-950 tracking-tighter mb-8 leading-tight">
+        <h2 class="text-4xl md:text-6xl font-medium text-slate-950 tracking-tighter mb-8 leading-tight">
           Ready to turn your <br/> commute into cash?
         </h2>
         <p class="text-slate-500 font-medium text-lg mb-10 max-w-xl">

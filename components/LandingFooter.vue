@@ -7,7 +7,7 @@
             <div class="w-8 h-8 bg-parentPrimary rounded-lg flex items-center justify-center text-white font-bold shadow-sm">
               <Bike class="w-4 h-4" />
             </div>
-            <span class="text-xl font-black text-parentPrimary tracking-tighter">Errandr Riders</span>
+            <span class="text-xl font-medium text-parentPrimary tracking-tighter">Errandr Riders</span>
           </div>
           <p class="text-gray-500 text-sm leading-relaxed mb-6 font-medium">Join thousands of students earning extra cash simply by walking to class.</p>
         </div>

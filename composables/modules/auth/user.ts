@@ -12,13 +12,13 @@ interface User {
 }
 
 export const useUser = () => {
-  const token = useCookie<string | null>('errandr_token', {
+  const token = useCookie<string | null>('errandr_dispatch_token', {
     maxAge: 60 * 60 * 24 * 7, // 1 week
     path: '/',
     sameSite: 'lax',
   });
   
-  const user = useCookie<User | null>('errandr_user', {
+  const user = useCookie<User | null>('errandr_dispatch_user', {
     maxAge: 60 * 60 * 24 * 7,
     path: '/',
     sameSite: 'lax',

@@ -7,7 +7,7 @@
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 relative z-10">
         <div class="space-y-1">
           <p class="text-[9px] font-bold text-[#FF5C1A] tracking-wider leading-none mb-2">Delivery Details</p>
-          <h1 class="text-2xl font-black text-gray-900 tracking-tight leading-none">Order #{{ order.orderNumber }}</h1>
+          <h1 class="text-2xl font-medium text-gray-900 tracking-tight leading-none">Order #{{ order.orderNumber }}</h1>
         </div>
         <div class="flex items-center gap-3">
           <StatusBadge :status="order.status" class="scale-100" />
@@ -36,7 +36,7 @@
             <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xl shadow-inner border border-amber-100/20 flex-shrink-0 group-hover:scale-105 transition-transform">🏪</div>
             <div class="min-w-0 pt-0.5">
               <p class="text-[8px] font-bold text-amber-600 tracking-wider mb-1.5 leading-none uppercase">Pickup Location</p>
-              <p class="text-lg font-black text-gray-900 tracking-tight leading-none mb-1.5 truncate">
+              <p class="text-lg font-medium text-gray-900 tracking-tight leading-none mb-1.5 truncate">
                 {{ order.type === 'custom_errand' ? (order.customDetails?.pickupLocation || 'Custom Pickup') : order.vendor?.storeName }}
               </p>
               <p class="text-[10px] font-bold text-gray-400 leading-relaxed">{{ order.type === 'custom_errand' ? 'Special Request Pickup' : (order.vendor?.address || 'Vendor Address') }}</p>
@@ -49,7 +49,7 @@
             <div class="w-10 h-10 rounded-xl bg-[#FF5C1A]/10 text-[#FF5C1A] flex items-center justify-center text-xl shadow-inner border border-[#FF5C1A]/20 flex-shrink-0 group-hover:scale-105 transition-transform">📍</div>
             <div class="min-w-0 pt-0.5">
               <p class="text-[8px] font-bold text-[#FF5C1A] tracking-wider mb-1.5 leading-none uppercase">Drop-off Point</p>
-              <p class="text-lg font-black text-gray-900 tracking-tight leading-none mb-1.5 truncate">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</p>
+              <p class="text-lg font-medium text-gray-900 tracking-tight leading-none mb-1.5 truncate">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</p>
               <p class="text-[10px] font-bold text-gray-400 leading-relaxed line-clamp-2">{{ order.deliveryAddress }} {{ order.type === 'custom_errand' ? `(${order.customDetails?.dropoffLocation})` : '' }}</p>
             </div>
           </div>
@@ -68,8 +68,8 @@
               {{ order.customDetails?.description }}
             </div>
             <div class="flex items-center justify-between p-4 bg-parentPrimary/10 rounded-xl border border-parentPrimary/20">
-              <span class="text-[10px] font-black text-parentPrimary uppercase tracking-widest">Est. Item Cost</span>
-              <span class="text-sm font-black text-white">₦{{ order.customDetails?.estimatedItemCost?.toLocaleString() || 0 }}</span>
+              <span class="text-[10px] font-medium text-parentPrimary uppercase tracking-widest">Est. Item Cost</span>
+              <span class="text-sm font-medium text-white">₦{{ order.customDetails?.estimatedItemCost?.toLocaleString() || 0 }}</span>
             </div>
           </div>
 
@@ -101,11 +101,11 @@
       <div class="lg:col-span-2 space-y-6">
         <!-- Customer Details -->
         <div class="bg-white p-6 rounded-2xl border border-gray-50 shadow-sm flex flex-col items-center text-center group hover:shadow-lg transition-all">
-          <div class="w-20 h-20 bg-gray-900 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-xl mb-4 group-hover:-translate-y-1 transition-transform border-2 border-white">
+          <div class="w-20 h-20 bg-gray-900 rounded-2xl flex items-center justify-center text-white text-2xl font-medium shadow-xl mb-4 group-hover:-translate-y-1 transition-transform border-2 border-white">
             {{ order.customer?.firstName?.[0] }}{{ order.customer?.lastName?.[0] }}
           </div>
           <p class="text-[8px] font-bold text-[#FF5C1A] tracking-wider mb-2 leading-none bg-[#FF5C1A]/5 px-2.5 py-1 rounded-full">Primary Contact</p>
-          <h4 class="text-xl font-black text-gray-900 tracking-tight mb-6 truncate w-full leading-none">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</h4>
+          <h4 class="text-xl font-medium text-gray-900 tracking-tight mb-6 truncate w-full leading-none">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</h4>
           
           <div class="flex flex-col gap-2 w-full">
             <a :href="`tel:${order.customer?.phone}`" class="w-full py-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-[9px] font-bold tracking-wider hover:bg-emerald-600 hover:text-white transition-all transform active:scale-95 border border-emerald-100 flex items-center justify-center gap-2.5">
@@ -120,7 +120,7 @@
         <!-- Status Update Actions -->
         <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup' || order.status === 'picked_up'" class="space-y-4">
           <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup'" class="animate-bounce-subtle">
-            <button @click="updateStatus('picked_up')" :disabled="updatingStatus" class="w-full py-5 bg-[#FF5C1A] text-white rounded-xl text-[11px] font-black tracking-widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
+            <button @click="updateStatus('picked_up')" :disabled="updatingStatus" class="w-full py-5 bg-[#FF5C1A] text-white rounded-xl text-[11px] font-medium tracking-widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
               <Loader2 v-if="updatingStatus" class="w-5 h-5 animate-spin" />
               <span v-else class="text-xl group-hover:rotate-12 transition-transform">📦</span> 
               {{ updatingStatus ? 'UPDATING...' : 'Confirm Pickup' }}
@@ -128,7 +128,7 @@
           </div>
           
           <div v-if="order.status === 'picked_up'" class="space-y-4">
-            <button @click="updateStatus('in_transit')" :disabled="updatingStatus" class="w-full py-5 bg-indigo-600 text-white rounded-xl text-[11px] font-black tracking-widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
+            <button @click="updateStatus('in_transit')" :disabled="updatingStatus" class="w-full py-5 bg-indigo-600 text-white rounded-xl text-[11px] font-medium tracking-widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
               <Loader2 v-if="updatingStatus" class="w-5 h-5 animate-spin" />
               <span v-else class="text-xl group-hover:scale-125 transition-transform">🚀</span> 
               {{ updatingStatus ? 'UPDATING...' : 'Start Delivery' }}
@@ -142,7 +142,7 @@
           <div class="absolute -right-32 -top-32 w-64 h-64 bg-[#FF5C1A]/20 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000" />
            
           <div class="text-center space-y-2 relative z-10">
-            <h3 class="text-white text-lg font-black tracking-tight leading-none">Verification Code</h3>
+            <h3 class="text-white text-lg font-medium tracking-tight leading-none">Verification Code</h3>
             <p class="text-gray-500 text-[8px] font-bold tracking-wider">Request the 6-digit code from user</p>
           </div>
            
@@ -152,14 +152,14 @@
               type="text"
               maxlength="6"
               placeholder="000000"
-              class="bg-white/5 text-white text-2xl font-black text-center tracking-widest w-full py-4 rounded-xl border border-white/10 focus:border-[#FF5C1A]/50 focus:bg-white/10 transition-all focus:outline-none placeholder:text-white/5 shadow-inner"
+              class="bg-white/5 text-white text-2xl font-medium text-center tracking-widest w-full py-4 rounded-xl border border-white/10 focus:border-[#FF5C1A]/50 focus:bg-white/10 transition-all focus:outline-none placeholder:text-white/5 shadow-inner"
             />
           </div>
           
           <button 
             @click="completeOrder" 
             :disabled="verificationCode.length !== 6 || completing"
-            class="w-full py-4 bg-white text-gray-900 rounded-xl text-[10px] font-black tracking-widest shadow-xl hover:bg-[#FF5C1A] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 transition-all relative z-10 group"
+            class="w-full py-4 bg-white text-gray-900 rounded-xl text-[10px] font-medium tracking-widest shadow-xl hover:bg-[#FF5C1A] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 transition-all relative z-10 group"
           >
             <Loader2 v-if="completing" class="w-5 h-5 animate-spin flex-shrink-0" />
             <span v-else class="text-base">✅</span> 
@@ -175,14 +175,14 @@
           <div class="relative z-10 space-y-6">
             <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto text-3xl shadow-lg border border-emerald-50 text-emerald-600 transform rotate-6 animate-pulse">💰</div>
             <div>
-              <h3 class="text-white font-black text-2xl tracking-tight leading-none mb-3">Delivery Completed</h3>
-              <p class="text-white/90 font-black text-xl tracking-tight leading-none">+ ₦{{ order.deliveryFee?.toLocaleString() }} Earned</p>
+              <h3 class="text-white font-medium text-2xl tracking-tight leading-none mb-3">Delivery Completed</h3>
+              <p class="text-white/90 font-medium text-xl tracking-tight leading-none">+ ₦{{ order.deliveryFee?.toLocaleString() }} Earned</p>
             </div>
              
             <div class="max-w-xs mx-auto">
               <p class="text-emerald-100 text-[9px] font-bold tracking-wider leading-relaxed mb-8">Funds have been added to your wallet.</p>
                
-              <NuxtLink to="/deliveries" class="block w-full py-4 bg-white text-emerald-600 rounded-xl font-black text-[10px] tracking-widest shadow-lg hover:bg-emerald-50 active:scale-95 transition-all">
+              <NuxtLink to="/deliveries" class="block w-full py-4 bg-white text-emerald-600 rounded-xl font-medium text-[10px] tracking-widest shadow-lg hover:bg-emerald-50 active:scale-95 transition-all">
                 Return to Deliveries
               </NuxtLink>
             </div>

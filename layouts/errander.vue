@@ -12,24 +12,6 @@
  <span class="text-[10px] font-semibold text-[#FF5C1A] tracking-wide leading-none mt-0.5">Rider Portal</span>
  </div>
  </div>
-
- <!-- Rider Profile Card -->
- <div class="px-4 mb-6">
- <div class="p-4 rounded-2xl bg-gray-50 border border-gray-100 transition-all hover:bg-white hover:shadow-md">
- <div class="flex items-center gap-3">
- <div class="relative">
- <div class="w-11 h-11 rounded-xl bg-[#FF5C1A] text-white flex items-center justify-center font-bold text-sm shadow-md shadow-[#FF5C1A]/20">
- {{ userInitials }}
- </div>
- <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border border-white" />
- </div>
- <div class="flex-1 min-w-0">
- <h3 class="font-bold text-gray-900 text-sm truncate">{{ userDisplayName }}</h3>
- <span class="text-[10px] font-medium text-emerald-600">Online</span>
- </div>
- </div>
- </div>
- </div>
  
  <!-- Navigation -->
  <nav class="flex-1 px-4 space-y-1">
@@ -234,7 +216,8 @@ import {
  X,
  ChevronRight,
  Bell,
- Layers
+ Layers,
+ MessageSquare
 } from 'lucide-vue-next'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
@@ -268,6 +251,7 @@ const navItems = [
  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
  { path: '/deliveries/pool', label: 'Available Errands', icon: Layers },
  { path: '/deliveries', label: 'My Deliveries', icon: Bike },
+ { path: '/deliveries/chats', label: 'Chats', icon: MessageSquare },
  { path: '/earnings', label: 'Earnings', icon: Wallet },
  { path: '/notifications', label: 'Notifications', icon: Bell },
  { path: '/profile', label: 'Profile', icon: User }

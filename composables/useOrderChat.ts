@@ -1,4 +1,4 @@
-import { ref, onUnmounted, computed } from 'vue';
+import { ref, onUnmounted } from 'vue';
 import { useSocket } from '@/composables/useSocket';
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 
@@ -19,11 +19,15 @@ export interface Message {
 }
 
 export const useOrderChat = (orderId: string, currentUserId?: string, targetUserId?: string) => {
-  const { connect, emit, on, off } = useSocket('chat');
+  const { connect, emit, on, off, getSocket } = useSocket('chat');
   const messages = ref<Message[]>([]);
   const loading = ref(false);
   const isTyping = ref(false);
   const typingTimeout = ref<any>(null);
+
+  // Store listener references for proper cleanup
+  let newMessageHandler: ((message: any) => void) | null = null;
+  let userTypingHandler: ((data: any) => void) | null = null;
 
   const fetchMessages = async () => {
     loading.value = true;
@@ -35,7 +39,8 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
           const rId = String(m.receiverId || m.receiver?._id || m.receiver || '');
           const cId = String(currentUserId);
           const tId = String(targetUserId);
-          return (sId === cId && rId === tId) || (sId === tId && rId === cId);
+          const isGeneric = !rId;
+          return isGeneric || (sId === cId && rId === tId) || (sId === tId && rId === cId);
         });
       } else {
         messages.value = res.data || [];
@@ -48,6 +53,19 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
   };
 
   const sendMessage = (text: string, receiverId: string, senderId: string, type: 'text' | 'image' | 'voice' = 'text', attachment?: string) => {
+    const tempMsg = {
+      _id: Date.now().toString(),
+      orderId,
+      senderId,
+      receiverId,
+      message: text,
+      content: text,
+      messageType: type,
+      attachment,
+      createdAt: new Date().toISOString()
+    };
+    messages.value.push(tempMsg as any);
+
     emit('sendMessage', {
       orderId,
       senderId,
@@ -66,23 +84,53 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
     }, 2000);
   };
 
+  const cleanupListeners = () => {
+    if (newMessageHandler) {
+      off('newMessage', newMessageHandler);
+      newMessageHandler = null;
+    }
+    if (userTypingHandler) {
+      off('userTyping', userTypingHandler);
+      userTypingHandler = null;
+    }
+  };
+
   const setupListeners = () => {
     connect();
-    
-    off('newMessage');
-    off('userTyping');
-    
+
+    const sock = getSocket();
+
+    // Join the order room
     emit('joinOrder', { orderId });
 
-    on('newMessage', (message: any) => {
-      const msgOrderId = message.orderId || message.order;
-      if (msgOrderId === orderId) {
+    // Re-join on reconnect
+    if (sock) {
+      const reconnectHandler = () => {
+        console.log(`[useOrderChat] Reconnected, rejoining order:${orderId}`);
+        emit('joinOrder', { orderId });
+      };
+      sock.on('connect', reconnectHandler);
+    }
+
+    // Mark as read when chat is opened
+    if (currentUserId) {
+      emit('markRead', { orderId, userId: currentUserId });
+    }
+
+    // Clean up old listeners before adding new ones
+    cleanupListeners();
+
+    // Create the newMessage handler
+    newMessageHandler = (message: any) => {
+      const msgOrderId = String(message.orderId || message.order?._id || message.order || '');
+      if (msgOrderId === String(orderId)) {
         if (currentUserId && targetUserId) {
           const sId = String(message.senderId || message.sender?._id || message.sender || '');
           const rId = String(message.receiverId || message.receiver?._id || message.receiver || '');
           const cId = String(currentUserId);
           const tId = String(targetUserId);
-          const isRelevant = (sId === cId && rId === tId) || (sId === tId && rId === cId);
+          const isGeneric = !rId || rId === 'undefined';
+          const isRelevant = isGeneric || (sId === cId && rId === tId) || (sId === tId && rId === cId);
           if (!isRelevant) return;
         }
 
@@ -90,15 +138,23 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
         if (!message._id || !messages.value.some(m => m._id === message._id)) {
           messages.value.push(message);
         }
-      }
-    });
 
-    on('userTyping', (data: { userId: string, isTyping: boolean }) => {
+        if (currentUserId) {
+          emit('markRead', { orderId, userId: currentUserId });
+        }
+      }
+    };
+
+    userTypingHandler = (data: { userId: string, isTyping: boolean }) => {
       isTyping.value = data.isTyping;
-    });
+    };
+
+    on('newMessage', newMessageHandler);
+    on('userTyping', userTypingHandler);
   };
 
   onUnmounted(() => {
+    cleanupListeners();
     emit('leaveOrder', { orderId });
   });
 
