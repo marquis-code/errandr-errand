@@ -8,9 +8,42 @@ const LISTENERS_KEY = 'realtime_notification_listeners_v2'
 const playNotificationSound = () => {
   try {
     const audio = new Audio('/sounds/notification.wav')
-    audio.play().catch(e => console.warn('Audio playback failed', e))
+    audio.volume = 1.0;
+    const playPromise = audio.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.warn('Audio file playback failed, falling back to synthetic beep:', error);
+        playSyntheticBeep();
+      });
+    }
   } catch (error) {
-    // ignore
+    playSyntheticBeep();
+  }
+}
+
+const playSyntheticBeep = () => {
+  try {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 (loud, piercing)
+    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.1);
+    
+    gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+    
+    osc.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    osc.start();
+    osc.stop(ctx.currentTime + 0.3);
+  } catch(e) {
+    console.error('Synthetic beep failed', e);
   }
 }
 

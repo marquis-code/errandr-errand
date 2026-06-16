@@ -55,18 +55,24 @@
                 
                 <div class="flex-1 space-y-4">
                   <div>
-                    <h4 class="text-lg font-bold text-gray-900 tracking-tight mb-1">Order #{{ order.orderNumber }}</h4>
-                    <p class="text-xs text-gray-400">{{ order.vendor?.storeName || 'Store' }} → {{ order.deliveryAddress || 'Delivery' }}</p>
+                    <h4 class="text-lg font-bold text-gray-900 tracking-tight mb-1">
+                      {{ order.type === 'custom_errand' ? 'Custom Errand' : 'Order' }} #{{ order.orderNumber }}
+                    </h4>
+                    <p class="text-xs text-gray-400">
+                      {{ order.type === 'custom_errand' ? order.customDetails?.pickupLocation : (order.vendor?.storeName || 'Store') }} 
+                      → 
+                      {{ order.type === 'custom_errand' ? order.customDetails?.dropoffLocation : (order.deliveryAddress || 'Delivery') }}
+                    </p>
                   </div>
                   
                   <div class="flex flex-wrap gap-3">
-                    <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg text-xs font-medium text-gray-600">
-                      <div class="w-1.5 h-1.5 rounded-full bg-[#FF5C1A]" />
-                      {{ order.vendor?.storeName || 'Pick-up' }}
+                    <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg text-xs font-medium text-gray-600 line-clamp-1">
+                      <div class="w-1.5 h-1.5 rounded-full bg-[#FF5C1A] shrink-0" />
+                      {{ order.type === 'custom_errand' ? order.customDetails?.pickupLocation : (order.vendor?.storeName || 'Pick-up') }}
                     </div>
-                    <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg text-xs font-medium text-gray-600">
-                      <div class="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                      {{ order.deliveryAddress || 'Drop-off' }}
+                    <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg text-xs font-medium text-gray-600 line-clamp-1">
+                      <div class="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+                      {{ order.type === 'custom_errand' ? order.customDetails?.dropoffLocation : (order.deliveryAddress || 'Drop-off') }}
                     </div>
                   </div>
                 </div>
@@ -113,7 +119,9 @@
                 {{ statusEmoji(order.status) }}
               </div>
               <div class="flex-1 min-w-0">
-                <h4 class="font-semibold text-sm text-gray-900 truncate">{{ order.vendor?.storeName || 'Order' }} #{{ order.orderNumber }}</h4>
+                <h4 class="font-semibold text-sm text-gray-900 truncate">
+                  {{ order.type === 'custom_errand' ? 'Custom Errand' : (order.vendor?.storeName || 'Order') }} #{{ order.orderNumber }}
+                </h4>
                 <p class="text-xs text-gray-400">{{ formatDate(order.createdAt) }}</p>
               </div>
               <div class="text-right flex-shrink-0">

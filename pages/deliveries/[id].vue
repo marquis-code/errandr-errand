@@ -6,8 +6,8 @@
       
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 relative z-10">
         <div class="space-y-1">
-          <p class="text-[9px] font-bold text-[#FF5C1A] tracking-wider leading-none mb-2">Delivery Details</p>
-          <h1 class="text-2xl font-medium text-gray-900 tracking-tight leading-none">Order #{{ order.orderNumber }}</h1>
+          <p class="text-sm font-bold text-[#FF5C1A] -wider -none mb-2">Delivery Details</p>
+          <h1 class="text-2xl font-medium text-gray-900 -tight -none">Order #{{ order.orderNumber }}</h1>
         </div>
         <div class="flex items-center gap-3">
           <StatusBadge :status="order.status" class="scale-100" />
@@ -16,8 +16,8 @@
 
       <div class="space-y-4 relative z-10">
         <div class="flex items-center justify-between">
-          <span class="text-[9px] font-bold text-gray-400 tracking-wider">Delivery Progress</span>
-          <span class="text-[9px] font-bold text-[#FF5C1A] tracking-wider">Step {{ currentStep + 1 }} / 4</span>
+          <span class="text-sm font-bold text-gray-400 -wider">Delivery Progress</span>
+          <span class="text-sm font-bold text-[#FF5C1A] -wider">Step {{ currentStep + 1 }} / 4</span>
         </div>
         <div class="flex items-center gap-2">
           <div v-for="(step, i) in steps" :key="step" class="flex-1 h-2 rounded-full transition-all duration-1000 relative overflow-hidden border border-gray-50" :class="currentStep >= i ? 'bg-[#FF5C1A]' : 'bg-gray-100'">
@@ -35,11 +35,11 @@
           <div class="flex items-start gap-6 relative">
             <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xl shadow-inner border border-amber-100/20 flex-shrink-0 group-hover:scale-105 transition-transform">🏪</div>
             <div class="min-w-0 pt-0.5">
-              <p class="text-[8px] font-bold text-amber-600 tracking-wider mb-1.5 leading-none uppercase">Pickup Location</p>
-              <p class="text-lg font-medium text-gray-900 tracking-tight leading-none mb-1.5 truncate">
+              <p class="text-sm font-bold text-amber-600 -wider mb-1.5 -none uppercase">Pickup Location</p>
+              <p class="text-lg font-medium text-gray-900 -tight -none mb-1.5 truncate">
                 {{ order.type === 'custom_errand' ? (order.customDetails?.pickupLocation || 'Custom Pickup') : order.vendor?.storeName }}
               </p>
-              <p class="text-[10px] font-bold text-gray-400 leading-relaxed">{{ order.type === 'custom_errand' ? 'Special Request Pickup' : (order.vendor?.address || 'Vendor Address') }}</p>
+              <p class="text-sm font-bold text-gray-400 -relaxed">{{ order.type === 'custom_errand' ? 'Special Request Pickup' : (order.vendor?.address || 'Vendor Address') }}</p>
             </div>
           </div>
           
@@ -48,9 +48,9 @@
           <div class="flex items-start gap-6 relative">
             <div class="w-10 h-10 rounded-xl bg-[#FF5C1A]/10 text-[#FF5C1A] flex items-center justify-center text-xl shadow-inner border border-[#FF5C1A]/20 flex-shrink-0 group-hover:scale-105 transition-transform">📍</div>
             <div class="min-w-0 pt-0.5">
-              <p class="text-[8px] font-bold text-[#FF5C1A] tracking-wider mb-1.5 leading-none uppercase">Drop-off Point</p>
-              <p class="text-lg font-medium text-gray-900 tracking-tight leading-none mb-1.5 truncate">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</p>
-              <p class="text-[10px] font-bold text-gray-400 leading-relaxed line-clamp-2">{{ order.deliveryAddress }} {{ order.type === 'custom_errand' ? `(${order.customDetails?.dropoffLocation})` : '' }}</p>
+              <p class="text-sm font-bold text-[#FF5C1A] -wider mb-1.5 -none uppercase">Drop-off Point</p>
+              <p class="text-lg font-medium text-gray-900 -tight -none mb-1.5 truncate">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</p>
+              <p class="text-sm font-bold text-gray-400 -relaxed line-clamp-2">{{ order.deliveryAddress }} {{ order.type === 'custom_errand' ? `(${order.customDetails?.dropoffLocation})` : '' }}</p>
             </div>
           </div>
         </div>
@@ -58,25 +58,25 @@
         <!-- Order Items / Custom Description -->
         <div class="bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-xl relative overflow-hidden group">
           <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
-          <h3 class="text-[9px] font-bold text-gray-500 tracking-wider mb-6 flex items-center gap-3 uppercase">
+          <h3 class="text-sm font-bold text-gray-500 -wider mb-6 flex items-center gap-3 uppercase">
             <div class="w-1.5 h-1.5 rounded-full bg-[#FF5C1A]" /> 
             {{ order.type === 'custom_errand' ? 'Request Details' : `Order Content (${order.items?.length} items)` }}
           </h3>
           
           <div v-if="order.type === 'custom_errand'" class="space-y-4">
-            <div class="p-4 bg-white/5 rounded-xl border border-white/5 text-xs text-gray-200 leading-relaxed font-bold">
+            <div class="p-4 bg-white/5 rounded-xl border border-white/5 text-xs text-gray-200 -relaxed font-bold">
               {{ order.customDetails?.description }}
             </div>
             <div class="flex items-center justify-between p-4 bg-parentPrimary/10 rounded-xl border border-parentPrimary/20">
-              <span class="text-[10px] font-medium text-parentPrimary uppercase tracking-widest">Est. Item Cost</span>
+              <span class="text-sm font-medium text-parentPrimary uppercase -widest">Est. Item Cost</span>
               <span class="text-sm font-medium text-white">₦{{ order.customDetails?.estimatedItemCost?.toLocaleString() || 0 }}</span>
             </div>
           </div>
 
           <div v-else class="space-y-3">
             <div v-for="item in order.items" :key="item._id" class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
-              <span class="text-xs font-bold text-gray-200 tracking-tight">{{ item.name }}</span>
-              <span class="text-[9px] font-bold text-white px-2.5 py-1 bg-[#FF5C1A] rounded-md shadow-md">x{{ item.quantity }}</span>
+              <span class="text-xs font-bold text-gray-200 -tight">{{ item.name }}</span>
+              <span class="text-sm font-bold text-white px-2.5 py-1 bg-[#FF5C1A] rounded-md shadow-md">x{{ item.quantity }}</span>
             </div>
           </div>
         </div>
@@ -91,27 +91,27 @@
               <div class="absolute inset-0 bg-[#FF5C1A] rounded-full animate-ping opacity-20" />
               <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl shadow-lg relative z-10 border border-gray-50">📍</div>
             </div>
-            <p class="text-[8px] font-bold text-gray-400 tracking-wider mb-1">Live Location Tracking</p>
-            <p class="text-[8px] text-gray-300 font-medium tracking-wide max-w-[150px]">Coordinate tracking is active and shared with the customer.</p>
+            <p class="text-sm font-bold text-gray-400 -wider mb-1">Live Location </p>
+            <p class="text-sm text-gray-300 font-medium -wide max-w-[150px]">Coordinate  is active and shared with the customer.</p>
           </div>
         </div>
       </div>
 
       <!-- Sidebar: Actions & Customer -->
-      <div class="lg:col-span-2 space-y-6">
+      <div class="lg:col-span-2 space-y-6">                   
         <!-- Customer Details -->
         <div class="bg-white p-6 rounded-2xl border border-gray-50 shadow-sm flex flex-col items-center text-center group hover:shadow-lg transition-all">
           <div class="w-20 h-20 bg-gray-900 rounded-2xl flex items-center justify-center text-white text-2xl font-medium shadow-xl mb-4 group-hover:-translate-y-1 transition-transform border-2 border-white">
             {{ order.customer?.firstName?.[0] }}{{ order.customer?.lastName?.[0] }}
           </div>
-          <p class="text-[8px] font-bold text-[#FF5C1A] tracking-wider mb-2 leading-none bg-[#FF5C1A]/5 px-2.5 py-1 rounded-full">Primary Contact</p>
-          <h4 class="text-xl font-medium text-gray-900 tracking-tight mb-6 truncate w-full leading-none">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</h4>
+          <p class="text-sm font-bold text-[#FF5C1A] -wider mb-2 -none bg-[#FF5C1A]/5 px-2.5 py-1 rounded-full">Primary Contact</p>
+          <h4 class="text-xl font-medium text-gray-900 -tight mb-6 truncate w-full -none">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</h4>
           
           <div class="flex flex-col gap-2 w-full">
-            <a :href="`tel:${order.customer?.phone}`" class="w-full py-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-[9px] font-bold tracking-wider hover:bg-emerald-600 hover:text-white transition-all transform active:scale-95 border border-emerald-100 flex items-center justify-center gap-2.5">
+            <a :href="`tel:${order.customer?.phone}`" class="w-full py-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-bold -wider hover:bg-emerald-600 hover:text-white transition-all transform active:scale-95 border border-emerald-100 flex items-center justify-center gap-2.5">
               <Phone class="w-4 h-4" /> Call Customer
             </a>
-            <button @click="openChat(order.customer?._id, order.customer?.firstName + ' ' + order.customer?.lastName, order.customer?.avatar)" class="w-full py-3.5 bg-[#FF5C1A]/5 text-[#FF5C1A] rounded-xl text-[9px] font-bold tracking-wider hover:bg-[#FF5C1A] hover:text-white transition-all transform active:scale-95 border border-[#FF5C1A]/10 flex items-center justify-center gap-2.5">
+            <button @click="openChat(order.customer?._id, order.customer?.firstName + ' ' + order.customer?.lastName, order.customer?.avatar)" class="w-full py-3.5 bg-[#FF5C1A]/5 text-[#FF5C1A] rounded-xl text-sm font-bold -wider hover:bg-[#FF5C1A] hover:text-white transition-all transform active:scale-95 border border-[#FF5C1A]/10 flex items-center justify-center gap-2.5">
               <MessageSquare class="w-4 h-4" /> Message Customer
             </button>
           </div>
@@ -120,7 +120,7 @@
         <!-- Status Update Actions -->
         <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup' || order.status === 'picked_up'" class="space-y-4">
           <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup'" class="animate-bounce-subtle">
-            <button @click="updateStatus('picked_up')" :disabled="updatingStatus" class="w-full py-5 bg-[#FF5C1A] text-white rounded-xl text-[11px] font-medium tracking-widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
+            <button @click="updateStatus('picked_up')" :disabled="updatingStatus" class="w-full py-5 bg-[#FF5C1A] text-white rounded-xl text-sm font-medium -widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
               <Loader2 v-if="updatingStatus" class="w-5 h-5 animate-spin" />
               <span v-else class="text-xl group-hover:rotate-12 transition-transform">📦</span> 
               {{ updatingStatus ? 'UPDATING...' : 'Confirm Pickup' }}
@@ -128,12 +128,12 @@
           </div>
           
           <div v-if="order.status === 'picked_up'" class="space-y-4">
-            <button @click="updateStatus('in_transit')" :disabled="updatingStatus" class="w-full py-5 bg-indigo-600 text-white rounded-xl text-[11px] font-medium tracking-widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
+            <button @click="updateStatus('in_transit')" :disabled="updatingStatus" class="w-full py-3 bg-indigo-600 text-white rounded-xl text-sm font-medium -widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
               <Loader2 v-if="updatingStatus" class="w-5 h-5 animate-spin" />
               <span v-else class="text-xl group-hover:scale-125 transition-transform">🚀</span> 
               {{ updatingStatus ? 'UPDATING...' : 'Start Delivery' }}
             </button>
-            <p class="text-[8px] text-gray-400 text-center font-bold tracking-wider">Update status once you depart.</p>
+            <p class="text-sm text-gray-400 text-center font-bold -wider">Update status once you depart.</p>
           </div>
         </div>
 
@@ -142,8 +142,8 @@
           <div class="absolute -right-32 -top-32 w-64 h-64 bg-[#FF5C1A]/20 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000" />
            
           <div class="text-center space-y-2 relative z-10">
-            <h3 class="text-white text-lg font-medium tracking-tight leading-none">Verification Code</h3>
-            <p class="text-gray-500 text-[8px] font-bold tracking-wider">Request the 6-digit code from user</p>
+            <h3 class="text-white text-lg font-medium -tight -none">Verification Code</h3>
+            <p class="text-gray-500 text-sm font-bold -wider">Request the 6-digit code from user</p>
           </div>
            
           <div class="flex justify-center relative z-10">
@@ -152,14 +152,14 @@
               type="text"
               maxlength="6"
               placeholder="000000"
-              class="bg-white/5 text-white text-2xl font-medium text-center tracking-widest w-full py-4 rounded-xl border border-white/10 focus:border-[#FF5C1A]/50 focus:bg-white/10 transition-all focus:outline-none placeholder:text-white/5 shadow-inner"
+              class="bg-white/5 text-white text-2xl font-medium text-center -widest w-full py-4 rounded-xl border border-white/10 focus:border-[#FF5C1A]/50 focus:bg-white/10 transition-all focus:outline-none placeholder:text-white/5 shadow-inner"
             />
           </div>
           
           <button 
             @click="completeOrder" 
             :disabled="verificationCode.length !== 6 || completing"
-            class="w-full py-4 bg-white text-gray-900 rounded-xl text-[10px] font-medium tracking-widest shadow-xl hover:bg-[#FF5C1A] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 transition-all relative z-10 group"
+            class="w-full py-4 bg-white text-gray-900 rounded-xl text-sm font-medium -widest shadow-xl hover:bg-[#FF5C1A] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 transition-all relative z-10 group"
           >
             <Loader2 v-if="completing" class="w-5 h-5 animate-spin flex-shrink-0" />
             <span v-else class="text-base">✅</span> 
@@ -175,14 +175,14 @@
           <div class="relative z-10 space-y-6">
             <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto text-3xl shadow-lg border border-emerald-50 text-emerald-600 transform rotate-6 animate-pulse">💰</div>
             <div>
-              <h3 class="text-white font-medium text-2xl tracking-tight leading-none mb-3">Delivery Completed</h3>
-              <p class="text-white/90 font-medium text-xl tracking-tight leading-none">+ ₦{{ order.deliveryFee?.toLocaleString() }} Earned</p>
+              <h3 class="text-white font-medium text-2xl -tight -none mb-3">Delivery Completed</h3>
+              <p class="text-white/90 font-medium text-xl -tight -none">+ ₦{{ order.deliveryFee?.toLocaleString() }} Earned</p>
             </div>
              
             <div class="max-w-xs mx-auto">
-              <p class="text-emerald-100 text-[9px] font-bold tracking-wider leading-relaxed mb-8">Funds have been added to your wallet.</p>
+              <p class="text-emerald-100 text-sm font-bold -wider -relaxed mb-8">Funds have been added to your wallet.</p>
                
-              <NuxtLink to="/deliveries" class="block w-full py-4 bg-white text-emerald-600 rounded-xl font-medium text-[10px] tracking-widest shadow-lg hover:bg-emerald-50 active:scale-95 transition-all">
+              <NuxtLink to="/deliveries" class="block w-full py-4 bg-white text-emerald-600 rounded-xl font-medium text-sm -widest shadow-lg hover:bg-emerald-50 active:scale-95 transition-all">
                 Return to Deliveries
               </NuxtLink>
             </div>
@@ -229,7 +229,7 @@ const steps = ['confirmed', 'picked_up', 'in_transit', 'delivered'];
 const currentStep = computed(() => order.value ? steps.indexOf(order.value.status) : -1);
 const formatStatus = (s: string) => s?.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
 
-const { connect, emit, on } = useSocket('tracking');
+const { connect, emit, on } = useSocket('');
 
 const isChatOpen = ref(false);
 const chatReceiverId = ref('');
@@ -252,6 +252,16 @@ const updateStatus = async (status: string) => {
   updatingStatus.value = true;
   try {
     const res = await api.put<any>(`/orders/${route.params.id}/status`, { status });
+    
+    if (res && res.type === 'ERROR') {
+      showToast({
+        title: 'Update Failed',
+        message: res.data?.message || 'Failed to update order status',
+        toastType: 'error'
+      });
+      return;
+    }
+
     order.value = res.data;
     emit('orderStatusUpdate', { orderId: route.params.id, status });
     showToast({
@@ -262,7 +272,7 @@ const updateStatus = async (status: string) => {
   } catch (e: any) { 
     showToast({
       title: 'Update Failed',
-      message: e.data?.message || 'Failed to update order status',
+      message: e.data?.message || e.response?.data?.message || 'Failed to update order status',
       toastType: 'error'
     });
   }
@@ -276,6 +286,16 @@ const completeOrder = async () => {
     const res = await api.post<any>(`/orders/${route.params.id}/complete`, { 
       verificationCode: verificationCode.value.toUpperCase() 
     });
+    
+    if (res && res.type === 'ERROR') {
+      showToast({
+        title: 'Verification Failed',
+        message: res.data?.message || 'Invalid code. Verify and try again.',
+        toastType: 'error'
+      });
+      return;
+    }
+
     order.value = res.data;
     emit('orderStatusUpdate', { orderId: route.params.id, status: 'delivered' });
     showToast({
@@ -286,7 +306,7 @@ const completeOrder = async () => {
   } catch (e: any) { 
     showToast({
       title: 'Verification Failed',
-      message: e.data?.message || 'Invalid code. Verify and try again.',
+      message: e.data?.message || e.response?.data?.message || 'Invalid code. Verify and try again.',
       toastType: 'error'
     });
   } finally {
@@ -301,7 +321,7 @@ const getStatusBg = (s: string) => {
   return 'bg-gray-50 text-gray-400';
 }
 
-const startLocationTracking = () => {
+const startLocation = () => {
   if ('geolocation' in navigator) {
     navigator.geolocation.watchPosition(
       (pos) => {
@@ -311,7 +331,7 @@ const startLocationTracking = () => {
           orderId: route.params.id,
           coordinates: coords,
         });
-        api.put('/errandr/location', { coordinates: coords }).catch(() => {});
+        api.put('/erranders/location', { coordinates: coords }).catch(() => {});
       },
       () => {},
       { enableHighAccuracy: true, timeout: 10000 },
@@ -327,7 +347,7 @@ onMounted(async () => {
 
   connect();
   emit('trackOrder', { orderId: route.params.id });
-  startLocationTracking();
+  startLocation();
 });
 
 useHead({ title: computed(() => `Delivery #${order.value?.orderNumber || ''} - Errandr`) });

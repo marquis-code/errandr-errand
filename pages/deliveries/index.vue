@@ -82,10 +82,14 @@
  </div>
  </td>
  <td class="py-3.5 px-5">
- <p class="text-sm font-medium text-gray-700 truncate max-w-[140px]">{{ order.vendor?.storeName || 'Unknown Store' }}</p>
+ <p class="text-sm font-medium text-gray-700 truncate max-w-[140px]">
+   {{ order.type === 'custom_errand' ? (order.customer?.firstName ? `${order.customer.firstName}'s Errand` : 'Custom Errand') : (order.vendor?.storeName || 'Unknown Store') }}
+ </p>
  </td>
  <td class="py-3.5 px-5 hidden md:table-cell">
- <p class="text-sm text-gray-500 truncate max-w-[180px]">{{ order.deliveryAddress }}</p>
+ <p class="text-sm text-gray-500 truncate max-w-[180px]">
+   {{ order.type === 'custom_errand' ? 'Dynamic Route' : (order.deliveryAddress || 'No Address Provided') }}
+ </p>
  </td>
  <td class="py-3.5 px-5 text-right">
  <div class="flex flex-col items-end">

@@ -7,8 +7,7 @@
         <ArrowLeft class="w-4 h-4" /> Back to login
       </NuxtLink>
 
-      <transition name="fade" mode="out-in">
-        <div v-if="!showSuccess" class="w-full">
+        <div class="w-full">
           <!-- Header -->
           <div class="text-center mb-8">
                     <div class="flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -26,6 +25,7 @@
             <UiAnimatedInput v-model="form.email" type="email" label="Email Address" required />
             <UiAnimatedInput v-model="form.phone" type="tel" label="Phone Number" />
             <UiAnimatedInput v-model="form.password" type="password" label="Password" required minlength="6" />
+            <UiAnimatedInput v-model="form.referredBy" type="text" label="Referral Code (Optional)" placeholder="Who referred you?" />
 
             <transition name="fade">
               <div v-if="error" class="flex items-center gap-2 p-4 bg-red-50 border border-red-100 rounded-2xl text-[13px] font-bold text-red-600">
@@ -51,42 +51,14 @@
             <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
             <NuxtLink to="/terms" class="hover:text-gray-600 transition-colors">Terms & Privacy</NuxtLink>
           </div>
-        </div>
-
-        <!-- Success Modal -->
-        <div v-else class="w-full flex flex-col items-center justify-center text-center space-y-6 min-h-[400px] bg-white rounded-[2rem] relative z-20 border border-gray-100 shadow-[0_20px_60px_-15px_rgba(255,92,26,0.1)] p-8">
-          <div class="relative w-28 h-28 flex items-center justify-center mb-4">
-            <div class="absolute inset-0 bg-[#FF5C1A]/10 rounded-full animate-ping" style="animation-duration: 2s;"></div>
-            <div class="absolute inset-2 bg-[#FF5C1A]/20 rounded-full animate-ping" style="animation-duration: 2s; animation-delay: 0.5s;"></div>
-            <div class="w-24 h-24 bg-gradient-to-br from-[#FF5C1A] to-[#FFA785] rounded-full flex items-center justify-center text-white shadow-2xl shadow-[#FF5C1A]/40 relative z-10 animate-bounce">
-              <Check class="w-12 h-12" stroke-width="3" />
-            </div>
           </div>
-          
-          <div class="space-y-3">
-            <h2 class="text-3xl font-medium text-gray-900 tracking-tight">Welcome to the fleet! 🎉</h2>
-            <div class="relative">
-              <p class="text-gray-500 font-medium leading-relaxed max-w-[300px] mx-auto text-[15px]">
-                You're officially a campus rider. Get ready to hit the road and start earning! 🚀
-              </p>
-            </div>
-          </div>
-
-          <div class="w-full pt-8 mt-auto">
-            <button @click="proceedToDashboard" class="w-full py-4 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-2xl font-medium text-[17px] transition-all flex items-center justify-center gap-2 shadow-xl shadow-[#FF5C1A]/25 active:scale-[0.98] group">
-              Proceed to Dashboard <ArrowRight class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-        </div>
-      </transition>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Loader2, Bike, ArrowRight, ArrowLeft, Check, AlertCircle } from 'lucide-vue-next'
-import { ref, reactive, nextTick } from 'vue'
-import confetti from 'canvas-confetti'
+import { Loader2, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-vue-next'
+import { ref, reactive } from 'vue'
 import { useAuth } from '@/composables/modules/auth'
 
 definePageMeta({ layout: false })
@@ -94,50 +66,15 @@ useHead({ title: 'Become a Rider - Errandr' })
 
 const { register, loading } = useAuth()
 const error = ref('')
-const showSuccess = ref(false)
-const form = reactive({ firstName: '', lastName: '', email: '', password: '', phone: '', role: 'errander' })
+const form = reactive({ firstName: '', lastName: '', email: '', password: '', phone: '', role: 'errander', referredBy: '' })
 
 const handleRegister = async () => {
   error.value = ''
   try { 
     await register(form, { redirect: false }) 
-    showSuccess.value = true
-    nextTick(() => {
-      triggerConfetti()
-    })
+    navigateTo(`/auth/verify-email?email=${encodeURIComponent(form.email)}`)
   }
   catch (e: any) { error.value = e.data?.message || 'Registration failed' }
-}
-
-const triggerConfetti = () => {
-  const duration = 3500;
-  const end = Date.now() + duration;
-
-  const frame = () => {
-    confetti({
-      particleCount: 7,
-      angle: 60,
-      spread: 65,
-      origin: { x: 0, y: 0.6 },
-      colors: ['#FF5C1A', '#FFA785', '#FFF', '#FFD700', '#FF69B4']
-    });
-    confetti({
-      particleCount: 7,
-      angle: 120,
-      spread: 65,
-      origin: { x: 1, y: 0.6 },
-      colors: ['#FF5C1A', '#FFA785', '#FFF', '#FFD700', '#FF69B4']
-    });
-
-    if (Date.now() < end) {
-      requestAnimationFrame(frame);
-    }
-  };
-  frame();
-};
-
-const proceedToDashboard = () => {
-  navigateTo('/dashboard')
 }
 </script>
 

@@ -2,15 +2,15 @@ import { GATEWAY_ENDPOINT_WITH_AUTH } from '../axios.config';
 
 export const erranders_api = {
   getStatistics: () => {
-    return GATEWAY_ENDPOINT_WITH_AUTH.get('/errandr/earnings');
+    return GATEWAY_ENDPOINT_WITH_AUTH.get('/erranders/earnings');
   },
 
   getProfile: () => {
-    return GATEWAY_ENDPOINT_WITH_AUTH.get('/errandr/me');
+    return GATEWAY_ENDPOINT_WITH_AUTH.get('/erranders/me');
   },
 
   toggleOnline: () => {
-    return GATEWAY_ENDPOINT_WITH_AUTH.put('/errandr/toggle-status');
+    return GATEWAY_ENDPOINT_WITH_AUTH.put('/erranders/toggle-status');
   },
 
   getAssignedOrders: () => {
@@ -18,6 +18,6 @@ export const erranders_api = {
   },
 
   getEarnings: () => {
-    return GATEWAY_ENDPOINT_WITH_AUTH.get('/errandr/earnings');
+    return GATEWAY_ENDPOINT_WITH_AUTH.get('/erranders/earnings');
   },
 };

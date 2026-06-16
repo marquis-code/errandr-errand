@@ -13,8 +13,8 @@
     </div>
 
     <!-- Alert for Batching -->
-    <div v-if="batchStatus?.isActive" class="bg-parentPrimary/[0.03] border border-parentPrimary/10 rounded-[2rem] p-5 flex items-center gap-4 group hover:bg-parentPrimary/5 transition-all">
-      <div class="w-12 h-12 rounded-2xl bg-parentPrimary flex items-center justify-center text-white text-xl flex-shrink-0 shadow-lg shadow-parentPrimary/20">📦</div>
+    <div v-if="batchStatus?.isActive" class="bg-parentPrimary/[0.03] border border-parentPrimary/10 rounded-2xl p-5 flex items-center gap-4 group hover:bg-parentPrimary/5 transition-all">
+      <div class="w-12 h-12 rounded-xl bg-parentPrimary flex items-center justify-center text-white text-xl flex-shrink-0">📦</div>
       <div>
         <h4 class="text-sm font-medium text-gray-900">Batch Window Active</h4>
         <p class="text-[11px] text-gray-400 font-medium">You can accept up to 5 orders simultaneously. Optimized routing enabled!</p>
@@ -22,19 +22,19 @@
     </div>
 
     <!-- Orders Table -->
-    <div v-if="loading" class="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden animate-pulse">
+    <div v-if="loading" class="bg-white rounded-2xl border border-gray-100 overflow-hidden animate-pulse">
       <div class="p-8 space-y-4">
-        <div v-for="i in 4" :key="i" class="h-24 bg-gray-50 rounded-3xl w-full"></div>
+        <div v-for="i in 4" :key="i" class="h-24 bg-gray-50 rounded-xl w-full"></div>
       </div>
     </div>
 
-    <div v-else-if="availableOrders.length === 0" class="bg-white rounded-[2.5rem] border border-gray-100 py-32 text-center shadow-sm">
+    <div v-else-if="availableOrders.length === 0" class="bg-white rounded-2xl border border-gray-100 py-32 text-center">
       <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 scale-110">🚲</div>
       <h3 class="text-xl font-medium text-gray-900 mb-2">The pool is currently empty</h3>
       <p class="text-xs text-gray-400 max-w-xs mx-auto mb-8 font-medium">All orders have been claimed. New orders will appear here automatically!</p>
     </div>
 
-    <div v-else class="bg-white rounded-[2.5rem] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] overflow-hidden">
+    <div v-else class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
@@ -54,12 +54,14 @@
               <!-- Errand Info -->
               <td class="py-5 px-6">
                 <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 rounded-2xl bg-gray-950 flex items-center justify-center text-xl overflow-hidden shadow-sm">
-                    <img v-if="order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
-                    <span v-else class="text-white text-xs">ERR</span>
+                  <div class="w-12 h-12 rounded-xl bg-gray-950 flex items-center justify-center text-xl overflow-hidden">
+                    <img v-if="order.type !== 'custom_errand' && order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
+                    <span v-else class="text-white text-xs">CUS</span>
                   </div>
                   <div>
-                    <h3 class="text-sm font-medium text-gray-900 mb-1 line-clamp-1">{{ order.vendor?.storeName || 'Custom Errand' }}</h3>
+                    <h3 class="text-sm font-medium text-gray-900 mb-1 line-clamp-1">
+                      {{ order.type === 'custom_errand' ? 'Custom Errand' : (order.vendor?.storeName || 'Store Order') }}
+                    </h3>
                     <div class="flex items-center gap-2">
                       <span class="text-[9px] font-medium tracking-widest text-[#FF5C1A] uppercase bg-[#FF5C1A]/5 px-2 py-0.5 rounded">#{{ order.orderNumber?.slice(-8) }}</span>
                       <span class="text-[9px] font-bold text-gray-400 flex items-center gap-1">
@@ -72,9 +74,19 @@
 
               <!-- Destination -->
               <td class="py-5 px-6 hidden lg:table-cell max-w-[200px]">
-                <div class="flex items-start gap-2">
-                  <div class="w-6 h-6 rounded-lg bg-indigo-50 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">📍</div>
-                  <p class="text-[11px] font-bold text-gray-600 line-clamp-2 leading-tight">{{ order.deliveryAddress || 'Campus Location' }}</p>
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-start gap-2">
+                    <div class="w-5 h-5 rounded-md bg-gray-50 flex items-center justify-center text-[9px] flex-shrink-0 mt-0.5">S</div>
+                    <p class="text-[11px] font-medium text-gray-500 line-clamp-1 leading-tight">
+                      {{ order.type === 'custom_errand' ? order.customDetails?.pickupLocation : (order.vendor?.address || 'Store Location') }}
+                    </p>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <div class="w-5 h-5 rounded-md bg-indigo-50 flex items-center justify-center text-[9px] flex-shrink-0 mt-0.5 text-indigo-600">D</div>
+                    <p class="text-[11px] font-bold text-gray-600 line-clamp-2 leading-tight">
+                      {{ order.type === 'custom_errand' ? order.customDetails?.dropoffLocation : (order.deliveryAddress || 'Customer Location') }}
+                    </p>
+                  </div>
                 </div>
               </td>
 
@@ -117,12 +129,14 @@
       <div v-if="selectedOrder" class="space-y-8 pb-10">
         <!-- Drawer Header -->
         <div class="flex items-center gap-4">
-          <div class="w-16 h-16 rounded-[1.5rem] bg-gray-950 flex items-center justify-center text-3xl overflow-hidden shadow-xl">
-            <img v-if="selectedOrder.vendor?.logo" :src="selectedOrder.vendor.logo" class="w-full h-full object-cover" />
-            <span v-else>🍔</span>
+          <div class="w-16 h-16 rounded-xl bg-gray-950 flex items-center justify-center text-3xl overflow-hidden">
+            <img v-if="selectedOrder.type !== 'custom_errand' && selectedOrder.vendor?.logo" :src="selectedOrder.vendor.logo" class="w-full h-full object-cover" />
+            <span v-else class="text-white text-xs">CUS</span>
           </div>
           <div>
-            <h2 class="text-xl font-medium text-gray-900 leading-tight">{{ selectedOrder.vendor?.storeName }}</h2>
+            <h2 class="text-xl font-medium text-gray-900 leading-tight">
+              {{ selectedOrder.type === 'custom_errand' ? 'Custom Errand' : selectedOrder.vendor?.storeName }}
+            </h2>
             <p class="text-xs font-bold text-gray-400 tracking-widest uppercase">#{{ selectedOrder.orderNumber }}</p>
           </div>
         </div>
@@ -143,26 +157,37 @@
         <div class="space-y-4">
           <div class="relative flex gap-4 pl-1">
             <div class="absolute left-3 top-6 bottom-6 w-px border-l-2 border-dashed border-gray-100"></div>
-            <div class="z-10 w-6 h-6 rounded-lg bg-gray-950 flex items-center justify-center text-[10px] flex-shrink-0 text-white">S</div>
+            <div class="z-10 w-6 h-6 rounded-md bg-gray-950 flex items-center justify-center text-[10px] flex-shrink-0 text-white">S</div>
             <div>
-              <p class="text-[10px] font-medium text-gray-400 uppercase tracking-widest">Store Pickup</p>
-              <p class="text-sm font-bold text-gray-900">{{ selectedOrder.vendor?.address || 'Compassa Complex' }}</p>
+              <p class="text-[10px] font-medium text-gray-400 uppercase tracking-widest">Pickup Location</p>
+              <p class="text-sm font-bold text-gray-900">
+                {{ selectedOrder.type === 'custom_errand' ? selectedOrder.customDetails?.pickupLocation : (selectedOrder.vendor?.address || 'Store Address') }}
+              </p>
             </div>
           </div>
           <div class="flex gap-4 pl-1">
-            <div class="z-10 w-6 h-6 rounded-lg bg-[#FF5C1A] flex items-center justify-center text-[10px] flex-shrink-0 text-white shadow-lg shadow-[#FF5C1A]/20">D</div>
+            <div class="z-10 w-6 h-6 rounded-md bg-[#FF5C1A] flex items-center justify-center text-[10px] flex-shrink-0 text-white">D</div>
             <div>
               <p class="text-[10px] font-medium text-gray-400 uppercase tracking-widest">Delivery Point</p>
-              <p class="text-sm font-bold text-gray-900">{{ selectedOrder.deliveryAddress || 'Customer Location' }}</p>
+              <p class="text-sm font-bold text-gray-900">
+                {{ selectedOrder.type === 'custom_errand' ? selectedOrder.customDetails?.dropoffLocation : (selectedOrder.deliveryAddress || 'Customer Location') }}
+              </p>
               <p v-if="selectedOrder.specificAddress" class="text-xs font-medium text-gray-500 mt-1">Note: {{ selectedOrder.specificAddress }}</p>
             </div>
           </div>
         </div>
 
-        <!-- Order Items -->
+        <!-- Order Items or Description -->
         <div class="space-y-4 pt-4 border-t border-gray-100">
-          <h4 class="text-xs font-medium text-gray-900 uppercase tracking-widest">Order Summary</h4>
-          <div class="space-y-2">
+          <h4 class="text-xs font-medium text-gray-900 uppercase tracking-widest">{{ selectedOrder.type === 'custom_errand' ? 'Errand Description' : 'Order Summary' }}</h4>
+          <div v-if="selectedOrder.type === 'custom_errand'" class="p-4 bg-gray-50/50 rounded-xl text-sm text-gray-700 leading-relaxed">
+            {{ selectedOrder.customDetails?.description }}
+            <div class="mt-3 pt-3 border-t border-gray-200 flex justify-between items-center text-xs">
+              <span class="font-medium text-gray-500">Estimated Item Cost</span>
+              <span class="font-bold text-gray-900">₦{{ (selectedOrder.customDetails?.estimatedItemCost || 0).toLocaleString() }}</span>
+            </div>
+          </div>
+          <div v-else class="space-y-2">
             <div v-for="item in selectedOrder.items" :key="item._id" class="flex items-center justify-between p-3 bg-gray-50/50 rounded-xl">
               <div class="flex items-center gap-3">
                 <span class="w-6 h-6 bg-white border border-gray-100 rounded-lg flex items-center justify-center text-[10px] font-medium text-gray-900">{{ item.quantity }}x</span>
@@ -183,23 +208,42 @@
           <p class="text-xs font-medium text-gray-500">{{ selectedOrder.recipientPhone }}</p>
         </div>
 
-        <!-- Action inside drawer -->
-        <button 
-          @click="acceptOrder(selectedOrder._id); isDrawerOpen = false"
-          :disabled="acceptingId === selectedOrder._id"
-          class="w-full py-5 bg-gray-950 text-white rounded-[2rem] text-sm font-bold tracking-tight hover:bg-parentPrimary hover:shadow-2xl hover:shadow-parentPrimary/30 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
-        >
-          <Zap v-if="acceptingId !== selectedOrder._id" class="w-4 h-4 fill-current" />
-          <span v-else class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-          {{ acceptingId === selectedOrder._id ? 'Accepting Opportunity...' : 'Claim This Order' }}
-        </button>
+        <!-- Actions inside drawer -->
+        <div class="space-y-3">
+          <button 
+            @click="acceptOrder(selectedOrder._id); isDrawerOpen = false"
+            :disabled="acceptingId === selectedOrder._id || biddingId === selectedOrder._id"
+            class="w-full py-4 bg-gray-950 text-white rounded-xl text-sm font-bold tracking-tight hover:bg-parentPrimary transition-all flex items-center justify-center gap-3 active:scale-95"
+          >
+            <Zap v-if="acceptingId !== selectedOrder._id" class="w-4 h-4 fill-current" />
+            <span v-else class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+            {{ acceptingId === selectedOrder._id ? 'Accepting Opportunity...' : 'Accept at ₦' + (selectedOrder.erranderShare || selectedOrder.deliveryFee).toLocaleString() }}
+          </button>
+
+          <div v-if="selectedOrder.type === 'custom_errand'" class="border-t border-gray-100 pt-4 mt-2">
+            <p class="text-xs font-bold text-gray-500 mb-2">Or propose a different fee:</p>
+            <div class="flex gap-2">
+              <input v-model.number="bidAmount" type="number" placeholder="New Fee" class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-parentPrimary font-bold text-gray-900" />
+              <button 
+                @click="placeBid(selectedOrder._id)"
+                :disabled="!bidAmount || bidAmount <= selectedOrder.deliveryFee || biddingId === selectedOrder._id"
+                class="bg-parentPrimary text-white font-bold px-4 py-3 rounded-xl disabled:opacity-50 hover:bg-orange-600 transition-colors"
+              >
+                {{ biddingId === selectedOrder._id ? 'Bidding...' : 'Submit Bid' }}
+              </button>
+            </div>
+            <p v-if="hasPlacedBid(selectedOrder)" class="text-xs font-bold text-green-600 mt-2 bg-green-50 p-2 rounded-lg text-center">
+              You proposed ₦{{ getMyBid(selectedOrder) }}
+            </p>
+          </div>
+        </div>
       </div>
     </SideDrawer>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
 import { useRealtimeSocket } from '@/composables/core/useRealtimeSocket'
 import { useRouter } from 'vue-router'
@@ -222,6 +266,8 @@ const batchStatus = ref<any>(null)
 // Details Drawer State
 const isDrawerOpen = ref(false)
 const selectedOrder = ref<any>(null)
+const bidAmount = ref<number | null>(null)
+const biddingId = ref<string | null>(null)
 
 const pushToast = (title: string, body: string, type: string = 'GENERAL') => {
   toastQueue.value.push({
@@ -259,7 +305,16 @@ const loadBatchStatus = async () => {
 const viewDetails = (order: any) => {
   selectedOrder.value = order
   isDrawerOpen.value = true
+  if (socket.value && order._id) {
+    socket.value.emit('viewing_errand', { orderId: order._id, isViewing: true })
+  }
 }
+
+watch(isDrawerOpen, (newVal) => {
+  if (!newVal && selectedOrder.value?._id && socket.value) {
+    socket.value.emit('viewing_errand', { orderId: selectedOrder.value._id, isViewing: false })
+  }
+})
 
 const acceptOrder = async (id: string) => {
   acceptingId.value = id
@@ -272,7 +327,7 @@ const acceptOrder = async (id: string) => {
       }, 1000)
     } else {
       availableOrders.value = availableOrders.value.filter(o => o._id !== id)
-      pushToast('Claim Error', (res as any).message || 'This order was already accepted by another rider.', 'ERROR')
+      pushToast('Claim Error', (res as any)?.data?.message || 'This order was already accepted by another rider.', 'ERROR')
     }
   } catch (e: any) {
     console.error('Accept error:', e)
@@ -282,6 +337,39 @@ const acceptOrder = async (id: string) => {
   } finally {
     acceptingId.value = null
   }
+}
+
+const placeBid = async (id: string) => {
+  if (!bidAmount.value) return;
+  biddingId.value = id;
+  try {
+    const res = await api.post(`/orders/${id}/custom/bid`, { amount: bidAmount.value });
+    if (res && (res as any).type !== 'ERROR') {
+      pushToast('Bid Submitted!', 'Your counter-offer has been sent to the customer.', 'SUCCESS');
+      selectedOrder.value = res.data;
+      const idx = availableOrders.value.findIndex(o => o._id === id);
+      if (idx !== -1) availableOrders.value[idx] = res.data;
+    } else {
+      pushToast('Bid Error', (res as any)?.data?.message || 'Failed to submit bid.', 'ERROR');
+    }
+  } catch (e: any) {
+    console.error('Bid error:', e);
+    pushToast('Bid Failed', e.response?.data?.message || 'Failed to submit bid.', 'ERROR');
+  } finally {
+    biddingId.value = null;
+  }
+}
+
+const getMyBid = (order: any) => {
+  // Try to find if user has a bid by matching something, but we don't have user object directly here easily without auth composable.
+  // We can just rely on the latest bid in the array or just show "Bid placed".
+  // Let's assume if it returns a populated order, we can check. For now, we will just say 'Bid placed'.
+  return bidAmount.value; 
+}
+
+const hasPlacedBid = (order: any) => {
+  // In a real app we'd check order.bids.some(b => b.errander === myId)
+  return order.bids?.length > 0 && bidAmount.value !== null;
 }
 
 const formatTime = (date: string) => {

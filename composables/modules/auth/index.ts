@@ -64,6 +64,45 @@ export const useAuth = () => {
     }
   };
 
+  const verifyOTP = async (email: string, otp: string, options: { redirect?: boolean } = { redirect: true }) => {
+    loading.value = true;
+    try {
+      const res = await auth_api.verifyOtp({ email, otp });
+      setUser(res.data.user);
+      setToken(res.data.token);
+      showToast({
+        title: "Verified!",
+        message: "Email successfully verified.",
+        toastType: "success",
+      });
+      if (options.redirect) {
+        navigateTo('/dashboard');
+      }
+      return res.data;
+    } catch (e: any) {
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const resendOTP = async (email: string) => {
+    loading.value = true;
+    try {
+      const res = await auth_api.resendOtp(email);
+      showToast({
+        title: "Code Sent!",
+        message: "A new verification code has been sent to your email.",
+        toastType: "success",
+      });
+      return res.data;
+    } catch (e: any) {
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const forgotPassword = async (email: string) => {
     loading.value = true;
     try {
@@ -125,6 +164,8 @@ export const useAuth = () => {
     fetchProfile,
     forgotPassword,
     verifyResetOTP,
+    verifyOTP,
+    resendOTP,
     resetPassword,
     logOut
   };
