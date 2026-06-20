@@ -126,9 +126,7 @@ export const useChat = () => {
       }
     }
 
-    if (!businessId && !subdomain) {
-      throw new Error('Business information missing. Please refresh the page or log in again.')
-    }
+    // Allow chat without businessId (platform level support)
 
     if (isGuest.value && (!guestProfile.value.name || !guestProfile.value.email)) {
       throw new Error('Name and email are required for guest chat')
