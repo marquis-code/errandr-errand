@@ -216,14 +216,18 @@ const audioChunks = ref<Blob[]>([]);
 const recordingInterval = ref<any>(null);
 
 const { 
- messages, 
- loading, 
- isTyping, 
- fetchMessages, 
- sendMessage, 
- sendTyping, 
- setupListeners 
-} = useOrderChat(props.orderId, props.currentUserId, props.receiverId);
+  messages, 
+  loading, 
+  isTyping, 
+  fetchMessages, 
+  sendMessage, 
+  sendTyping, 
+  setupListeners 
+} = useOrderChat(
+  () => props.orderId,
+  () => props.currentUserId,
+  () => props.receiverId
+);
 
 // Custom sendMessage that supports attachments
 const sendMediaMessage = async (type: 'image' | 'voice', attachment: string, text = '') => {

@@ -3,17 +3,17 @@
     <div class="w-full max-w-[500px] relative z-10">
       
       <!-- Back to Login -->
-      <NuxtLink v-if="!showSuccess" to="/auth/login" class="absolute -top-12 left-0 flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">
+      <!-- <NuxtLink v-if="!showSuccess" to="/auth/login" class="absolute -top-12 left-0 flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">
         <ArrowLeft class="w-4 h-4" /> Back to login
-      </NuxtLink>
+      </NuxtLink> -->
 
         <div class="w-full">
           <!-- Header -->
-          <div class="text-center mb-8">
+          <div class="text-center space-y-3 mb-8">
                     <div class="flex items-center justify-center group-hover:scale-110 transition-transform">
             <img src="@/assets/img/logo-light.png" class="w-auto h-10" alt="Errandr" />
           </div>
-            <h1 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Become a Rider</h1>
+            <h1 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Become an Errand Ninja! 🥷</h1>
             <p class="text-gray-500 font-medium text-sm">Create your account and start delivering</p>
           </div>
 
@@ -25,7 +25,7 @@
             <UiAnimatedInput v-model="form.email" type="email" label="Email Address" required />
             <UiAnimatedInput v-model="form.phone" type="tel" label="Phone Number" />
             <UiAnimatedInput v-model="form.password" type="password" label="Password" required minlength="6" />
-            <UiAnimatedInput v-model="form.referredBy" type="text" label="Referral Code (Optional)" placeholder="Who referred you?" @input="formatReferralCode" />
+            <UiAnimatedInput v-model="form.referredBy" type="text" label="Referral Code (Optional)" @input="formatReferralCode" />
 
             <transition name="fade">
               <div v-if="error" class="flex items-center gap-2 p-4 bg-red-50 border border-red-100 rounded-2xl text-[13px] font-bold text-red-600">

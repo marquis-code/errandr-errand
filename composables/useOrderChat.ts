@@ -1,4 +1,4 @@
-import { ref, onUnmounted } from 'vue';
+import { ref, onUnmounted, toValue, type MaybeRefOrGetter } from 'vue';
 import { useSocket } from '@/composables/useSocket';
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 
@@ -18,7 +18,11 @@ export interface Message {
   createdAt: string;
 }
 
-export const useOrderChat = (orderId: string, currentUserId?: string, targetUserId?: string) => {
+export const useOrderChat = (
+  orderIdArg: MaybeRefOrGetter<string>,
+  currentUserIdArg?: MaybeRefOrGetter<string | undefined>,
+  targetUserIdArg?: MaybeRefOrGetter<string | undefined>
+) => {
   const { connect, emit, on, off, getSocket } = useSocket('chat');
   const messages = ref<Message[]>([]);
   const loading = ref(false);
@@ -31,16 +35,19 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
 
   const fetchMessages = async () => {
     loading.value = true;
+    const orderId = toValue(orderIdArg);
+    const currentUserId = toValue(currentUserIdArg);
+    const targetUserId = toValue(targetUserIdArg);
     try {
       const res = await api.get(`/chat/order/${orderId}`);
       if (currentUserId && targetUserId) {
         messages.value = (res.data || []).filter((m: any) => {
           const sId = String(m.senderId || m.sender?._id || m.sender || '');
           const rId = String(m.receiverId || m.receiver?._id || m.receiver || '');
-          const cId = String(currentUserId);
-          const tId = String(targetUserId);
-          const isGeneric = !rId;
-          return isGeneric || (sId === cId && rId === tId) || (sId === tId && rId === cId);
+          const cIds = String(currentUserId).split(',').map(id => id.trim());
+          const tIds = String(targetUserId).split(',').map(id => id.trim());
+          const isGeneric = !rId || rId === 'undefined';
+          return isGeneric || (cIds.includes(sId) && tIds.includes(rId)) || (tIds.includes(sId) && cIds.includes(rId));
         });
       } else {
         messages.value = res.data || [];
@@ -52,12 +59,26 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
     }
   };
 
+  const extractObjectId = (str: string) => {
+    if (!str) return '';
+    const parts = String(str).split(',');
+    for (const p of parts) {
+      const t = p.trim();
+      if (/^[0-9a-fA-F]{24}$/.test(t)) return t;
+    }
+    return String(str).split(',')[0]?.trim() || '';
+  };
+
   const sendMessage = (text: string, receiverId: string, senderId: string, type: 'text' | 'image' | 'voice' = 'text', attachment?: string) => {
+    const orderId = toValue(orderIdArg);
+    const cleanSenderId = extractObjectId(senderId);
+    const cleanReceiverId = extractObjectId(receiverId);
+    
     const tempMsg = {
       _id: Date.now().toString(),
       orderId,
-      senderId,
-      receiverId,
+      senderId: cleanSenderId,
+      receiverId: cleanReceiverId,
       message: text,
       content: text,
       messageType: type,
@@ -68,8 +89,8 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
 
     emit('sendMessage', {
       orderId,
-      senderId,
-      receiverId,
+      senderId: cleanSenderId,
+      receiverId: cleanReceiverId,
       message: text,
       messageType: type,
       attachment
@@ -77,6 +98,7 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
   };
 
   const sendTyping = (userId: string) => {
+    const orderId = toValue(orderIdArg);
     emit('typing', { orderId, userId });
     if (typingTimeout.value) clearTimeout(typingTimeout.value);
     typingTimeout.value = setTimeout(() => {
@@ -99,6 +121,8 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
     connect();
 
     const sock = getSocket();
+    const orderId = toValue(orderIdArg);
+    const currentUserId = toValue(currentUserIdArg);
 
     // Join the order room
     emit('joinOrder', { orderId });
@@ -107,7 +131,7 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
     if (sock) {
       const reconnectHandler = () => {
         console.log(`[useOrderChat] Reconnected, rejoining order:${orderId}`);
-        emit('joinOrder', { orderId });
+        emit('joinOrder', { orderId: toValue(orderIdArg) });
       };
       sock.on('connect', reconnectHandler);
     }
@@ -122,15 +146,19 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
 
     // Create the newMessage handler
     newMessageHandler = (message: any) => {
+      const orderId = toValue(orderIdArg);
+      const currentUserId = toValue(currentUserIdArg);
+      const targetUserId = toValue(targetUserIdArg);
       const msgOrderId = String(message.orderId || message.order?._id || message.order || '');
+      
       if (msgOrderId === String(orderId)) {
         if (currentUserId && targetUserId) {
           const sId = String(message.senderId || message.sender?._id || message.sender || '');
           const rId = String(message.receiverId || message.receiver?._id || message.receiver || '');
-          const cId = String(currentUserId);
-          const tId = String(targetUserId);
+          const cIds = String(currentUserId).split(',').map(id => id.trim());
+          const tIds = String(targetUserId).split(',').map(id => id.trim());
           const isGeneric = !rId || rId === 'undefined';
-          const isRelevant = isGeneric || (sId === cId && rId === tId) || (sId === tId && rId === cId);
+          const isRelevant = isGeneric || (cIds.includes(sId) && tIds.includes(rId)) || (tIds.includes(sId) && cIds.includes(rId));
           if (!isRelevant) return;
         }
 
@@ -155,7 +183,7 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
 
   onUnmounted(() => {
     cleanupListeners();
-    emit('leaveOrder', { orderId });
+    emit('leaveOrder', { orderId: toValue(orderIdArg) });
   });
 
   return {

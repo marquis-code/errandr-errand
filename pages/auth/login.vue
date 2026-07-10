@@ -3,18 +3,18 @@
     <!-- Pure White Background -->
     <div class="w-full max-w-[420px] relative z-10">
       <!-- Back to Home -->
-      <NuxtLink to="/" class="absolute -top-16 left-0 flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">
+      <!-- <NuxtLink to="/" class="absolute -top-16 left-0 flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">
         <ArrowLeft class="w-4 h-4" /> Back to website
-      </NuxtLink>
+      </NuxtLink> -->
 
       <!-- Main Content -->
       <div class="w-full">
         <!-- Header -->
-        <div class="text-center mb-10">
+        <div class="text-center space-y-3 mb-10">
                    <div class="flex items-center justify-center group-hover:scale-110 transition-transform">
             <img src="@/assets/img/logo-light.png" class="w-auto h-10" alt="Errandr" />
           </div>
-          <h1 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Rider Login</h1>
+          <h1 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Errand Ninja Login🥷</h1>
           <p class="text-gray-500 font-medium text-sm">Sign in to your rider dashboard</p>
         </div>
 
