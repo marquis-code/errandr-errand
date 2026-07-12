@@ -24,10 +24,8 @@
             </div>
             <UiAnimatedInput v-model="form.email" type="email" label="Email Address" required />
             <UiAnimatedInput v-model="form.phone" type="tel" label="Phone Number" />
-            <div class="grid grid-cols-2 gap-4">
-              <UiSelectInput v-model="form.school" label="School (Optional)" :options="nigerianSchools" />
-              <UiAnimatedInput v-model="form.matricNumber" type="text" label="Matric Number (Optional)" pattern="[A-Za-z0-9/.\-]+" title="Only alphanumeric characters, slashes, and dashes allowed" minlength="5" />
-            </div>
+            <UiSelectInput v-model="form.school" label="School (Optional)" :options="nigerianSchools" />
+            <UiAnimatedInput v-model="form.matricNumber" type="text" label="Matric Number (Optional)" pattern="[A-Za-z0-9/.\-]+" title="Only alphanumeric characters, slashes, and dashes allowed" minlength="5" />
             <UiAnimatedInput v-model="form.password" type="password" label="Password" required minlength="6" />
             <UiAnimatedInput v-model="form.referredBy" type="text" label="Referral Code (Optional)" @input="formatReferralCode" />
 
