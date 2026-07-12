@@ -22,7 +22,7 @@ export const orders_api = {
   },
 
   getErranderOrders: () => {
-    return GATEWAY_ENDPOINT_WITH_AUTH.get('/orders/errander/available');
+    return GATEWAY_ENDPOINT_WITH_AUTH.get('/orders/available');
   },
 
   assignOrder: (id: string) => {
