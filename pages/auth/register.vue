@@ -25,8 +25,8 @@
             <UiAnimatedInput v-model="form.email" type="email" label="Email Address" required />
             <UiAnimatedInput v-model="form.phone" type="tel" label="Phone Number" />
             <div class="grid grid-cols-2 gap-4">
-              <UiAnimatedInput v-model="form.school" type="text" label="School (Optional)" />
-              <UiAnimatedInput v-model="form.matricNumber" type="text" label="Matric Number (Optional)" />
+              <UiSelectInput v-model="form.school" label="School (Optional)" :options="nigerianSchools" />
+              <UiAnimatedInput v-model="form.matricNumber" type="text" label="Matric Number (Optional)" pattern="[A-Za-z0-9/.\-]+" title="Only alphanumeric characters, slashes, and dashes allowed" minlength="5" />
             </div>
             <UiAnimatedInput v-model="form.password" type="password" label="Password" required minlength="6" />
             <UiAnimatedInput v-model="form.referredBy" type="text" label="Referral Code (Optional)" @input="formatReferralCode" />
@@ -73,6 +73,28 @@ const { register, loading } = useAuth()
 const error = ref('')
 const form = reactive({ firstName: '', lastName: '', email: '', password: '', phone: '', role: 'errander', referredBy: '', school: '', matricNumber: '' })
 
+const nigerianSchools = [
+  { label: 'University of Lagos (UNILAG)', value: 'UNILAG' },
+  { label: 'Obafemi Awolowo University (OAU)', value: 'OAU' },
+  { label: 'Ahmadu Bello University (ABU)', value: 'ABU' },
+  { label: 'University of Ibadan (UI)', value: 'UI' },
+  { label: 'Yaba College of Technology (YABATECH)', value: 'YABATECH' },
+  { label: 'Lagos State University (LASU)', value: 'LASU' },
+  { label: 'Covenant University', value: 'CU' },
+  { label: 'Babcock University', value: 'BABCOCK' },
+  { label: 'University of Nigeria Nsukka (UNN)', value: 'UNN' },
+  { label: 'University of Ilorin (UNILORIN)', value: 'UNILORIN' },
+  { label: 'Federal University of Technology Akure (FUTA)', value: 'FUTA' },
+  { label: 'Federal University of Technology Minna (FUTMINNA)', value: 'FUTMINNA' },
+  { label: 'Federal University of Technology Owerri (FUTO)', value: 'FUTO' },
+  { label: 'University of Benin (UNIBEN)', value: 'UNIBEN' },
+  { label: 'University of Port Harcourt (UNIPORT)', value: 'UNIPORT' },
+  { label: 'Afe Babalola University (ABUAD)', value: 'ABUAD' },
+  { label: 'University of Abuja (UNIABUJA)', value: 'UNIABUJA' },
+  { label: 'Nnamdi Azikiwe University (UNIZIK)', value: 'UNIZIK' },
+  { label: 'Bayero University Kano (BUK)', value: 'BUK' },
+  { label: 'Other', value: 'OTHER' }
+]
 
 const validatingReferral = ref(false)
 
