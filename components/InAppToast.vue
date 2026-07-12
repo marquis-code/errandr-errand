@@ -143,7 +143,7 @@ const addToast = (toast: InAppToast) => {
   dismissTimers.set(toast.id, timer)
   
   // Play notification sound
-  playNotificationSound()
+  playNotificationSound(toast.type)
 }
 
 const dismissToast = (id: string) => {
@@ -213,23 +213,50 @@ const acceptOrder = async (toast: InAppToast) => {
   }
 }
 
-const playNotificationSound = () => {
+const playNotificationSound = (type?: string) => {
   try {
     const AudioContext = window.AudioContext || (window as any).webkitAudioContext
     if (!AudioContext) return
     const ctx = new AudioContext()
-    const oscillator = ctx.createOscillator()
-    const gainNode = ctx.createGain()
-    oscillator.connect(gainNode)
-    gainNode.connect(ctx.destination)
-    oscillator.frequency.setValueAtTime(880, ctx.currentTime)
-    oscillator.frequency.setValueAtTime(1100, ctx.currentTime + 0.1)
-    gainNode.gain.setValueAtTime(0.1, ctx.currentTime)
-    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3)
-    oscillator.start(ctx.currentTime)
-    oscillator.stop(ctx.currentTime + 0.3)
+    
+    // Attempt to resume audio context if it was suspended by browser autoplay policy
+    if (ctx.state === 'suspended') {
+      ctx.resume()
+    }
+
+    if (type === 'NEW_ORDER_AVAILABLE') {
+      // Very loud aggressive siren
+      for (let i = 0; i < 15; i++) {
+        const oscillator = ctx.createOscillator()
+        const gainNode = ctx.createGain()
+        oscillator.connect(gainNode)
+        gainNode.connect(ctx.destination)
+        
+        oscillator.type = 'square'
+        // Alternate high and low pitch
+        oscillator.frequency.setValueAtTime(i % 2 === 0 ? 1200 : 800, ctx.currentTime + (i * 0.2))
+        
+        // Very loud volume
+        gainNode.gain.setValueAtTime(1.0, ctx.currentTime + (i * 0.2))
+        gainNode.gain.setValueAtTime(0, ctx.currentTime + ((i + 1) * 0.2))
+        
+        oscillator.start(ctx.currentTime + (i * 0.2))
+        oscillator.stop(ctx.currentTime + ((i + 1) * 0.2))
+      }
+    } else {
+      const oscillator = ctx.createOscillator()
+      const gainNode = ctx.createGain()
+      oscillator.connect(gainNode)
+      gainNode.connect(ctx.destination)
+      oscillator.frequency.setValueAtTime(880, ctx.currentTime)
+      oscillator.frequency.setValueAtTime(1100, ctx.currentTime + 0.1)
+      gainNode.gain.setValueAtTime(0.1, ctx.currentTime)
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3)
+      oscillator.start(ctx.currentTime)
+      oscillator.stop(ctx.currentTime + 0.3)
+    }
   } catch (e) {
-    // Silent fail — user hasn't interacted with page yet
+    console.error('Failed to play audio:', e)
   }
 }
 
