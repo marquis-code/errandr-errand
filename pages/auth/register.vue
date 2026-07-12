@@ -24,6 +24,10 @@
             </div>
             <UiAnimatedInput v-model="form.email" type="email" label="Email Address" required />
             <UiAnimatedInput v-model="form.phone" type="tel" label="Phone Number" />
+            <div class="grid grid-cols-2 gap-4">
+              <UiAnimatedInput v-model="form.school" type="text" label="School (Optional)" />
+              <UiAnimatedInput v-model="form.matricNumber" type="text" label="Matric Number (Optional)" />
+            </div>
             <UiAnimatedInput v-model="form.password" type="password" label="Password" required minlength="6" />
             <UiAnimatedInput v-model="form.referredBy" type="text" label="Referral Code (Optional)" @input="formatReferralCode" />
 
@@ -67,7 +71,7 @@ useHead({ title: 'Become a Rider - Errandr' })
 
 const { register, loading } = useAuth()
 const error = ref('')
-const form = reactive({ firstName: '', lastName: '', email: '', password: '', phone: '', role: 'errander', referredBy: '' })
+const form = reactive({ firstName: '', lastName: '', email: '', password: '', phone: '', role: 'errander', referredBy: '', school: '', matricNumber: '' })
 
 
 const validatingReferral = ref(false)
