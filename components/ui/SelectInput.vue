@@ -16,7 +16,7 @@
         <div
           @click="toggleDropdown"
           :class="[
-            'w-full py-4 pt-6 px-3 bg-white border-[0.5px] border-transparent flex justify-between items-center cursor-pointer',
+            'w-full py-4 pt-6 px-3 bg-[#1A1A1B09] border-[0.5px] border-transparent flex justify-between items-center cursor-pointer',
             'focus:outline-none focus:ring-1 focus:ring-[#3BAB22] focus:border-[#3BAB22] transition-all duration-300',
             roundedClasses,
             disabled ? 'opacity-50 cursor-not-allowed' : '',
