@@ -6,8 +6,8 @@
       
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 relative z-10">
         <div class="space-y-1">
-          <p class="text-sm font-bold text-[#FF5C1A] -wider -none mb-2">Delivery Details</p>
-          <h1 class="text-2xl font-medium text-gray-900 -tight -none">Order #{{ order.orderNumber }}</h1>
+          <p class="text-[10px] font-bold text-[#FF5C1A] uppercase tracking-wider mb-1">Delivery Details</p>
+          <h1 class="text-xl font-bold text-gray-900 tracking-tight">Order #{{ order.orderNumber }}</h1>
         </div>
         <div class="flex items-center gap-3">
           <StatusBadge :status="order.status" class="scale-100" />
@@ -16,8 +16,8 @@
 
       <div class="space-y-4 relative z-10">
         <div class="flex items-center justify-between">
-          <span class="text-sm font-bold text-gray-400 -wider">Delivery Progress</span>
-          <span class="text-sm font-bold text-[#FF5C1A] -wider">Step {{ currentStep + 1 }} / 4</span>
+          <span class="text-xs font-semibold text-gray-400">Delivery Progress</span>
+          <span class="text-xs font-bold text-[#FF5C1A]">Step {{ currentStep + 1 }} / 4</span>
         </div>
         <div class="flex items-center gap-2">
           <div v-for="(step, i) in steps" :key="step" class="flex-1 h-2 rounded-full transition-all duration-1000 relative overflow-hidden border border-gray-50" :class="currentStep >= i ? 'bg-[#FF5C1A]' : 'bg-gray-100'">
@@ -33,24 +33,24 @@
         <!-- Delivery Points -->
         <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-8 relative group">
           <div class="flex items-start gap-6 relative">
-            <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xl shadow-inner border border-amber-100/20 flex-shrink-0 group-hover:scale-105 transition-transform">🏪</div>
+            <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center text-sm shadow-inner border border-amber-100/20 flex-shrink-0 group-hover:scale-105 transition-transform">🏪</div>
             <div class="min-w-0 pt-0.5">
-              <p class="text-sm font-bold text-amber-600 -wider mb-1.5 -none uppercase">Pickup Location</p>
-              <p class="text-lg font-medium text-gray-900 -tight -none mb-1.5 truncate">
+              <p class="text-[10px] font-bold text-amber-600 tracking-wider mb-1 uppercase">Pickup Location</p>
+              <p class="text-sm font-bold text-gray-900 leading-tight mb-1 truncate">
                 {{ order.type === 'custom_errand' ? (order.customDetails?.pickupLocation || 'Custom Pickup') : order.vendor?.storeName }}
               </p>
-              <p class="text-sm font-bold text-gray-400 -relaxed">{{ order.type === 'custom_errand' ? 'Special Request Pickup' : (order.vendor?.address || 'Vendor Address') }}</p>
+              <p class="text-xs font-medium text-gray-500">{{ order.type === 'custom_errand' ? 'Special Request Pickup' : (order.vendor?.address || 'Vendor Address') }}</p>
             </div>
           </div>
           
           <div class="absolute left-[1.75rem] top-20 bottom-24 w-px border-l-2 border-dashed border-gray-100" />
           
           <div class="flex items-start gap-6 relative">
-            <div class="w-10 h-10 rounded-xl bg-[#FF5C1A]/10 text-[#FF5C1A] flex items-center justify-center text-xl shadow-inner border border-[#FF5C1A]/20 flex-shrink-0 group-hover:scale-105 transition-transform">📍</div>
+            <div class="w-8 h-8 rounded-lg bg-[#FF5C1A]/10 text-[#FF5C1A] flex items-center justify-center text-sm shadow-inner border border-[#FF5C1A]/20 flex-shrink-0 group-hover:scale-105 transition-transform">📍</div>
             <div class="min-w-0 pt-0.5">
-              <p class="text-sm font-bold text-[#FF5C1A] -wider mb-1.5 -none uppercase">Drop-off Point</p>
-              <p class="text-lg font-medium text-gray-900 -tight -none mb-1.5 truncate">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</p>
-              <p class="text-sm font-bold text-gray-400 -relaxed line-clamp-2">{{ order.deliveryAddress }} {{ order.type === 'custom_errand' ? `(${order.customDetails?.dropoffLocation})` : '' }}</p>
+              <p class="text-[10px] font-bold text-[#FF5C1A] tracking-wider mb-1 uppercase">Drop-off Point</p>
+              <p class="text-sm font-bold text-gray-900 leading-tight mb-1 truncate">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</p>
+              <p class="text-xs font-medium text-gray-500 line-clamp-2">{{ order.deliveryAddress }} {{ order.type === 'custom_errand' ? `(${order.customDetails?.dropoffLocation})` : '' }}</p>
             </div>
           </div>
         </div>
@@ -101,18 +101,18 @@
       <div class="lg:col-span-2 space-y-6">                   
         <!-- Customer Details -->
         <div class="bg-white p-6 rounded-2xl border border-gray-50 shadow-sm flex flex-col items-center text-center group hover:shadow-lg transition-all">
-          <div class="w-20 h-20 bg-gray-900 rounded-2xl flex items-center justify-center text-white text-2xl font-medium shadow-xl mb-4 group-hover:-translate-y-1 transition-transform border-2 border-white">
+          <div class="w-16 h-16 bg-gray-900 rounded-xl flex items-center justify-center text-white text-xl font-bold shadow-xl mb-3 group-hover:-translate-y-1 transition-transform border-2 border-white">
             {{ order.customer?.firstName?.[0] }}{{ order.customer?.lastName?.[0] }}
           </div>
-          <p class="text-sm font-bold text-[#FF5C1A] -wider mb-2 -none bg-[#FF5C1A]/5 px-2.5 py-1 rounded-full">Primary Contact</p>
-          <h4 class="text-xl font-medium text-gray-900 -tight mb-6 truncate w-full -none">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</h4>
+          <p class="text-[10px] font-bold text-[#FF5C1A] uppercase mb-1.5 bg-[#FF5C1A]/5 px-2 py-0.5 rounded-full">Primary Contact</p>
+          <h4 class="text-sm font-bold text-gray-900 mb-4 truncate w-full">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</h4>
           
           <div class="flex flex-col gap-2 w-full">
-            <a :href="`tel:${order.customer?.phone}`" class="w-full py-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-bold -wider hover:bg-emerald-600 hover:text-white transition-all transform active:scale-95 border border-emerald-100 flex items-center justify-center gap-2.5">
-              <Phone class="w-4 h-4" /> Call Customer
+            <a :href="`tel:${order.customer?.phone}`" class="w-full py-2 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all transform active:scale-95 border border-emerald-100 flex items-center justify-center gap-2">
+              <Phone class="w-3.5 h-3.5" /> Call Customer
             </a>
-            <button @click="openChat(order.customer?._id, order.customer?.firstName + ' ' + order.customer?.lastName, order.customer?.avatar)" class="w-full py-3.5 bg-[#FF5C1A]/5 text-[#FF5C1A] rounded-xl text-sm font-bold -wider hover:bg-[#FF5C1A] hover:text-white transition-all transform active:scale-95 border border-[#FF5C1A]/10 flex items-center justify-center gap-2.5">
-              <MessageSquare class="w-4 h-4" /> Message Customer
+            <button @click="openChat(order.customer?._id, order.customer?.firstName + ' ' + order.customer?.lastName, order.customer?.avatar)" class="w-full py-2 bg-[#FF5C1A]/5 text-[#FF5C1A] rounded-lg text-xs font-bold hover:bg-[#FF5C1A] hover:text-white transition-all transform active:scale-95 border border-[#FF5C1A]/10 flex items-center justify-center gap-2">
+              <MessageSquare class="w-3.5 h-3.5" /> Message Customer
             </button>
           </div>
         </div>
@@ -120,20 +120,20 @@
         <!-- Status Update Actions -->
         <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup' || order.status === 'picked_up'" class="space-y-4">
           <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup'" class="animate-bounce-subtle">
-            <button @click="updateStatus('picked_up')" :disabled="updatingStatus" class="w-full py-5 bg-[#FF5C1A] text-white rounded-xl text-sm font-medium -widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
-              <Loader2 v-if="updatingStatus" class="w-5 h-5 animate-spin" />
-              <span v-else class="text-xl group-hover:rotate-12 transition-transform">📦</span> 
+            <button @click="updateStatus('picked_up')" :disabled="updatingStatus" class="w-full py-3 bg-[#FF5C1A] text-white rounded-lg text-sm font-semibold shadow-md hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-2 group">
+              <Loader2 v-if="updatingStatus" class="w-4 h-4 animate-spin" />
+              <span v-else class="text-lg group-hover:rotate-12 transition-transform">📦</span> 
               {{ updatingStatus ? 'UPDATING...' : 'Confirm Pickup' }}
             </button>
           </div>
           
-          <div v-if="order.status === 'picked_up'" class="space-y-4">
-            <button @click="updateStatus('in_transit')" :disabled="updatingStatus" class="w-full py-3 bg-indigo-600 text-white rounded-xl text-sm font-medium -widest shadow-xl hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-3 group">
-              <Loader2 v-if="updatingStatus" class="w-5 h-5 animate-spin" />
-              <span v-else class="text-xl group-hover:scale-125 transition-transform">🚀</span> 
+          <div v-if="order.status === 'picked_up'" class="space-y-3">
+            <button @click="updateStatus('in_transit')" :disabled="updatingStatus" class="w-full py-3 bg-indigo-600 text-white rounded-lg text-sm font-semibold shadow-md hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-2 group">
+              <Loader2 v-if="updatingStatus" class="w-4 h-4 animate-spin" />
+              <span v-else class="text-lg group-hover:scale-110 transition-transform">🚀</span> 
               {{ updatingStatus ? 'UPDATING...' : 'Start Delivery' }}
             </button>
-            <p class="text-sm text-gray-400 text-center font-bold -wider">Update status once you depart.</p>
+            <p class="text-xs text-gray-400 text-center font-medium">Update status once you depart.</p>
           </div>
         </div>
 
@@ -152,16 +152,16 @@
               type="text"
               maxlength="6"
               placeholder="000000"
-              class="bg-white/5 text-white text-2xl font-medium text-center -widest w-full py-4 rounded-xl border border-white/10 focus:border-[#FF5C1A]/50 focus:bg-white/10 transition-all focus:outline-none placeholder:text-white/5 shadow-inner"
+              class="bg-white/5 text-white text-xl font-bold text-center tracking-widest w-full py-3 rounded-lg border border-white/10 focus:border-[#FF5C1A]/50 focus:bg-white/10 transition-all focus:outline-none placeholder:text-white/20 shadow-inner"
             />
           </div>
           
           <button 
             @click="completeOrder" 
             :disabled="verificationCode.length !== 6 || completing"
-            class="w-full py-4 bg-white text-gray-900 rounded-xl text-sm font-medium -widest shadow-xl hover:bg-[#FF5C1A] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 transition-all relative z-10 group"
+            class="w-full py-3 bg-white text-gray-900 rounded-lg text-sm font-bold shadow-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all relative z-10 group"
           >
-            <Loader2 v-if="completing" class="w-5 h-5 animate-spin flex-shrink-0" />
+            <Loader2 v-if="completing" class="w-4 h-4 animate-spin flex-shrink-0" />
             <span v-else class="text-base">✅</span> 
             {{ completing ? 'VERIFYING...' : 'Finalize Delivery' }}
           </button>
@@ -180,9 +180,9 @@
             </div>
              
             <div class="max-w-xs mx-auto">
-              <p class="text-emerald-100 text-sm font-bold -wider -relaxed mb-8">Funds have been added to your wallet.</p>
+              <p class="text-emerald-100 text-xs font-medium mb-6">Funds have been added to your wallet.</p>
                
-              <NuxtLink to="/deliveries" class="block w-full py-4 bg-white text-emerald-600 rounded-xl font-medium text-sm -widest shadow-lg hover:bg-emerald-50 active:scale-95 transition-all">
+              <NuxtLink to="/deliveries" class="block w-full py-3 bg-white text-emerald-600 rounded-lg font-bold text-sm shadow-md hover:bg-emerald-50 active:scale-95 transition-all">
                 Return to Deliveries
               </NuxtLink>
             </div>

@@ -111,7 +111,7 @@
                   <button 
                     @click="acceptOrder(order._id)"
                     :disabled="acceptingId === order._id"
-                    class="px-5 py-3 bg-gray-900 text-white rounded-xl text-[9px] font-medium uppercase tracking-widest hover:bg-parentPrimary hover:shadow-lg hover:shadow-parentPrimary/20 transition-all disabled:opacity-50 min-w-[110px]"
+                    class="px-4 py-2 bg-gray-900 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-parentPrimary hover:shadow-md hover:shadow-parentPrimary/20 transition-all disabled:opacity-50 min-w-[90px]"
                   >
                     <span v-if="acceptingId === order._id" class="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                     <span v-else>Accept</span>
@@ -213,7 +213,7 @@
           <button 
             @click="acceptOrder(selectedOrder._id); isDrawerOpen = false"
             :disabled="acceptingId === selectedOrder._id || biddingId === selectedOrder._id"
-            class="w-full py-4 bg-gray-950 text-white rounded-xl text-sm font-bold tracking-tight hover:bg-parentPrimary transition-all flex items-center justify-center gap-3 active:scale-95"
+            class="w-full py-2.5 bg-gray-950 text-white rounded-lg text-sm font-bold hover:bg-parentPrimary transition-all flex items-center justify-center gap-2 active:scale-95"
           >
             <Zap v-if="acceptingId !== selectedOrder._id" class="w-4 h-4 fill-current" />
             <span v-else class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
@@ -223,11 +223,11 @@
           <div v-if="selectedOrder.type === 'custom_errand'" class="border-t border-gray-100 pt-4 mt-2">
             <p class="text-xs font-bold text-gray-500 mb-2">Or propose a different fee:</p>
             <div class="flex gap-2">
-              <input v-model.number="bidAmount" type="number" placeholder="New Fee" class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-parentPrimary font-bold text-gray-900" />
+              <input v-model.number="bidAmount" type="number" placeholder="New Fee" class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 outline-none focus:border-parentPrimary font-bold text-gray-900 text-sm" />
               <button 
                 @click="placeBid(selectedOrder._id)"
                 :disabled="!bidAmount || bidAmount <= selectedOrder.deliveryFee || biddingId === selectedOrder._id"
-                class="bg-parentPrimary text-white font-bold px-4 py-3 rounded-xl disabled:opacity-50 hover:bg-orange-600 transition-colors"
+                class="bg-parentPrimary text-white text-sm font-bold px-4 py-2.5 rounded-lg disabled:opacity-50 hover:bg-orange-600 transition-colors"
               >
                 {{ biddingId === selectedOrder._id ? 'Bidding...' : 'Submit Bid' }}
               </button>

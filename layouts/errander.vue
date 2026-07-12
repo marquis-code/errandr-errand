@@ -16,18 +16,27 @@
  <!-- Navigation -->
  <nav class="flex-1 px-4 space-y-1">
  <p class="text-[10px] font-semibold text-gray-400 tracking-wider mb-3 px-3">Menu</p>
- <NuxtLink
- v-for="item in navItems"
- :key="item.path"
- :to="item.path"
- class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all group"
- :class="isActive(item.path) 
- ? 'bg-[#FF5C1A] text-white shadow-md shadow-[#FF5C1A]/20' 
- : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
- >
- <component :is="item.icon" class="w-[18px] h-[18px] mr-3 transition-transform group-hover:scale-110" />
- {{ item.label }}
- </NuxtLink>
+  <template v-for="item in navItems" :key="item.path">
+    <NuxtLink
+      v-if="!isRestricted(item.path)"
+      :to="item.path"
+      class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all group"
+      :class="isActive(item.path) 
+        ? 'bg-[#FF5C1A] text-white shadow-md shadow-[#FF5C1A]/20' 
+        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
+    >
+      <component :is="item.icon" class="w-[18px] h-[18px] mr-3 transition-transform group-hover:scale-110" />
+      {{ item.label }}
+    </NuxtLink>
+    <button
+      v-else
+      @click="handleNavClick($event, item.path)"
+      class="flex items-center w-full px-4 py-3 text-sm font-medium rounded-xl transition-all group opacity-40 cursor-not-allowed text-gray-500 hover:bg-gray-50"
+    >
+      <component :is="item.icon" class="w-[18px] h-[18px] mr-3" />
+      {{ item.label }}
+    </button>
+  </template>
  </nav>
 
  <!-- Logout -->
@@ -98,17 +107,26 @@
  </div>
  
  <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
- <NuxtLink
- v-for="item in navItems"
- :key="item.path"
- :to="item.path"
- class="flex items-center px-4 py-3.5 text-sm font-medium rounded-xl transition-all"
- :class="isActive(item.path) ? 'bg-[#FF5C1A] text-white shadow-md shadow-[#FF5C1A]/20' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
- @click="showMobileMenu = false"
- >
- <component :is="item.icon" class="w-[18px] h-[18px] mr-3" />
- {{ item.label }}
- </NuxtLink>
+  <template v-for="item in navItems" :key="item.path">
+    <NuxtLink
+      v-if="!isRestricted(item.path)"
+      :to="item.path"
+      class="flex items-center px-4 py-3.5 text-sm font-medium rounded-xl transition-all"
+      :class="isActive(item.path) ? 'bg-[#FF5C1A] text-white shadow-md shadow-[#FF5C1A]/20' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
+      @click="showMobileMenu = false"
+    >
+      <component :is="item.icon" class="w-[18px] h-[18px] mr-3" />
+      {{ item.label }}
+    </NuxtLink>
+    <button
+      v-else
+      @click="handleNavClick($event, item.path)"
+      class="flex items-center w-full px-4 py-3.5 text-sm font-medium rounded-xl transition-all opacity-40 cursor-not-allowed text-gray-500 hover:bg-gray-50"
+    >
+      <component :is="item.icon" class="w-[18px] h-[18px] mr-3" />
+      {{ item.label }}
+    </button>
+  </template>
  </nav>
 
  <div class="p-5 border-t border-gray-100">
@@ -151,6 +169,59 @@
  </div>
  </div>
  </header>
+
+ <!-- Global Verification Banner -->
+ <div v-if="errandrProfile && (!errandrProfile.verificationLevel || errandrProfile.verificationLevel === 1) && route.path !== '/verification'" class="bg-gray-900 m-5 md:mx-8 md:mt-8 rounded-xl p-4 flex items-center justify-between gap-4 shadow-lg animate-fade-in z-20 flex-col sm:flex-row">
+   
+   <!-- Pending / Not Started -->
+   <template v-if="!errandrProfile.verificationStatus || errandrProfile.verificationStatus === 'pending'">
+     <div class="flex items-center gap-3">
+       <div class="w-10 h-10 bg-[#FF5C1A] rounded-lg flex items-center justify-center text-white shrink-0 shadow-md">
+         <ShieldAlert class="w-5 h-5" />
+       </div>
+       <div>
+         <h3 class="text-white font-bold text-sm tracking-tight">Action Required: Verify Account</h3>
+         <p class="text-gray-400 text-xs mt-0.5 max-w-sm">Please complete identity verification to start accepting deliveries.</p>
+       </div>
+     </div>
+     <NuxtLink to="/verification" class="px-5 py-2.5 bg-[#FF5C1A] hover:bg-[#E54D12] text-white text-xs font-bold rounded-lg transition-all whitespace-nowrap shadow-md w-full sm:w-auto text-center">
+       Verify Now
+     </NuxtLink>
+   </template>
+
+   <!-- Reviewing -->
+   <template v-else-if="errandrProfile.verificationStatus === 'reviewing'">
+     <div class="flex items-center gap-3">
+       <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white shrink-0 shadow-md">
+         <Clock class="w-5 h-5" />
+       </div>
+       <div>
+         <h3 class="text-white font-bold text-sm tracking-tight">Verification Under Review</h3>
+         <p class="text-gray-400 text-xs mt-0.5 max-w-sm">Your documents are being reviewed. We will notify you once approved.</p>
+       </div>
+     </div>
+     <button disabled class="px-5 py-2.5 bg-gray-800 text-gray-400 text-xs font-bold rounded-lg whitespace-nowrap shadow-md w-full sm:w-auto text-center cursor-not-allowed border border-gray-700">
+       Pending Approval
+     </button>
+   </template>
+
+   <!-- Rejected -->
+   <template v-else-if="errandrProfile.verificationStatus === 'rejected'">
+     <div class="flex items-center gap-3">
+       <div class="w-10 h-10 bg-rose-500 rounded-lg flex items-center justify-center text-white shrink-0 shadow-md">
+         <XCircle class="w-5 h-5" />
+       </div>
+       <div>
+         <h3 class="text-white font-bold text-sm tracking-tight">Verification Rejected</h3>
+         <p class="text-gray-400 text-xs mt-0.5 max-w-sm">There was an issue with your documents. Please review and resubmit.</p>
+       </div>
+     </div>
+     <NuxtLink to="/verification" class="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-lg transition-all whitespace-nowrap shadow-md w-full sm:w-auto text-center">
+       Try Again
+     </NuxtLink>
+   </template>
+
+ </div>
 
  <!-- Page Content -->
  <div class="flex-1 p-5 md:p-8">
@@ -202,23 +273,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useUser } from '@/composables/modules/auth/user'
+import { erranders_api } from '@/api_factory/modules/erranders'
 import { useRouter, useRoute } from 'vue-router'
 import ChatWidget from '@/components/ChatWidget.vue'
-import { 
- LayoutDashboard, 
- Bike, 
- Wallet, 
- User, 
- LogOut, 
- Menu, 
- X,
- ChevronRight,
- Bell,
- Layers,
- MessageSquare
-} from 'lucide-vue-next'
+ import { 
+  LayoutDashboard, 
+  Bike, 
+  Wallet, 
+  User, 
+  LogOut, 
+  Menu, 
+  X,
+  ChevronRight,
+  Bell,
+  Layers,
+  MessageSquare,
+  ShieldCheck,
+  ShieldAlert,
+  Clock,
+  XCircle
+ } from 'lucide-vue-next'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
 import InAppToast from '@/components/InAppToast.vue'
@@ -226,6 +302,46 @@ import InAppToast from '@/components/InAppToast.vue'
 const { toastQueue } = useRealtimeNotifications()
 const { unreadCount } = useNotifications()
 const toastRef = ref<any>(null)
+const errandrProfile = ref<any>(null)
+
+const route = useRoute()
+const router = useRouter()
+const { user, logOut } = useUser()
+
+let profileInterval: any = null
+
+const fetchProfile = async () => {
+  try {
+    const res = await erranders_api.getProfile()
+    if (res && (res as any).type !== 'ERROR' && res.data) {
+      errandrProfile.value = res.data
+      
+      // Real-time polling if under review
+      if (errandrProfile.value.verificationStatus === 'reviewing') {
+        if (!profileInterval) {
+          profileInterval = setInterval(fetchProfile, 10000) // poll every 10s
+        }
+      } else {
+        if (profileInterval) {
+          clearInterval(profileInterval)
+          profileInterval = null
+        }
+      }
+    }
+  } catch (e) {}
+}
+
+onMounted(() => {
+  fetchProfile()
+})
+
+watch(() => route.path, () => {
+  fetchProfile()
+})
+
+onUnmounted(() => {
+  if (profileInterval) clearInterval(profileInterval)
+})
 
 // Watch toastQueue to push to component
 watch(() => toastQueue.value.length, (newLen, oldLen) => {
@@ -241,11 +357,30 @@ watch(() => toastQueue.value.length, (newLen, oldLen) => {
 })
 
 
-const route = useRoute()
-const router = useRouter()
-const { user, logOut } = useUser()
 const showMobileMenu = ref(false)
 const logoutModalOpen = ref(false)
+
+const isRestricted = (path: string) => {
+  const restrictedPaths = ['/deliveries/pool', '/deliveries', '/deliveries/chats']
+  return restrictedPaths.includes(path) && (!errandrProfile.value?.verificationLevel || errandrProfile.value.verificationLevel === 1)
+}
+
+const handleNavClick = (e: Event, path: string) => {
+  if (isRestricted(path)) {
+    e.preventDefault()
+    if (toastRef.value) {
+      toastRef.value.addToast({
+        id: Date.now().toString(),
+        title: 'Action Required',
+        message: 'Please complete identity verification to access deliveries.',
+        type: 'error',
+        time: new Date().toLocaleTimeString()
+      })
+    }
+  } else {
+    showMobileMenu.value = false
+  }
+}
 
 const navItems = [
  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -261,6 +396,7 @@ const pageTitles: Record<string, { title: string; description: string }> = {
  '/dashboard': { title: 'Dashboard', description: 'Your delivery overview at a glance.' },
  '/deliveries/pool': { title: 'Order Pool', description: 'Real-time pool of pending orders awaiting a rider.' },
  '/deliveries': { title: 'My Deliveries', description: 'Track and manage your active and past deliveries.' },
+ '/verification': { title: 'Account Verification', description: 'Submit and manage your identity verification.' },
  '/earnings': { title: 'Earnings', description: 'View your earnings, tips, and payout history.' },
  '/notifications': { title: 'Notifications', description: 'Real-time updates and new delivery opportunities.' },
  '/profile': { title: 'Profile', description: 'Manage your personal information and settings.' }

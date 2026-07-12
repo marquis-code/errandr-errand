@@ -32,6 +32,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Active Delivery + Recent Deliveries -->
       <div class="lg:col-span-2 space-y-6">
+
         <!-- Active Deliveries Section -->
         <div class="bg-white/70 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden shadow-md">
           <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
