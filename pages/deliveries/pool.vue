@@ -220,6 +220,18 @@
           <p class="text-xs font-medium text-gray-500">{{ selectedOrder.recipientPhone }}</p>
         </div>
 
+        <!-- Item Cost Bank Transfer Notice -->
+        <div v-if="selectedOrder.type === 'custom_errand' && selectedOrder.customDetails?.estimatedItemCost > 0" class="p-4 bg-blue-50 border border-blue-200 rounded-2xl space-y-2">
+          <div class="flex items-center gap-2">
+            <Banknote class="w-4 h-4 text-blue-600" />
+            <h4 class="text-xs font-bold text-blue-800 uppercase tracking-wide">Item Cost Transfer</h4>
+          </div>
+          <p class="text-sm font-medium text-blue-700 leading-relaxed">
+            ₦{{ (selectedOrder.customDetails.estimatedItemCost).toLocaleString() }} will be transferred to your <strong>bank account</strong> immediately when you accept this errand, so you can purchase the items.
+          </p>
+          <p class="text-[11px] font-medium text-blue-500">Make sure your bank details are set up in Wallet → Settings.</p>
+        </div>
+
         <!-- Actions inside drawer -->
         <div class="space-y-3">
           <button 
@@ -259,7 +271,7 @@ import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
 import { useRealtimeSocket } from '@/composables/core/useRealtimeSocket'
 import { useRouter } from 'vue-router'
-import { Clock, Zap, ChevronRight, Eye, User, X } from 'lucide-vue-next'
+import { Clock, Zap, ChevronRight, Eye, User, X, Banknote } from 'lucide-vue-next'
 import SideDrawer from '@/components/ui/SideDrawer.vue'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 
