@@ -137,6 +137,45 @@
           </div>
         </div>
 
+        <!-- Reconciliation Interface (For Custom Errands with Item Cost) -->
+        <div v-if="order.type === 'custom_errand' && order.customDetails?.estimatedItemCost > 0 && order.reconciliationStatus !== 'approved'" class="bg-amber-50 rounded-2xl p-6 space-y-4 shadow-sm border border-amber-100">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 flex-shrink-0">
+              💰
+            </div>
+            <div>
+              <h3 class="text-amber-900 font-bold text-sm">Item Cost Reconciliation</h3>
+              <p class="text-amber-700 text-xs mt-1 leading-relaxed">
+                You were sent ₦{{ order.customDetails?.estimatedItemCost?.toLocaleString() }}. If the actual cost was different, submit it below. The customer must approve to refund any difference.
+              </p>
+            </div>
+          </div>
+          
+          <div v-if="order.reconciliationStatus === 'submitted'" class="bg-amber-100 text-amber-800 p-3 rounded-xl text-sm font-bold text-center border border-amber-200">
+            Reconciliation submitted! Awaiting customer approval for ₦{{ order.actualItemCost?.toLocaleString() }} actual cost.
+          </div>
+          <div v-else class="space-y-3 pt-2 border-t border-amber-100">
+            <div>
+              <label class="block text-[10px] font-bold text-amber-800 uppercase tracking-wider mb-1">Actual Cost (₦)</label>
+              <input
+                v-model.number="actualItemCost"
+                type="number"
+                placeholder="Enter exact amount spent"
+                class="bg-white text-gray-900 font-bold w-full p-3 rounded-xl border border-amber-200 focus:border-amber-500 transition-all focus:outline-none"
+              />
+            </div>
+            <button 
+              @click="submitReconciliation" 
+              :disabled="!actualItemCost || actualItemCost < 0 || submittingReconciliation"
+              class="w-full py-3 bg-amber-600 text-white rounded-xl text-sm font-bold shadow-sm hover:bg-amber-700 disabled:opacity-50 flex items-center justify-center gap-2 transition-all"
+            >
+              <Loader2 v-if="submittingReconciliation" class="w-4 h-4 animate-spin" />
+              <span v-else>✅</span> 
+              {{ submittingReconciliation ? 'SUBMITTING...' : 'Submit Actual Cost' }}
+            </button>
+          </div>
+        </div>
+
         <!-- Verification Interface -->
         <div v-if="order.status === 'in_transit' || order.status === 'picked_up'" class="bg-gray-900 rounded-2xl p-6 space-y-6 shadow-xl relative overflow-hidden group border border-white/5">
           <div class="absolute -right-32 -top-32 w-64 h-64 bg-[#FF5C1A]/20 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000" />
@@ -247,6 +286,43 @@ const openChat = (receiverId: string | undefined, name: string, avatar?: string)
 const { showToast } = useCustomToast();
 
 const updatingStatus = ref(false);
+
+const actualItemCost = ref<number | null>(null);
+const submittingReconciliation = ref(false);
+
+const submitReconciliation = async () => {
+  if (!actualItemCost.value || actualItemCost.value < 0) return;
+  submittingReconciliation.value = true;
+  try {
+    const res = await api.put<any>(`/orders/${route.params.id}/reconcile`, {
+      actualItemCost: actualItemCost.value
+    });
+    
+    if (res && res.type === 'ERROR') {
+      showToast({
+        title: 'Submission Failed',
+        message: res.data?.message || 'Failed to submit reconciliation',
+        toastType: 'error'
+      });
+      return;
+    }
+
+    order.value = res.data;
+    showToast({
+      title: 'Submitted',
+      message: 'Actual cost submitted to customer for approval.',
+      toastType: 'success'
+    });
+  } catch (e: any) {
+    showToast({
+      title: 'Submission Failed',
+      message: e.response?.data?.message || 'Failed to submit reconciliation',
+      toastType: 'error'
+    });
+  } finally {
+    submittingReconciliation.value = false;
+  }
+};
 
 const updateStatus = async (status: string) => {
   updatingStatus.value = true;
