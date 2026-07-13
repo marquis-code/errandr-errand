@@ -62,11 +62,17 @@
                     <h3 class="text-sm font-medium text-gray-900 mb-1 line-clamp-1">
                       {{ order.type === 'custom_errand' ? 'Custom Errand' : (order.vendor?.storeName || 'Store Order') }}
                     </h3>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 mb-1.5">
                       <span class="text-[9px] font-medium tracking-widest text-[#FF5C1A] uppercase bg-[#FF5C1A]/5 px-2 py-0.5 rounded">#{{ order.orderNumber?.slice(-8) }}</span>
                       <span class="text-[9px] font-bold text-gray-400 flex items-center gap-1">
                         <Clock class="w-2.5 h-2.5" /> {{ formatTime(order.createdAt) }}
                       </span>
+                    </div>
+                    <p v-if="order.type === 'custom_errand' && order.customDetails?.description" class="text-xs text-gray-500 line-clamp-1 max-w-sm mb-1.5 whitespace-pre-line">
+                      {{ order.customDetails.description }}
+                    </p>
+                    <div v-if="order.type === 'custom_errand' && order.customDetails?.attachedVoiceNote" class="mt-1" @click.stop>
+                      <audio :src="order.customDetails.attachedVoiceNote" controls class="h-8 w-48 max-w-[200px]" preload="metadata" />
                     </div>
                   </div>
                 </div>
@@ -180,8 +186,14 @@
         <!-- Order Items or Description -->
         <div class="space-y-4 pt-4 border-t border-gray-100">
           <h4 class="text-xs font-medium text-gray-900 uppercase tracking-widest">{{ selectedOrder.type === 'custom_errand' ? 'Errand Description' : 'Order Summary' }}</h4>
-          <div v-if="selectedOrder.type === 'custom_errand'" class="p-4 bg-gray-50/50 rounded-xl text-sm text-gray-700 leading-relaxed">
+          <div v-if="selectedOrder.type === 'custom_errand'" class="p-4 bg-gray-50/50 rounded-xl text-sm text-gray-700 leading-relaxed whitespace-pre-line">
             {{ selectedOrder.customDetails?.description }}
+            
+            <div v-if="selectedOrder.customDetails?.attachedVoiceNote" class="mt-4 pt-4 border-t border-gray-200 flex flex-col gap-2">
+              <span class="text-xs font-medium text-gray-500 uppercase tracking-widest">Attached Voice Note</span>
+              <audio :src="selectedOrder.customDetails.attachedVoiceNote" controls class="w-full h-10 bg-white rounded-full shadow-sm" preload="metadata" />
+            </div>
+
             <div class="mt-3 pt-3 border-t border-gray-200 flex justify-between items-center text-xs">
               <span class="font-medium text-gray-500">Estimated Item Cost</span>
               <span class="font-bold text-gray-900">₦{{ (selectedOrder.customDetails?.estimatedItemCost || 0).toLocaleString() }}</span>
