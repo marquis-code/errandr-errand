@@ -44,7 +44,7 @@ export const useRealtimeSocket = () => {
 
     socket.value = io(`${baseUrl}/realtime`, {
       path: '/socket.io/',
-      transports: ['websocket', 'polling'], // Fallback to polling if websocket fails
+      transports: ['polling', 'websocket'], // Fallback to polling if websocket fails
       reconnectionAttempts: 5,
       timeout: 10000,
       auth: authPayload,
