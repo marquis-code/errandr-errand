@@ -26,10 +26,20 @@ export const useUser = () => {
 
   const setUser = (userData: User) => {
     user.value = userData;
+    if (typeof window !== 'undefined') {
+      const expires = new Date(Date.now() + 7 * 86400 * 1000).toUTCString();
+      document.cookie = `errandr_dispatch_user=${encodeURIComponent(JSON.stringify(userData))}; expires=${expires}; path=/; samesite=lax`;
+      localStorage.setItem('user', JSON.stringify(userData));
+    }
   };
 
   const setToken = (newToken: string) => {
     token.value = newToken;
+    if (typeof window !== 'undefined') {
+      const expires = new Date(Date.now() + 7 * 86400 * 1000).toUTCString();
+      document.cookie = `errandr_dispatch_token=${newToken}; expires=${expires}; path=/; samesite=lax`;
+      localStorage.setItem('token', newToken);
+    }
   };
 
   const logOut = () => {
