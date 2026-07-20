@@ -34,12 +34,20 @@
         <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-8 relative group">
           <div class="flex items-start gap-6 relative">
             <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center text-sm shadow-inner border border-amber-100/20 flex-shrink-0 group-hover:scale-105 transition-transform">🏪</div>
-            <div class="min-w-0 pt-0.5">
+            <div class="min-w-0 pt-0.5 w-full">
               <p class="text-[10px] font-bold text-amber-600 tracking-wider mb-1 uppercase">Pickup Location</p>
               <p class="text-sm font-bold text-gray-900 leading-tight mb-1 truncate">
                 {{ order.type === 'custom_errand' ? (order.customDetails?.pickupLocation || 'Custom Pickup') : order.vendor?.storeName }}
               </p>
-              <p class="text-xs font-medium text-gray-500">{{ order.type === 'custom_errand' ? 'Special Request Pickup' : (order.vendor?.address || 'Vendor Address') }}</p>
+              <p class="text-xs font-medium text-gray-500 mb-2">{{ order.type === 'custom_errand' ? 'Special Request Pickup' : (order.vendor?.address || 'Vendor Address') }}</p>
+              
+              <button 
+                v-if="order.type !== 'custom_errand' && order.vendor"
+                @click="openChat(String(order.vendor?.owner || order.vendor?._id || ''), order.vendor?.storeName + ' (Store)', order.vendor?.logo || order.vendor?.storeLogo)" 
+                class="w-full sm:w-auto px-3 py-1.5 bg-amber-50 text-amber-600 rounded-lg text-[11px] font-bold hover:bg-amber-100 transition-all transform active:scale-95 border border-amber-100 flex items-center justify-center gap-1.5"
+              >
+                <MessageSquare class="w-3 h-3" /> Message Store
+              </button>
             </div>
           </div>
           
@@ -111,7 +119,7 @@
             <a :href="`tel:${order.customer?.phone}`" class="w-full py-2 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all transform active:scale-95 border border-emerald-100 flex items-center justify-center gap-2">
               <Phone class="w-3.5 h-3.5" /> Call Customer
             </a>
-            <button @click="openChat(order.customer?._id, order.customer?.firstName + ' ' + order.customer?.lastName, order.customer?.avatar)" class="w-full py-2 bg-[#FF5C1A]/5 text-[#FF5C1A] rounded-lg text-xs font-bold hover:bg-[#FF5C1A] hover:text-white transition-all transform active:scale-95 border border-[#FF5C1A]/10 flex items-center justify-center gap-2">
+            <button @click="openChat(String(order.customer?._id || ''), order.customer?.firstName + ' ' + order.customer?.lastName, order.customer?.avatar)" class="w-full py-2 bg-[#FF5C1A]/5 text-[#FF5C1A] rounded-lg text-xs font-bold hover:bg-[#FF5C1A] hover:text-white transition-all transform active:scale-95 border border-[#FF5C1A]/10 flex items-center justify-center gap-2">
               <MessageSquare class="w-3.5 h-3.5" /> Message Customer
             </button>
           </div>

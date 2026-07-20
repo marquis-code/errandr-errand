@@ -1,52 +1,67 @@
 <template>
  <div class="min-h-screen bg-[#f8f9fb]">
  <!-- Desktop Sidebar -->
- <aside class="hidden lg:flex flex-col w-64 bg-white border-r border-gray-100 min-h-screen fixed left-0 top-0 z-50">
+ <aside class="hidden lg:flex flex-col bg-white border-r border-gray-100 min-h-screen fixed left-0 top-0 z-50 transition-all duration-300" :class="isSidebarMinimized ? 'w-20' : 'w-64'">
  <!-- Logo -->
- <div class="p-6 pb-8 flex items-center gap-3">
- <div class="w-10 h-10 bg-gradient-to-br from-[#FF5C1A] to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-[#FF5C1A]/20">
+ <div class="p-6 pb-8 flex items-center gap-3 relative" :class="isSidebarMinimized ? 'justify-center px-0' : ''">
+ <div class="w-10 h-10 bg-gradient-to-br from-[#FF5C1A] to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-[#FF5C1A]/20 shrink-0">
  E
  </div>
- <div class="flex flex-col">
+ <div v-if="!isSidebarMinimized" class="flex flex-col">
  <span class="text-lg font-bold text-gray-900 tracking-tight leading-none">Errandr</span>
  <span class="text-[10px] font-semibold text-[#FF5C1A] tracking-wide leading-none mt-0.5">Rider Portal</span>
  </div>
+
+ <!-- Toggle Button -->
+ <button 
+  @click="isSidebarMinimized = !isSidebarMinimized"
+  class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white border border-gray-200 rounded-full flex items-center justify-center shadow-sm text-gray-500 hover:text-[#FF5C1A] hover:border-[#FF5C1A] z-50 transition-colors"
+ >
+  <ChevronLeft v-if="!isSidebarMinimized" class="w-4 h-4" />
+  <ChevronRight v-else class="w-4 h-4" />
+ </button>
  </div>
  
  <!-- Navigation -->
- <nav class="flex-1 px-4 space-y-1">
- <p class="text-[10px] font-semibold text-gray-400 tracking-wider mb-3 px-3">Menu</p>
+ <nav class="flex-1 space-y-1" :class="isSidebarMinimized ? 'px-3' : 'px-4'">
+ <p v-if="!isSidebarMinimized" class="text-[10px] font-semibold text-gray-400 tracking-wider mb-3 px-3">Menu</p>
   <template v-for="item in navItems" :key="item.path">
     <NuxtLink
       v-if="!isRestricted(item.path)"
       :to="item.path"
-      class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all group"
-      :class="isActive(item.path) 
-        ? 'bg-[#FF5C1A] text-white shadow-md shadow-[#FF5C1A]/20' 
-        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
+      class="flex items-center py-3 text-sm font-medium rounded-xl transition-all group"
+      :class="[
+        isActive(item.path) ? 'bg-[#FF5C1A] text-white shadow-md shadow-[#FF5C1A]/20' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50',
+        isSidebarMinimized ? 'justify-center px-0' : 'px-4'
+      ]"
+      :title="isSidebarMinimized ? item.label : ''"
     >
-      <component :is="item.icon" class="w-[18px] h-[18px] mr-3 transition-transform group-hover:scale-110" />
-      {{ item.label }}
+      <component :is="item.icon" class="w-[18px] h-[18px] transition-transform group-hover:scale-110 shrink-0" :class="isSidebarMinimized ? '' : 'mr-3'" />
+      <span v-if="!isSidebarMinimized">{{ item.label }}</span>
     </NuxtLink>
     <button
       v-else
       @click="handleNavClick($event, item.path)"
-      class="flex items-center w-full px-4 py-3 text-sm font-medium rounded-xl transition-all group opacity-40 cursor-not-allowed text-gray-500 hover:bg-gray-50"
+      class="flex items-center w-full py-3 text-sm font-medium rounded-xl transition-all group opacity-40 cursor-not-allowed text-gray-500 hover:bg-gray-50"
+      :class="isSidebarMinimized ? 'justify-center px-0' : 'px-4'"
+      :title="isSidebarMinimized ? item.label : ''"
     >
-      <component :is="item.icon" class="w-[18px] h-[18px] mr-3" />
-      {{ item.label }}
+      <component :is="item.icon" class="w-[18px] h-[18px] shrink-0" :class="isSidebarMinimized ? '' : 'mr-3'" />
+      <span v-if="!isSidebarMinimized">{{ item.label }}</span>
     </button>
   </template>
  </nav>
 
  <!-- Logout -->
- <div class="p-4 border-t border-gray-100">
+ <div class="border-t border-gray-100" :class="isSidebarMinimized ? 'p-3' : 'p-4'">
  <button
  @click="handleLogoutClick"
- class="flex items-center w-full px-4 py-3 text-sm font-medium text-rose-500 hover:bg-rose-50 rounded-xl transition-all group"
+ class="flex items-center w-full py-3 text-sm font-medium text-rose-500 hover:bg-rose-50 rounded-xl transition-all group"
+ :class="isSidebarMinimized ? 'justify-center px-0' : 'px-4'"
+ :title="isSidebarMinimized ? 'Log Out' : ''"
  >
- <LogOut class="w-[18px] h-[18px] mr-3 transition-transform group-hover:-translate-x-0.5" />
- Log Out
+ <LogOut class="w-[18px] h-[18px] transition-transform group-hover:-translate-x-0.5 shrink-0" :class="isSidebarMinimized ? '' : 'mr-3'" />
+ <span v-if="!isSidebarMinimized">Log Out</span>
  </button>
  </div>
  </aside>
@@ -138,7 +153,7 @@
  </Transition>
 
  <!-- Main Content -->
- <main class="flex-1 lg:ml-64 flex flex-col min-h-screen">
+ <main class="flex-1 flex flex-col min-h-screen transition-all duration-300" :class="isSidebarMinimized ? 'lg:ml-20' : 'lg:ml-64'">
  <!-- Desktop Header -->
  <header class="bg-white/80 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-30 px-8 py-5 hidden lg:flex items-center justify-between">
  <div>
@@ -170,24 +185,28 @@
  </div>
  </header>
 
- <!-- Global Verification Banner -->
- <div v-if="errandrProfile && (!errandrProfile.verificationLevel || errandrProfile.verificationLevel === 1) && route.path !== '/verification'" class="bg-gray-900 m-5 md:mx-8 md:mt-8 rounded-xl p-4 flex items-center justify-between gap-4 shadow-lg animate-fade-in z-20 flex-col sm:flex-row">
-   
-   <!-- Pending / Not Started -->
-   <template v-if="!errandrProfile.verificationStatus || errandrProfile.verificationStatus === 'pending'">
-     <div class="flex items-center gap-3">
-       <div class="w-10 h-10 bg-[#FF5C1A] rounded-lg flex items-center justify-center text-white shrink-0 shadow-md">
-         <ShieldAlert class="w-5 h-5" />
-       </div>
-       <div>
-         <h3 class="text-white font-bold text-sm tracking-tight">Action Required: Verify Account</h3>
-         <p class="text-gray-400 text-xs mt-0.5 max-w-sm">Please complete identity verification to start accepting deliveries.</p>
-       </div>
-     </div>
-     <NuxtLink to="/verification" class="px-5 py-2.5 bg-[#FF5C1A] hover:bg-[#E54D12] text-white text-xs font-bold rounded-lg transition-all whitespace-nowrap shadow-md w-full sm:w-auto text-center">
-       Verify Now
-     </NuxtLink>
-   </template>
+  <!-- Global Verification Banner -->
+  <div v-if="errandrProfile && (!errandrProfile.verificationLevel || errandrProfile.verificationLevel < 3) && route.path !== '/verification'" class="bg-gray-900 m-5 md:mx-8 md:mt-8 rounded-xl p-4 flex items-center justify-between gap-4 shadow-lg animate-fade-in z-20 flex-col sm:flex-row">
+    
+    <!-- Pending / Not Started / Upgrade -->
+    <template v-if="!errandrProfile.verificationStatus || errandrProfile.verificationStatus === 'pending' || errandrProfile.verificationStatus === 'approved'">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-[#FF5C1A] rounded-lg flex items-center justify-center text-white shrink-0 shadow-md">
+          <ShieldAlert class="w-5 h-5" />
+        </div>
+        <div>
+          <h3 class="text-white font-bold text-sm tracking-tight">
+            {{ errandrProfile.verificationLevel === 2 ? 'Action Required: Upgrade to Tier 3' : 'Action Required: Verify Account' }}
+          </h3>
+          <p class="text-gray-400 text-xs mt-0.5 max-w-sm">
+            {{ errandrProfile.verificationLevel === 2 ? 'Submit guarantor details to unlock Pro rider benefits.' : 'Please complete identity verification to start accepting deliveries.' }}
+          </p>
+        </div>
+      </div>
+      <NuxtLink to="/verification" class="px-5 py-2.5 bg-[#FF5C1A] hover:bg-[#E54D12] text-white text-xs font-bold rounded-lg transition-all whitespace-nowrap shadow-md w-full sm:w-auto text-center">
+        {{ errandrProfile.verificationLevel === 2 ? 'Upgrade Now' : 'Verify Now' }}
+      </NuxtLink>
+    </template>
 
    <!-- Reviewing -->
    <template v-else-if="errandrProfile.verificationStatus === 'reviewing'">
@@ -266,9 +285,9 @@
  </Transition>
 
  <!-- Chat Widget -->
- <div class="fixed bottom-6 right-6 z-[99]">
- <ChatWidget />
- </div>
+ <!-- <div class="fixed bottom-6 right-6 z-[99]">
+    <ChatWidget />
+ </div> -->
  </div>
 </template>
 
@@ -287,6 +306,7 @@ import ChatWidget from '@/components/ChatWidget.vue'
   Menu, 
   X,
   ChevronRight,
+  ChevronLeft,
   Bell,
   Layers,
   MessageSquare,
@@ -331,8 +351,14 @@ const fetchProfile = async () => {
   } catch (e) {}
 }
 
+const { requestPermissionAndRegister, listenForNotifications } = useDispatchNotifications()
+
 onMounted(() => {
   fetchProfile()
+  
+  // Initialize Push Notifications
+  requestPermissionAndRegister()
+  listenForNotifications()
 })
 
 watch(() => route.path, () => {
@@ -359,6 +385,7 @@ watch(() => toastQueue.value.length, (newLen, oldLen) => {
 
 const showMobileMenu = ref(false)
 const logoutModalOpen = ref(false)
+const isSidebarMinimized = ref(false)
 
 const isRestricted = (path: string) => {
   const restrictedPaths = ['/deliveries/pool', '/deliveries', '/deliveries/chats']

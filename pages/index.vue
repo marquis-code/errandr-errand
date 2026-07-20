@@ -15,12 +15,12 @@
             </div>
             
             <h1 class="text-4xl sm:text-5xl lg:text-[4.5rem] font-medium tracking-tight leading-[1.05] text-slate-900">
-              Deliver the <span class="text-parentPrimary">Campus.</span><br />
-              Earn Cash Instantly.
+              Make Money <span class="text-parentPrimary">on Campus,</span><br />
+              Sharp Sharp!
             </h1>
             
             <p class="text-base sm:text-lg text-slate-500 font-medium leading-relaxed max-w-xl">
-              Erranders puts earning potential right in your pocket. Accept delivery requests, pick up from local vendors, deliver directly to lecture halls & hostels, and get paid instantly.
+              Turn your free time between classes into real cash. Pick up food and items from vendors, drop them off at hostels or lecture halls, and get your money instantly. Easy peasy!
             </p>
             
             <div class="flex flex-row items-center gap-4 w-full sm:w-auto">

@@ -89,12 +89,22 @@
           </div>
 
           <div class="space-y-6">
-            <div class="p-10 border-2 border-dashed border-white/10 rounded-[2.5rem] text-center hover:border-[#FF5C1A]/50 transition-all cursor-pointer group bg-white/5">
-              <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <Upload class="w-6 h-6 text-gray-400" />
+            <div class="grid grid-cols-2 gap-4">
+              <div class="p-8 border-2 border-dashed border-white/10 rounded-[2rem] text-center hover:border-[#FF5C1A]/50 transition-all cursor-pointer group bg-white/5 flex flex-col items-center justify-center">
+                <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Upload class="w-6 h-6 text-gray-400" />
+                </div>
+                <p class="text-xs font-bold text-white mb-1">Student ID</p>
+                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest leading-tight">Required</p>
               </div>
-              <p class="text-sm font-bold text-white mb-1">Upload Student ID</p>
-              <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Required for activation</p>
+              
+              <div class="p-8 border-2 border-dashed border-white/10 rounded-[2rem] text-center hover:border-[#FF5C1A]/50 transition-all cursor-pointer group bg-white/5 flex flex-col items-center justify-center">
+                <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Upload class="w-6 h-6 text-gray-400" />
+                </div>
+                <p class="text-xs font-bold text-white mb-1">NIN Slip</p>
+                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest leading-tight">Required</p>
+              </div>
             </div>
             
             <div class="flex items-center gap-4 p-5 bg-[#FF5C1A]/10 rounded-2xl border border-[#FF5C1A]/20">

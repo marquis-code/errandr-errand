@@ -32,4 +32,8 @@ export const auth_api = {
   verifyResetOtp: (payload: { email: string; otp: string }) => {
     return GATEWAY_ENDPOINT.post('/auth/verify-reset-otp', payload);
   },
+
+  updateFcmToken: (payload: { token: string }) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.put('/users/me/fcm-token', payload);
+  },
 };

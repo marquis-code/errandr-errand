@@ -14,7 +14,7 @@
           Rider Agreement
         </div>
         <h1 class="text-5xl md:text-7xl font-medium tracking-tighter leading-[0.9] text-gray-900 mb-6 max-w-4xl mx-auto">
-          Dispatch <span class="text-parentPrimary italic">Mandate.</span>
+          Dispatch <span class="text-parentPrimary">Mandate.</span>
         </h1>
         <p class="text-[11px] font-medium text-gray-400 tracking-[0.2em] uppercase">Last updated: January 26, 2026</p>
       </div>
@@ -31,7 +31,7 @@
               </span>
               <div class="space-y-4 text-left">
                 <h2 class="text-2xl font-medium text-gray-900 tracking-tight">{{ section.title }}</h2>
-                <div class="text-lg text-gray-500 font-bold leading-relaxed tracking-tight" v-html="section.content"></div>
+                <div class="text-base text-gray-600 font-medium leading-relaxed tracking-tight" v-html="section.content"></div>
               </div>
             </div>
           </div>

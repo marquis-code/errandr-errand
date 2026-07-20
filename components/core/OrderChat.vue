@@ -1,4 +1,5 @@
 <template>
+ <Teleport to="body">
  <div v-if="isOpen" class="fixed inset-0 z-[100] flex justify-end animate-fade-in font-sans">
  <!-- Backdrop -->
  <div @click="$emit('close')" class="absolute inset-0 bg-black/20 backdrop-blur-[2px] transition-opacity" />
@@ -167,6 +168,7 @@
  </div>
  </div>
  </div>
+ </Teleport>
 </template>
 
 <script setup lang="ts">

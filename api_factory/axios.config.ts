@@ -5,12 +5,10 @@ import { useCustomToast } from '@/composables/core/useCustomToast'
 
 const { token, logOut } = useUser();
 
-const $GATEWAY_ENDPOINT_WITHOUT_VERSION = import.meta.env
-  .VITE_API_BASE_URL as string;
+const $GATEWAY_ENDPOINT_WITHOUT_VERSION = import.meta.env.VITE_API_BASE_URL as string;
 const $GATEWAY_ENDPOINT = import.meta.env.VITE_API_BASE_URL + "/api/v1";
 const $GATEWAY_ENDPOINT_V2 = import.meta.env.VITE_API_BASE_URL + "/v2";
-const $IMAGE_UPLOAD_ENDPOINT = import.meta.env
-  .VITE_IMAGE_UPLOAD_BASE_URL as string;
+const $IMAGE_UPLOAD_ENDPOINT = import.meta.env.VITE_IMAGE_UPLOAD_BASE_URL as string;
 
 export const GATEWAY_ENDPOINT = axios.create({
   baseURL: $GATEWAY_ENDPOINT,

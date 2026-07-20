@@ -16,6 +16,7 @@ export interface Message {
     avatar?: string;
   };
   createdAt: string;
+  status?: string;
 }
 
 export const useOrderChat = (
@@ -29,24 +30,24 @@ export const useOrderChat = (
   const isTyping = ref(false);
   const typingTimeout = ref<any>(null);
 
-  // Store listener references for proper cleanup
   let newMessageHandler: ((message: any) => void) | null = null;
   let userTypingHandler: ((data: any) => void) | null = null;
+  let confirmedHandler: ((message: any) => void) | null = null;
 
   const fetchMessages = async () => {
     loading.value = true;
     const orderId = toValue(orderIdArg);
-    const currentUserId = toValue(currentUserIdArg);
-    const targetUserId = toValue(targetUserIdArg);
     try {
       const res = await api.get(`/chat/order/${orderId}`);
+      const targetUserId = toValue(targetUserIdArg);
+      const currentUserId = toValue(currentUserIdArg);
       if (currentUserId && targetUserId) {
         messages.value = (res.data || []).filter((m: any) => {
           const sId = String(m.senderId || m.sender?._id || m.sender || '');
           const rId = String(m.receiverId || m.receiver?._id || m.receiver || '');
           const cIds = String(currentUserId).split(',').map(id => id.trim());
           const tIds = String(targetUserId).split(',').map(id => id.trim());
-          const isGeneric = !rId || rId === 'undefined';
+          const isGeneric = !rId || rId === 'undefined' || rId === '[object Object]';
           return isGeneric || (cIds.includes(sId) && tIds.includes(rId)) || (tIds.includes(sId) && cIds.includes(rId));
         });
       } else {
@@ -83,7 +84,8 @@ export const useOrderChat = (
       content: text,
       messageType: type,
       attachment,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      status: 'pending'
     };
     messages.value.push(tempMsg as any);
 
@@ -109,11 +111,18 @@ export const useOrderChat = (
   const cleanupListeners = () => {
     if (newMessageHandler) {
       off('newMessage', newMessageHandler);
+      off('chat:new-message', newMessageHandler);
+      off('newMessageNotification', newMessageHandler);
       newMessageHandler = null;
     }
     if (userTypingHandler) {
       off('userTyping', userTypingHandler);
+      off('chat:user-typing', userTypingHandler);
       userTypingHandler = null;
+    }
+    if (confirmedHandler) {
+      off('messageConfirmed', confirmedHandler);
+      confirmedHandler = null;
     }
   };
 
@@ -124,10 +133,9 @@ export const useOrderChat = (
     const orderId = toValue(orderIdArg);
     const currentUserId = toValue(currentUserIdArg);
 
-    // Join the order room
+    console.log(`[useOrderChat] Setting up listeners for order:${orderId}, currentUser:${currentUserId}`);
     emit('joinOrder', { orderId });
 
-    // Re-join on reconnect
     if (sock) {
       const reconnectHandler = () => {
         console.log(`[useOrderChat] Reconnected, rejoining order:${orderId}`);
@@ -136,35 +144,51 @@ export const useOrderChat = (
       sock.on('connect', reconnectHandler);
     }
 
-    // Mark as read when chat is opened
     if (currentUserId) {
       emit('markRead', { orderId, userId: currentUserId });
     }
 
-    // Clean up old listeners before adding new ones
     cleanupListeners();
 
-    // Create the newMessage handler
     newMessageHandler = (message: any) => {
       const orderId = toValue(orderIdArg);
       const currentUserId = toValue(currentUserIdArg);
-      const targetUserId = toValue(targetUserIdArg);
       const msgOrderId = String(message.orderId || message.order?._id || message.order || '');
       
+      console.log(`[useOrderChat] Received message event. msgOrderId=${msgOrderId}, expected=${orderId}, msg=`, message.message?.substring(0, 30));
+      
       if (msgOrderId === String(orderId)) {
-        if (currentUserId && targetUserId) {
-          const sId = String(message.senderId || message.sender?._id || message.sender || '');
-          const rId = String(message.receiverId || message.receiver?._id || message.receiver || '');
+        const targetUserId = toValue(targetUserIdArg);
+        if (targetUserId) {
+          const mSender = String(message.senderId || message.sender?._id || message.sender || '');
+          const mReceiver = String(message.receiverId || message.receiver?._id || message.receiver || '');
           const cIds = String(currentUserId).split(',').map(id => id.trim());
           const tIds = String(targetUserId).split(',').map(id => id.trim());
-          const isGeneric = !rId || rId === 'undefined';
-          const isRelevant = isGeneric || (cIds.includes(sId) && tIds.includes(rId)) || (tIds.includes(sId) && cIds.includes(rId));
-          if (!isRelevant) return;
+          const isGeneric = !mReceiver || mReceiver === 'undefined' || mReceiver === '[object Object]';
+          const isRelevant = isGeneric || (cIds.includes(mSender) && tIds.includes(mReceiver)) || (tIds.includes(mSender) && cIds.includes(mReceiver));
+          
+          if (!isRelevant) {
+            console.log(`[useOrderChat] Ignoring message meant for different thread.`);
+            return;
+          }
+        }
+        if (currentUserId) {
+          const sId = String(message.senderId || message.sender?._id || message.sender || '');
+          const cIds = String(currentUserId).split(',').map(id => id.trim());
+
+          if (cIds.includes(sId)) {
+            // It's our own message, check for pending optimistic update
+            const pendingIdx = messages.value.findIndex(m => m.status === 'pending' && m.message === message.message && (m.messageType || 'text') === (message.messageType || 'text'));
+            if (pendingIdx !== -1) {
+              messages.value[pendingIdx] = message;
+              return;
+            }
+          }
         }
 
-        // Strict deduplication by _id
         if (!message._id || !messages.value.some(m => m._id === message._id)) {
           messages.value.push(message);
+          console.log(`[useOrderChat] Message pushed to list. Total messages: ${messages.value.length}`);
         }
 
         if (currentUserId) {
@@ -177,8 +201,26 @@ export const useOrderChat = (
       isTyping.value = data.isTyping;
     };
 
+    confirmedHandler = (message: any) => {
+      const msgOrderId = String(message.orderId || message.order?._id || message.order || '');
+      if (msgOrderId === String(toValue(orderIdArg))) {
+        // Upgrade the optimistic message with the DB _id
+        const idx = messages.value.findIndex(m => m._id === message.tempId || (m.status === 'pending' && m.message === message.message));
+        if (idx !== -1) {
+          messages.value[idx] = message;
+        } else if (!messages.value.some(m => m._id === message._id)) {
+          messages.value.push(message);
+        }
+      }
+    };
+
+    // Listen on ALL event names the backend emits
     on('newMessage', newMessageHandler);
+    on('chat:new-message', newMessageHandler);
+    on('newMessageNotification', newMessageHandler);
     on('userTyping', userTypingHandler);
+    on('chat:user-typing', userTypingHandler);
+    on('messageConfirmed', confirmedHandler);
   };
 
   onUnmounted(() => {

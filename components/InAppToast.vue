@@ -174,7 +174,7 @@ const resumeDismiss = (id: string) => {
 
 const viewManifest = (toast: InAppToast) => {
   emit('view', toast.data)
-  navigateTo(`/deliveries/${toast.data?.orderId}`)
+  navigateTo(`/deliveries/pool?orderId=${toast.data?.orderId}`)
   dismissToast(toast.id)
 }
 

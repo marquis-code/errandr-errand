@@ -234,24 +234,38 @@
 
         <!-- Actions inside drawer -->
         <div class="space-y-3">
-          <button 
-            @click="acceptOrder(selectedOrder._id); isDrawerOpen = false"
-            :disabled="acceptingId === selectedOrder._id || biddingId === selectedOrder._id"
-            class="w-full py-2.5 bg-gray-950 text-white rounded-lg text-sm font-bold hover:bg-parentPrimary transition-all flex items-center justify-center gap-2 active:scale-95"
-          >
-            <Zap v-if="acceptingId !== selectedOrder._id" class="w-4 h-4 fill-current" />
-            <span v-else class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-            {{ acceptingId === selectedOrder._id ? 'Accepting Opportunity...' : 'Accept at ₦' + (selectedOrder.erranderShare || selectedOrder.deliveryFee).toLocaleString() }}
-          </button>
+          <div class="flex gap-3">
+            <button 
+              @click="rejectOrder(selectedOrder._id)"
+              :disabled="acceptingId === selectedOrder._id || biddingId === selectedOrder._id"
+              class="flex-1 py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-sm font-bold hover:bg-red-100 transition-all flex items-center justify-center gap-2 active:scale-95"
+            >
+              <X class="w-4 h-4" />
+              Reject
+            </button>
+
+            <button 
+              @click="acceptOrder(selectedOrder._id); isDrawerOpen = false"
+              :disabled="acceptingId === selectedOrder._id || biddingId === selectedOrder._id"
+              class="flex-[2] py-2.5 bg-gray-950 text-white rounded-lg text-sm font-bold hover:bg-parentPrimary transition-all flex items-center justify-center gap-2 active:scale-95"
+            >
+              <Zap v-if="acceptingId !== selectedOrder._id" class="w-4 h-4 fill-current" />
+              <span v-else class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              {{ acceptingId === selectedOrder._id ? 'Accepting...' : 'Accept at ₦' + (selectedOrder.erranderShare || selectedOrder.deliveryFee).toLocaleString() }}
+            </button>
+          </div>
 
           <div v-if="selectedOrder.type === 'custom_errand'" class="border-t border-gray-100 pt-4 mt-2">
             <p class="text-xs font-bold text-gray-500 mb-2">Or propose a different fee:</p>
             <div class="flex gap-2">
-              <input v-model.number="bidAmount" type="number" placeholder="New Fee" class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 outline-none focus:border-parentPrimary font-bold text-gray-900 text-sm" />
+              <div class="relative flex-1">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₦</span>
+                <input v-model="formattedBidAmount" type="text" placeholder="New Fee" class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-4 py-2.5 outline-none focus:border-parentPrimary font-bold text-gray-900 text-sm" />
+              </div>
               <button 
                 @click="placeBid(selectedOrder._id)"
-                :disabled="!bidAmount || bidAmount <= selectedOrder.deliveryFee || biddingId === selectedOrder._id"
-                class="bg-parentPrimary text-white text-sm font-bold px-4 py-2.5 rounded-lg disabled:opacity-50 hover:bg-orange-600 transition-colors"
+                :disabled="!bidAmount || biddingId === selectedOrder._id"
+                class="bg-parentPrimary text-white text-sm font-bold px-4 py-2.5 rounded-lg disabled:opacity-50 hover:bg-orange-600 transition-colors shrink-0"
               >
                 {{ biddingId === selectedOrder._id ? 'Bidding...' : 'Submit Bid' }}
               </button>
@@ -267,7 +281,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted, computed } from 'vue'
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
 import { useRealtimeSocket } from '@/composables/core/useRealtimeSocket'
 import { useRouter } from 'vue-router'
@@ -293,6 +307,18 @@ const selectedOrder = ref<any>(null)
 const bidAmount = ref<number | null>(null)
 const biddingId = ref<string | null>(null)
 
+const formattedBidAmount = computed({
+  get: () => bidAmount.value ? bidAmount.value.toLocaleString('en-NG') : '',
+  set: (val: string) => {
+    if (!val) {
+      bidAmount.value = null
+      return
+    }
+    const numStr = val.toString().replace(/[^0-9]/g, '')
+    bidAmount.value = numStr ? parseInt(numStr, 10) : null
+  }
+})
+
 const pushToast = (title: string, body: string, type: string = 'GENERAL') => {
   toastQueue.value.push({
     id: `toast_${Date.now()}`,
@@ -309,6 +335,13 @@ const loadAvailableOrders = async () => {
     const res = await api.get('/orders/available')
     if (res && res.data) {
       availableOrders.value = res.data
+      const queryOrderId = router.currentRoute.value.query.orderId
+      if (queryOrderId) {
+        const orderToView = availableOrders.value.find(o => o._id === queryOrderId)
+        if (orderToView) {
+          viewDetails(orderToView)
+        }
+      }
     }
   } catch (e) {
     console.error('Failed to load available orders:', e)
@@ -363,6 +396,13 @@ const acceptOrder = async (id: string) => {
   }
 }
 
+const rejectOrder = (id: string) => {
+  availableOrders.value = availableOrders.value.filter(o => o._id !== id)
+  if (selectedOrder.value?._id === id) {
+    isDrawerOpen.value = false
+  }
+}
+
 const placeBid = async (id: string) => {
   if (!bidAmount.value) return;
   biddingId.value = id;
@@ -404,19 +444,20 @@ const formatTime = (date: string) => {
 
 // Real-time handling
 const handleNewOrder = (payload: any) => {
-  const exists = availableOrders.value.some(o => o._id === payload.orderId)
+  const orderData = payload.data || payload
+  const exists = availableOrders.value.some(o => o._id === orderData.orderId)
   if (!exists) {
     const newOrder = {
-      _id: payload.orderId,
-      orderNumber: payload.orderNumber,
+      _id: orderData.orderId,
+      orderNumber: orderData.orderNumber,
       vendor: {
-        storeName: payload.vendorName,
-        logo: payload.vendorLogo,
-        address: payload.vendorAddress
+        storeName: orderData.vendorName,
+        logo: orderData.vendorLogo,
+        address: orderData.vendorAddress
       },
-      deliveryAddress: payload.deliveryAddress,
-      total: payload.total,
-      erranderShare: payload.erranderShare,
+      deliveryAddress: orderData.deliveryAddress,
+      total: orderData.total,
+      erranderShare: orderData.erranderShare,
       createdAt: new Date().toISOString()
     }
     availableOrders.value.unshift(newOrder)
@@ -430,20 +471,30 @@ const handleOrderAccepted = (payload: any) => {
   }
 }
 
+let currentSocket: any = null
+
+watch(() => socket.value, (newSocket) => {
+  if (currentSocket) {
+    currentSocket.off('notification:new-order', handleNewOrder)
+    currentSocket.off('notification:order-accepted', handleOrderAccepted)
+  }
+  
+  if (newSocket) {
+    currentSocket = newSocket
+    newSocket.on('notification:new-order', handleNewOrder)
+    newSocket.on('notification:order-accepted', handleOrderAccepted)
+  }
+}, { immediate: true })
+
 onMounted(() => {
   loadAvailableOrders()
   loadBatchStatus()
-
-  if (socket.value) {
-    socket.value.on('notification:new-order', handleNewOrder)
-    socket.value.on('notification:order-accepted', handleOrderAccepted)
-  }
 })
 
 onUnmounted(() => {
-  if (socket.value) {
-    socket.value.off('notification:new-order', handleNewOrder)
-    socket.value.off('notification:order-accepted', handleOrderAccepted)
+  if (currentSocket) {
+    currentSocket.off('notification:new-order', handleNewOrder)
+    currentSocket.off('notification:order-accepted', handleOrderAccepted)
   }
 })
 

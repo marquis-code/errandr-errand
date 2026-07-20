@@ -12,16 +12,21 @@
     </div>
 
     <!-- Progress Steps -->
-    <div class="px-6 py-4 bg-gray-50 border-b border-gray-100">
+    <div v-if="!profileLoading && (!errandrProfile || errandrProfile.verificationLevel < 2)" class="px-6 py-4 bg-gray-50 border-b border-gray-100">
       <div class="max-w-md mx-auto flex items-center gap-2">
         <div class="flex-1 h-1.5 rounded-full transition-all" :class="step >= 1 ? 'bg-[#FF5C1A]' : 'bg-gray-200'"></div>
         <div class="flex-1 h-1.5 rounded-full transition-all" :class="step >= 2 ? 'bg-[#FF5C1A]' : 'bg-gray-200'"></div>
         <div class="flex-1 h-1.5 rounded-full transition-all" :class="step >= 3 ? 'bg-[#FF5C1A]' : 'bg-gray-200'"></div>
+        <div class="flex-1 h-1.5 rounded-full transition-all" :class="step >= 4 ? 'bg-[#FF5C1A]' : 'bg-gray-200'"></div>
       </div>
     </div>
 
     <div class="flex-1 flex flex-col justify-center px-6 py-8">
-      <div class="w-full max-w-md mx-auto">
+      <div v-if="profileLoading" class="flex items-center justify-center py-20">
+        <span class="w-8 h-8 rounded-full border-4 border-gray-200 border-t-[#FF5C1A] animate-spin"></span>
+      </div>
+      <div v-else class="w-full max-w-md mx-auto">
+        <template v-if="!errandrProfile || errandrProfile.verificationLevel < 2">
         <!-- Step 1: Student ID Capture -->
         <div v-if="step === 1" class="space-y-6">
           <div class="flex items-center gap-4 text-gray-900 bg-gray-50 p-4 rounded-xl border border-gray-100">
@@ -155,8 +160,99 @@
           </div>
         </div>
 
-        <!-- Step 3: Final Details -->
+        <!-- Step 3: NIN Slip Capture -->
         <div v-if="step === 3" class="space-y-6 animate-slide-in-right">
+          <div class="flex items-center gap-4 text-gray-900 bg-gray-50 p-4 rounded-xl border border-gray-100">
+            <div class="p-2 bg-white rounded-lg border border-gray-200">
+              <CreditCard class="w-5 h-5" />
+            </div>
+            <div>
+              <h3 class="font-bold text-sm">Step 3: NIN Verification</h3>
+              <p class="text-xs text-gray-500 mt-0.5">Enter your 11-digit NIN or take a picture of your NIN slip.</p>
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex bg-gray-100 p-1 rounded-xl mb-6">
+              <button @click="ninMode = 'number'" :class="ninMode === 'number' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all">Enter NIN Number</button>
+              <button @click="ninMode = 'slip'" :class="ninMode === 'slip' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all">Upload NIN Slip</button>
+            </div>
+            
+            <div v-if="ninMode === 'number'">
+              <label class="block text-xs font-bold text-gray-700 mb-2">11-Digit NIN Number</label>
+              <input 
+                v-model="form.ninNumber" 
+                type="text" 
+                maxlength="11" 
+                placeholder="e.g. 12345678901" 
+                class="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-[#FF5C1A] focus:border-[#FF5C1A] outline-none transition-all shadow-sm" 
+                @input="form.ninNumber = form.ninNumber.replace(/\D/g, '')"
+              />
+              <p v-if="form.ninNumber && form.ninNumber.length !== 11" class="text-[10px] text-red-500 mt-1 font-bold">NIN must be exactly 11 digits</p>
+              <p v-else-if="form.ninNumber && form.ninNumber.length === 11" class="text-[10px] text-emerald-500 mt-1 font-bold">✓ Valid NIN length</p>
+            </div>
+          </div>
+          
+          <div v-if="ninMode === 'slip'">
+          <div v-if="cameraActiveFor === 'ninSlip'" class="relative rounded-2xl overflow-hidden bg-black aspect-video flex items-center justify-center">
+            <video ref="videoRef" autoplay playsinline class="w-full h-full object-cover"></video>
+            <button @click="capturePhoto('ninSlipImage')" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 font-bold px-6 py-2 rounded-full shadow-lg hover:scale-105 transition-transform">
+              📸 Capture
+            </button>
+            <button @click="stopCamera" class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full hover:bg-black/70">
+              <span class="text-xs font-bold">Cancel</span>
+            </button>
+          </div>
+          
+          <div v-else class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-[#FF5C1A] transition-colors cursor-pointer relative" @click="startCamera('ninSlip', 'environment')">
+            <input 
+              type="file" 
+              ref="ninInput" 
+              accept="image/*" 
+              capture="environment" 
+              class="hidden" 
+              @change="handleFileUpload($event, 'ninSlipImage')"
+            >
+            <div v-if="!form.ninSlipImage" class="space-y-2">
+              <div class="w-12 h-12 bg-gray-50 text-gray-400 rounded-full flex items-center justify-center mx-auto">
+                <Camera class="w-6 h-6" />
+              </div>
+              <p class="font-bold text-gray-900 text-xs">Tap to open Camera</p>
+              <p class="text-[10px] text-gray-400">Must be a clear photo of your NIN slip.</p>
+              <button @click.stop="$refs.ninInput.click()" class="text-[10px] text-[#FF5C1A] font-bold hover:underline mt-1">Or upload a file (Fallback)</button>
+            </div>
+            <div v-else class="space-y-3">
+              <div class="relative w-full aspect-video rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+                <img :src="form.ninSlipImage" class="w-full h-full object-cover" />
+                <div class="absolute inset-0 bg-gray-900/10 flex items-center justify-center pointer-events-none">
+                  <div class="w-8 h-8 bg-white text-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                    <CheckCircle2 class="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+              <p class="font-bold text-gray-900 text-sm">Photo Captured</p>
+              <div class="flex items-center justify-center gap-4">
+                <button @click.stop="startCamera('ninSlip', 'environment')" class="text-[10px] text-[#FF5C1A] font-bold hover:underline">Retake with Camera</button>
+                <button @click.stop="$refs.ninInput.click()" class="text-[10px] text-gray-500 font-bold hover:underline">Upload instead</button>
+              </div>
+            </div>
+          </div>
+            </div>
+
+          <div class="flex gap-3 mt-8">
+            <button @click="step = 2" class="py-3 px-6 text-sm bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all">Back</button>
+            <button 
+              @click="step = 4" 
+              :disabled="ninMode === 'number' ? !(form.ninNumber && form.ninNumber.length === 11) : !form.ninSlipImage" 
+              class="flex-1 py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E54D12] transition-all shadow-md"
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 4: Final Details -->
+        <div v-if="step === 4" class="space-y-6 animate-slide-in-right">
           <div class="flex items-center gap-4 text-gray-900 bg-gray-50 p-4 rounded-xl border border-gray-100">
             <div class="p-2 bg-white rounded-lg border border-gray-200">
               <Smartphone class="w-5 h-5" />
@@ -190,7 +286,7 @@
           </div>
 
           <div class="flex gap-3">
-            <button @click="step = 2" class="py-3 px-6 text-sm bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all">Back</button>
+            <button @click="step = 3" class="py-3 px-6 text-sm bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all">Back</button>
             <button 
               @click="submitVerification" 
               :disabled="loading || !form.whatsappNumber || !form.school || !form.matricNumber" 
@@ -203,7 +299,7 @@
         </div>
 
         <!-- Success View -->
-        <div v-if="step === 4" class="text-center py-12 space-y-4 animate-zoom-in">
+        <div v-if="step === 5" class="text-center py-12 space-y-4 animate-zoom-in">
           <div class="w-16 h-16 bg-gray-50 text-gray-900 border border-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
             <PartyPopper class="w-8 h-8" />
           </div>
@@ -217,7 +313,78 @@
             </NuxtLink>
           </div>
         </div>
+        </template>
+        
+        <!-- Tier 3 Form -->
+        <template v-else-if="errandrProfile.verificationLevel === 2">
+          <div v-if="tier3Step === 1" class="space-y-6 animate-slide-in-right">
+            <div class="flex items-center gap-4 text-gray-900 bg-gray-50 p-4 rounded-xl border border-gray-100">
+              <div class="p-2 bg-white rounded-lg border border-gray-200">
+                <Users class="w-5 h-5" />
+              </div>
+              <div>
+                <h3 class="font-bold text-sm">Tier 3: Guarantor Details</h3>
+                <p class="text-xs text-gray-500 mt-0.5">Provide details of a trusted guarantor.</p>
+              </div>
+            </div>
+            
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-2">Guarantor Name</label>
+                <input v-model="guarantorForm.name" type="text" placeholder="Full Name" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-[#FF5C1A] focus:border-[#FF5C1A] outline-none transition-all shadow-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-2">Guarantor Phone</label>
+                <input v-model="guarantorForm.phone" type="tel" placeholder="Phone Number" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-[#FF5C1A] focus:border-[#FF5C1A] outline-none transition-all shadow-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-2">Relationship</label>
+                <input v-model="guarantorForm.relationship" type="text" placeholder="e.g. Parent, Sibling" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-[#FF5C1A] focus:border-[#FF5C1A] outline-none transition-all shadow-sm">
+              </div>
+            </div>
 
+            <button 
+              @click="submitTier3" 
+              :disabled="loading || !guarantorForm.name || !guarantorForm.phone || !guarantorForm.relationship" 
+              class="w-full py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E54D12] transition-all flex justify-center items-center gap-2 shadow-md"
+            >
+              <span v-if="loading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              {{ loading ? 'Submitting...' : 'Submit Verification' }}
+            </button>
+          </div>
+
+          <!-- Success View Tier 3 -->
+          <div v-if="tier3Step === 2" class="text-center py-12 space-y-4 animate-zoom-in">
+            <div class="w-16 h-16 bg-gray-50 text-gray-900 border border-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+              <PartyPopper class="w-8 h-8" />
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight">Tier 3 Submitted</h2>
+            <p class="text-gray-500 text-xs max-w-xs mx-auto">
+              Your guarantor details have been submitted securely. Reviews typically take less than 24 hours.
+            </p>
+            <div class="pt-6">
+              <NuxtLink to="/dashboard" class="inline-block px-8 py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl hover:bg-[#E54D12] transition-all shadow-md">
+                Return to Dashboard
+              </NuxtLink>
+            </div>
+          </div>
+        </template>
+        
+        <!-- Fully verified view -->
+        <template v-else-if="errandrProfile.verificationLevel >= 3">
+          <div class="text-center py-12 space-y-4 animate-zoom-in">
+            <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 class="w-8 h-8" />
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight">Fully Verified!</h2>
+            <p class="text-gray-500 text-xs mt-2 max-w-xs mx-auto">You are a Pro rider (Tier 3) with full access to all deliveries.</p>
+            <div class="pt-6">
+              <NuxtLink to="/dashboard" class="inline-block px-8 py-3 text-sm bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition-all shadow-md">
+                Return to Dashboard
+              </NuxtLink>
+            </div>
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -236,35 +403,60 @@ import {
   UserSquare, 
   Smartphone, 
   PartyPopper,
+  Users,
   X
 } from 'lucide-vue-next'
+import { erranders_api } from '@/api_factory/modules/erranders'
 
 definePageMeta({ layout: 'errander' })
 useHead({ title: 'Account Verification - Errandr' })
 
 const step = ref(1)
+const ninMode = ref('number')
 const loading = ref(false)
 const router = useRouter()
 const { showToast } = useToast()
-const { getProfile } = useUser()
+
+const profileLoading = ref(true)
+const errandrProfile = ref<any>(null)
+const tier3Step = ref(1)
+const guarantorForm = reactive({
+  name: '',
+  phone: '',
+  relationship: ''
+})
 
 const form = reactive({
   idCardImage: '',
   selfieImage: '',
+  ninSlipImage: '',
+  ninNumber: '',
   whatsappNumber: '',
   school: '',
   matricNumber: ''
 })
 
-onMounted(() => {
+onMounted(async () => {
+  try {
+    const res = await erranders_api.getProfile()
+    if (res && res.data) {
+      errandrProfile.value = res.data
+    }
+  } catch (e) {
+  } finally {
+    profileLoading.value = false
+  }
+
   const savedState = localStorage.getItem('verification_state')
   if (savedState) {
     try {
       const parsed = JSON.parse(savedState)
-      if (parsed.step && parsed.step < 4) step.value = parsed.step
+      if (parsed.step && parsed.step < 5) step.value = parsed.step
       if (parsed.form) {
         form.idCardImage = parsed.form.idCardImage || ''
         form.selfieImage = parsed.form.selfieImage || ''
+        form.ninSlipImage = parsed.form.ninSlipImage || ''
+        form.ninNumber = parsed.form.ninNumber || ''
         form.whatsappNumber = parsed.form.whatsappNumber || ''
         form.school = parsed.form.school || ''
         form.matricNumber = parsed.form.matricNumber || ''
@@ -276,7 +468,7 @@ onMounted(() => {
 watch(
   () => ({ step: step.value, form }),
   (state) => {
-    if (state.step < 4) {
+    if (state.step < 5) {
       localStorage.setItem('verification_state', JSON.stringify(state))
     }
   },
@@ -285,11 +477,12 @@ watch(
 
 const idInput = ref<HTMLInputElement | null>(null)
 const selfieInput = ref<HTMLInputElement | null>(null)
+const ninInput = ref<HTMLInputElement | null>(null)
 const videoRef = ref<HTMLVideoElement | null>(null)
-const cameraActiveFor = ref<'id' | 'selfie' | null>(null)
+const cameraActiveFor = ref<'id' | 'selfie' | 'ninSlip' | null>(null)
 let stream: MediaStream | null = null
 
-const startCamera = async (stepId: 'id' | 'selfie', facingMode: 'environment' | 'user') => {
+const startCamera = async (stepId: 'id' | 'selfie' | 'ninSlip', facingMode: 'environment' | 'user') => {
   try {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       stream = await navigator.mediaDevices.getUserMedia({
@@ -309,10 +502,11 @@ const startCamera = async (stepId: 'id' | 'selfie', facingMode: 'environment' | 
     console.warn('Could not open camera, falling back to file input', err)
     if (stepId === 'id' && idInput.value) idInput.value.click()
     if (stepId === 'selfie' && selfieInput.value) selfieInput.value.click()
+    if (stepId === 'ninSlip' && ninInput.value) ninInput.value.click()
   }
 }
 
-const capturePhoto = (field: 'idCardImage' | 'selfieImage') => {
+const capturePhoto = (field: 'idCardImage' | 'selfieImage' | 'ninSlipImage') => {
   if (!videoRef.value) return
   const canvas = document.createElement('canvas')
   canvas.width = videoRef.value.videoWidth
@@ -329,7 +523,7 @@ const capturePhoto = (field: 'idCardImage' | 'selfieImage') => {
     
     showToast({
       title: 'Success',
-      message: `${field === 'idCardImage' ? 'ID Card' : 'Selfie'} captured securely.`,
+      message: `${field === 'idCardImage' ? 'ID Card' : field === 'selfieImage' ? 'Selfie' : 'NIN Slip'} captured securely.`,
       toastType: 'success'
     })
     stopCamera()
@@ -345,7 +539,7 @@ const stopCamera = () => {
 }
 
 // Simulated file upload for now, ideally this would upload to Cloudinary or similar via an endpoint
-const handleFileUpload = async (event: any, field: 'idCardImage' | 'selfieImage') => {
+const handleFileUpload = async (event: any, field: 'idCardImage' | 'selfieImage' | 'ninSlipImage') => {
   const file = event.target.files[0]
   if (!file) return
 
@@ -357,7 +551,7 @@ const handleFileUpload = async (event: any, field: 'idCardImage' | 'selfieImage'
     form[field] = reader.result as string
     showToast({
       title: 'Success',
-      message: `${field === 'idCardImage' ? 'ID Card' : 'Selfie'} captured securely.`,
+      message: `${field === 'idCardImage' ? 'ID Card' : field === 'selfieImage' ? 'Selfie' : 'NIN Slip'} captured securely.`,
       toastType: 'success'
     })
   }
@@ -368,9 +562,29 @@ const submitVerification = async () => {
   try {
     const res = await api.post('/erranders/verify/submit-tier-2', form)
     if (res.status === 200 || res.status === 201) {
-      step.value = 4
+      step.value = 5
       localStorage.removeItem('verification_state')
-      await getProfile() // refresh user data
+      await erranders_api.getProfile() // refresh user data
+    }
+  } catch (error: any) {
+    showToast({
+      title: 'Verification Failed',
+      message: error.response?.data?.message || 'Something went wrong while submitting your verification.',
+      toastType: 'error'
+    })
+  } finally {
+    loading.value = false
+  }
+}
+
+const submitTier3 = async () => {
+  loading.value = true
+  try {
+    const res = await api.post('/erranders/verify/submit-tier-3', { guarantorDetails: guarantorForm })
+    if (res.status === 200 || res.status === 201) {
+      tier3Step.value = 2
+      // refresh user data
+      await erranders_api.getProfile()
     }
   } catch (error: any) {
     showToast({
