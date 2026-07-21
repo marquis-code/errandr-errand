@@ -12,8 +12,8 @@ export const useDispatchNotifications = () => {
     try {
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
-        const swUrl = `/firebase-messaging-sw.js?apiKey=${config.public.firebaseApiKey}&projectId=${config.public.firebaseProjectId}&messagingSenderId=${config.public.firebaseMessagingSenderId}&appId=${config.public.firebaseAppId}`;
-        const registration = await navigator.serviceWorker.register(swUrl);
+        // Wait for the PWA service worker to be ready instead of registering a new one
+        const registration = await navigator.serviceWorker.ready;
         
         const currentToken = await getToken($messaging, { 
           vapidKey: config.public.firebaseVapidKey || 'BJJs2JX_V36p-9sfug38GwMMGDWSQMObywAkys73EXlJgLEsiQaF6nRMDzVVjdgDb-MHJyw3Q_atT6KaluQN41I',
