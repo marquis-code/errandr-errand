@@ -288,6 +288,7 @@
  <!-- <div class="fixed bottom-6 right-6 z-[99]">
     <ChatWidget />
  </div> -->
+ <CorePushNotificationPrompt />
  </div>
 </template>
 
@@ -357,7 +358,9 @@ onMounted(() => {
   fetchProfile()
   
   // Initialize Push Notifications
-  requestPermissionAndRegister()
+  if ('Notification' in window && Notification.permission === 'granted') {
+    requestPermissionAndRegister()
+  }
   listenForNotifications()
 })
 
