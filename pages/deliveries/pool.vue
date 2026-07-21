@@ -260,7 +260,7 @@
             <div class="flex gap-2">
               <div class="relative flex-1">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₦</span>
-                <input v-model="formattedBidAmount" type="text" placeholder="New Fee" class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-4 py-2.5 outline-none focus:border-parentPrimary font-bold text-gray-900 text-sm" />
+                <input v-model="formattedBidAmount" type="text" placeholder="New Fee" class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-4 py-2.5 outline-none focus:border-parentPrimary font-bold text-gray-900 text-base" />
               </div>
               <button 
                 @click="placeBid(selectedOrder._id)"

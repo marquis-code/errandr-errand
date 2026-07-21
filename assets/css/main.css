@@ -107,3 +107,9 @@ input[type=number] {
 .custom-input {
   @apply w-full px-4 py-3.5 text-sm outline-none focus:border focus:border-parentPrimary rounded-xl bg-gray-50 focus:bg-white pr-10;
 }
+/* Safety net to prevent mobile auto-zoom on inputs */
+@layer base {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}

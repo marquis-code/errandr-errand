@@ -352,10 +352,10 @@
                   <ChevronLeft :size="18" stroke-width="2.5" />
                 </button>
                 <div class="flex gap-2">
-                  <select v-model="currentMonth" @click.stop class="px-3 py-2 bg-gray-50 border border-transparent hover:border-[#033958] rounded-xl font-bold text-sm">
+                  <select v-model="currentMonth" @click.stop class="px-3 py-2 bg-gray-50 border border-transparent hover:border-[#033958] rounded-xl font-bold text-base">
                     <option v-for="(m, i) in months" :key="i" :value="i">{{ m.slice(0,3) }}</option>
                   </select>
-                  <select v-model="currentYear" @click.stop class="px-3 py-2 bg-gray-50 border border-transparent hover:border-[#033958] rounded-xl font-bold text-sm">
+                  <select v-model="currentYear" @click.stop class="px-3 py-2 bg-gray-50 border border-transparent hover:border-[#033958] rounded-xl font-bold text-base">
                     <option v-for="y in yearRange" :key="y" :value="y">{{ y }}</option>
                   </select>
                 </div>

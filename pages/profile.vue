@@ -50,7 +50,7 @@
  <input 
  v-model="form.firstName"
  :disabled="!isEditing"
- class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#FF5C1A]/20 focus:bg-white focus:border-[#FF5C1A]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+ class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-base font-medium focus:ring-2 focus:ring-[#FF5C1A]/20 focus:bg-white focus:border-[#FF5C1A]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
  />
  </div>
  <div>
@@ -58,7 +58,7 @@
  <input 
  v-model="form.lastName"
  :disabled="!isEditing"
- class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#FF5C1A]/20 focus:bg-white focus:border-[#FF5C1A]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+ class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-base font-medium focus:ring-2 focus:ring-[#FF5C1A]/20 focus:bg-white focus:border-[#FF5C1A]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
  />
  </div>
  </div>
@@ -67,7 +67,7 @@
  <input 
  :value="user?.email"
  disabled
- class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium opacity-60 cursor-not-allowed"
+ class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-base font-medium opacity-60 cursor-not-allowed"
  />
  </div>
  <div>
@@ -75,7 +75,7 @@
  <input 
  v-model="form.phone"
  :disabled="!isEditing"
- class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#FF5C1A]/20 focus:bg-white focus:border-[#FF5C1A]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+ class="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-base font-medium focus:ring-2 focus:ring-[#FF5C1A]/20 focus:bg-white focus:border-[#FF5C1A]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
  placeholder="Enter your phone number"
  />
  </div>
