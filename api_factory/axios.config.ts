@@ -1,7 +1,7 @@
 import axios, { type AxiosResponse } from "axios";
 import { useUser } from "@/composables/modules/auth/user";
 import { useCustomToast } from '@/composables/core/useCustomToast'
-// const { showToast } = useCustomToast(); // Removed top-level call
+import { useNetworkStatus } from '@/composables/core/useNetworkStatus'// const { showToast } = useCustomToast(); // Removed top-level call
 
 const { token, logOut } = useUser();
 
@@ -59,6 +59,7 @@ const instanceArray = [
 ];
 
 instanceArray.forEach((instance) => {
+  instance.defaults.timeout = 15000; // Set global timeout to 15 seconds
   instance.interceptors.request.use((config: any) => {
     const cookie = useCookie('errandr_dispatch_token');
     if (cookie.value) {
@@ -72,16 +73,16 @@ instanceArray.forEach((instance) => {
       return response;
     },
     (err: any) => {
-      if (typeof err.response === "undefined") {
-        useCustomToast().showToast({
-          title: "Error",
-          message: "kindly check your network connection",
-          toastType: "error",
-          duration: 3000
-        });
+      // Check for timeout or network connection error
+      if (err.code === 'ECONNABORTED' || err.message?.includes('timeout') || err.message?.includes('Network Error') || typeof err.response === "undefined") {
+        try {
+          const { recordSlowNetwork } = useNetworkStatus();
+          recordSlowNetwork();
+        } catch (e) {}
+        
         return {
           type: "ERROR",
-          ...err.response,
+          ...(err.response || { status: 0, statusText: "Network Error" }),
         };
       }
       if (err.response.status === 401) {
