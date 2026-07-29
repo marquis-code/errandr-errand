@@ -13,6 +13,7 @@ export const useAuth = () => {
     const route = useRoute();
     loading.value = true;
     try {
+      payload.role = 'errander';
       const res = await auth_api.login(payload);
       setUser(res.data.user);
       setToken(res.data.token);

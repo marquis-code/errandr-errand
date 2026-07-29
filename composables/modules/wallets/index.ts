@@ -17,10 +17,10 @@ export const useWallet = () => {
     } catch (e) { /* Error handled by axios */ }
   };
 
-  const withdrawFunds = async (amount: number) => {
+  const withdrawFunds = async (amount: number, isInstant: boolean = false) => {
     startLoading('Processing withdrawal...');
     try {
-      const res = await wallets_api.withdraw(amount);
+      const res = await wallets_api.withdraw(amount, isInstant);
       if (res.data) {
         showToast({
           title: "Withdrawal Successful",

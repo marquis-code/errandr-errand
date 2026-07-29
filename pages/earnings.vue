@@ -200,9 +200,22 @@
  </div>
 
  <div class="pt-6 border-t border-gray-100 flex flex-col gap-3">
- <button @click="handleWithdraw" :disabled="withdrawAmount <= 0 || withdrawAmount > (balance || 0)" class="w-full py-4 bg-parentPrimary text-white rounded-xl font-bold text-base shadow-xl shadow-parentPrimary/20 hover:brightness-110 disabled:opacity-30 active:scale-[0.98] transition-all ">
- Confirm Withdrawal
- </button>
+  <!-- Instant Toggle -->
+  <label class="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+   <div class="flex flex-col">
+    <span class="text-sm font-bold text-gray-900">Instant Withdrawal</span>
+    <span class="text-[10px] text-gray-500 font-medium">Get funds immediately (Max ₦5,000)</span>
+   </div>
+   <div class="relative inline-flex items-center cursor-pointer">
+    <input type="checkbox" v-model="isInstant" class="sr-only peer" :disabled="withdrawAmount > 5000">
+    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-parentPrimary"></div>
+   </div>
+  </label>
+  <p v-if="isInstant && withdrawAmount > 5000" class="text-[10px] text-red-500 font-bold px-1">Instant withdrawal is limited to ₦5,000</p>
+
+  <button @click="handleWithdraw" :disabled="withdrawAmount <= 0 || withdrawAmount > (balance || 0) || (isInstant && withdrawAmount > 5000)" class="w-full py-4 bg-parentPrimary text-white rounded-xl font-bold text-base shadow-xl shadow-parentPrimary/20 hover:brightness-110 disabled:opacity-30 active:scale-[0.98] transition-all ">
+  Confirm Withdrawal
+  </button>
  </div>
  </div>
  </SideDrawer>
@@ -224,6 +237,7 @@ const loading = ref(true);
 const showWithdrawDrawer = ref(false);
 const showBankDrawer = ref(false);
 const withdrawAmount = ref(0);
+const isInstant = ref(false);
 const formattedWithdrawAmount = computed({
  get() {
  if (withdrawAmount.value === 0 || withdrawAmount.value === null || withdrawAmount.value === undefined) return '';
@@ -313,7 +327,12 @@ const handleSaveBank = async () => {
 
 const handleWithdraw = async () => {
  if (withdrawAmount.value <= 0 || withdrawAmount.value > balance.value) return;
- await withdrawFunds(withdrawAmount.value);
+ if (isInstant.value && withdrawAmount.value > 5000) {
+  showToast({ title: 'Error', message: 'Instant withdrawals are limited to ₦5,000', toastType: 'error' });
+  return;
+ }
+ await withdrawFunds(withdrawAmount.value, isInstant.value);
+ withdrawAmount.value = 0;
  showWithdrawDrawer.value = false;
  await loadData();
 };

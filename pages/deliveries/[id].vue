@@ -82,9 +82,31 @@
           </div>
 
           <div v-else class="space-y-3">
-            <div v-for="item in order.items" :key="item._id" class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
-              <span class="text-xs font-bold text-gray-200 -tight">{{ item.name }}</span>
-              <span class="text-sm font-bold text-white px-2.5 py-1 bg-[#FF5C1A] rounded-md shadow-md">x{{ item.quantity }}</span>
+            <div v-for="item in order.items" :key="item._id" class="flex flex-col p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+              <div class="flex items-start justify-between">
+                <div>
+                  <span class="text-sm font-bold text-gray-200 tracking-tight">{{ item.name }}</span>
+                  <p v-if="item.customizations?.length" class="text-[10px] font-medium text-gray-400 mt-1">Base: ₦{{ item.price?.toLocaleString() || 0 }}</p>
+                </div>
+                <div class="flex flex-col items-end gap-1">
+                  <span class="text-sm font-bold text-white px-2.5 py-1 bg-[#FF5C1A] rounded-md shadow-md">x{{ item.quantity }}</span>
+                  <span class="text-xs font-bold text-gray-300">₦{{ item.price?.toLocaleString() || 0 }}</span>
+                </div>
+              </div>
+              
+              <div v-if="item.customizations?.length" class="mt-3 mb-2 pl-3 border-l-2 border-white/10 space-y-1.5">
+                <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-[11px] text-gray-400 flex justify-between font-medium">
+                  <span class="truncate flex items-center gap-1">
+                    <span class="text-white/30">+</span>
+                    {{ c.quantity > 1 ? c.quantity + 'x ' : '' }}{{ c.name }}
+                  </span>
+                  <span v-if="c.price > 0" class="text-gray-500 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
+                </p>
+              </div>
+              
+              <div class="flex justify-end mt-2 pt-2 border-t border-white/5">
+                <span class="text-xs font-bold text-[#FF5C1A]">Total: ₦{{ (item.subtotal || (item.price * item.quantity)).toLocaleString() }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -223,7 +245,7 @@
             <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto text-3xl shadow-lg border border-emerald-50 text-emerald-600 transform rotate-6 animate-pulse">💰</div>
             <div>
               <h3 class="text-white font-medium text-2xl -tight -none mb-3">Delivery Completed</h3>
-              <p class="text-white/90 font-medium text-xl -tight -none">+ ₦{{ order.deliveryFee?.toLocaleString() }} Earned</p>
+              <p class="text-white/90 font-medium text-xl -tight -none">+ ₦{{ (order.erranderPayout || order.deliveryFee || 0)?.toLocaleString() }} Earned</p>
             </div>
              
             <div class="max-w-xs mx-auto">
@@ -271,6 +293,20 @@ definePageMeta({
 const order = ref<any>(null);
 const verificationCode = ref('');
 const completing = ref(false);
+
+const getGroupedCustomizations = (customizations: any[]) => {
+  if (!customizations) return [];
+  const grouped: Record<string, any> = {};
+  customizations.forEach(c => {
+    if (grouped[c.name]) {
+      grouped[c.name].quantity += 1;
+      grouped[c.name].price += c.price;
+    } else {
+      grouped[c.name] = { ...c, quantity: 1 };
+    }
+  });
+  return Object.values(grouped);
+};
 
 const steps = ['confirmed', 'picked_up', 'in_transit', 'delivered'];
 const currentStep = computed(() => order.value ? steps.indexOf(order.value.status) : -1);

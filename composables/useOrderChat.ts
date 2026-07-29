@@ -37,22 +37,17 @@ export const useOrderChat = (
   const fetchMessages = async () => {
     loading.value = true;
     const orderId = toValue(orderIdArg);
+    const currentUserId = toValue(currentUserIdArg);
+    const targetUserId = toValue(targetUserIdArg);
     try {
-      const res = await api.get(`/chat/order/${orderId}`);
-      const targetUserId = toValue(targetUserIdArg);
-      const currentUserId = toValue(currentUserIdArg);
+      let url = `/chat/order/${orderId}`;
       if (currentUserId && targetUserId) {
-        messages.value = (res.data || []).filter((m: any) => {
-          const sId = String(m.senderId || m.sender?._id || m.sender || '');
-          const rId = String(m.receiverId || m.receiver?._id || m.receiver || '');
-          const cIds = String(currentUserId).split(',').map(id => id.trim());
-          const tIds = String(targetUserId).split(',').map(id => id.trim());
-          const isGeneric = !rId || rId === 'undefined' || rId === '[object Object]';
-          return isGeneric || (cIds.includes(sId) && tIds.includes(rId)) || (tIds.includes(sId) && cIds.includes(rId));
-        });
-      } else {
-        messages.value = res.data || [];
+        const cleanCurrent = extractObjectId(currentUserId);
+        const cleanTarget = extractObjectId(targetUserId);
+        url += `?userA=${cleanCurrent}&userB=${cleanTarget}`;
       }
+      const res = await api.get(url);
+      messages.value = res.data || [];
     } catch (e) {
       console.error('Failed to fetch messages', e);
     } finally {
@@ -132,14 +127,24 @@ export const useOrderChat = (
     const sock = getSocket();
     const orderId = toValue(orderIdArg);
     const currentUserId = toValue(currentUserIdArg);
+    const targetUserId = toValue(targetUserIdArg);
 
-    console.log(`[useOrderChat] Setting up listeners for order:${orderId}, currentUser:${currentUserId}`);
-    emit('joinOrder', { orderId });
+    // Compute a deterministic pairKey for this conversation
+    let pairKey: string | undefined;
+    if (currentUserId && targetUserId) {
+      const cleanCurrent = extractObjectId(currentUserId);
+      const cleanTarget = extractObjectId(targetUserId);
+      const ids = [cleanCurrent, cleanTarget].sort();
+      pairKey = `${ids[0]}_${ids[1]}`;
+    }
+
+    console.log(`[useOrderChat] Setting up listeners for order:${orderId}, currentUser:${currentUserId}, pairKey:${pairKey}`);
+    emit('joinOrder', { orderId, pairKey });
 
     if (sock) {
       const reconnectHandler = () => {
         console.log(`[useOrderChat] Reconnected, rejoining order:${orderId}`);
-        emit('joinOrder', { orderId: toValue(orderIdArg) });
+        emit('joinOrder', { orderId: toValue(orderIdArg), pairKey });
       };
       sock.on('connect', reconnectHandler);
     }
@@ -155,23 +160,7 @@ export const useOrderChat = (
       const currentUserId = toValue(currentUserIdArg);
       const msgOrderId = String(message.orderId || message.order?._id || message.order || '');
       
-      console.log(`[useOrderChat] Received message event. msgOrderId=${msgOrderId}, expected=${orderId}, msg=`, message.message?.substring(0, 30));
-      
       if (msgOrderId === String(orderId)) {
-        const targetUserId = toValue(targetUserIdArg);
-        if (targetUserId) {
-          const mSender = String(message.senderId || message.sender?._id || message.sender || '');
-          const mReceiver = String(message.receiverId || message.receiver?._id || message.receiver || '');
-          const cIds = String(currentUserId).split(',').map(id => id.trim());
-          const tIds = String(targetUserId).split(',').map(id => id.trim());
-          const isGeneric = !mReceiver || mReceiver === 'undefined' || mReceiver === '[object Object]';
-          const isRelevant = isGeneric || (cIds.includes(mSender) && tIds.includes(mReceiver)) || (tIds.includes(mSender) && cIds.includes(mReceiver));
-          
-          if (!isRelevant) {
-            console.log(`[useOrderChat] Ignoring message meant for different thread.`);
-            return;
-          }
-        }
         if (currentUserId) {
           const sId = String(message.senderId || message.sender?._id || message.sender || '');
           const cIds = String(currentUserId).split(',').map(id => id.trim());
@@ -188,7 +177,6 @@ export const useOrderChat = (
 
         if (!message._id || !messages.value.some(m => m._id === message._id)) {
           messages.value.push(message);
-          console.log(`[useOrderChat] Message pushed to list. Total messages: ${messages.value.length}`);
         }
 
         if (currentUserId) {

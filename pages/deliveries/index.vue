@@ -93,8 +93,8 @@
  </td>
  <td class="py-3.5 px-5 text-right">
  <div class="flex flex-col items-end">
- <p class="text-sm font-medium text-gray-900 tracking-tight">₦{{ order.total?.toLocaleString() }}</p>
- <p class="text-[9px] font-bold text-emerald-600 tracking-widest mt-0.5">Earn ₦{{ (order.deliveryFee || 0).toLocaleString() }}</p>
+ <p class="text-sm font-medium text-emerald-600 tracking-tight">+₦{{ (order.erranderPayout || order.deliveryFee || 0)?.toLocaleString() }}</p>
+ <p class="text-[9px] font-bold text-gray-400 tracking-widest mt-0.5 uppercase">Earnings</p>
  </div>
  </td>
  <td class="py-3.5 px-5 text-right">

@@ -126,7 +126,7 @@
                 <p class="text-xs text-gray-400">{{ formatDate(order.createdAt) }}</p>
               </div>
               <div class="text-right flex-shrink-0">
-                <p class="font-bold text-sm text-gray-900">₦{{ order.total?.toLocaleString() }}</p>
+                <p class="font-bold text-sm text-emerald-600">+₦{{ (order.erranderPayout || order.deliveryFee || 0)?.toLocaleString() }}</p>
                 <span :class="getStatusClasses(order.status)" class="text-[10px] font-semibold px-2 py-0.5 rounded capitalize inline-block mt-0.5">
                   {{ order.status?.replace(/_/g, ' ') }}
                 </span>
