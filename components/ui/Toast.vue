@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div class="fixed bottom-32 left-1/2 transform -translate-x-1/2 z-[9999] flex flex-col-reverse gap-3 max-w-sm w-full items-center px-4">
+    <div class="fixed top-6 left-1/2 transform -translate-x-1/2 z-[9999999] flex flex-col gap-3 max-w-sm w-full items-center px-4 pointer-events-none">
       <TransitionGroup name="toast">
         <div
           v-for="toast in toasts"
@@ -14,7 +14,7 @@
               'bg-blue-50 border-blue-200': toast.type === 'info'
             }
           ]"
-          class="w-full rounded-2xl border p-[12px] flex items-center gap-3 cursor-pointer"
+          class="w-full rounded-2xl border p-[12px] flex items-center gap-3 cursor-pointer pointer-events-auto"
           @click="removeToast(toast.id)"
         >
           <div class="flex-shrink-0">
