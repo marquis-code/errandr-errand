@@ -211,29 +211,41 @@
           <div class="absolute -right-32 -top-32 w-64 h-64 bg-[#FF5C1A]/20 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000" />
            
           <div class="text-center space-y-2 relative z-10">
-            <h3 class="text-white text-lg font-medium -tight -none">Verification Code</h3>
-            <p class="text-gray-500 text-sm font-bold -wider">Request the 6-digit code from user</p>
+            <h3 class="text-white text-lg font-medium tracking-tight leading-none">Delivery PIN</h3>
+            <p class="text-gray-500 text-sm font-bold tracking-wider">Request the 4-digit PIN from user</p>
           </div>
            
           <div class="flex justify-center relative z-10">
             <input
               v-model="verificationCode"
               type="text"
-              maxlength="6"
-              placeholder="000000"
+              maxlength="4"
+              placeholder="0000"
               class="bg-white/5 text-white text-xl font-bold text-center tracking-widest w-full py-3 rounded-lg border border-white/10 focus:border-[#FF5C1A]/50 focus:bg-white/10 transition-all focus:outline-none placeholder:text-white/20 shadow-inner"
             />
           </div>
           
           <button 
             @click="completeOrder" 
-            :disabled="verificationCode.length !== 6 || completing"
+            :disabled="verificationCode.length !== 4 || completing"
             class="w-full py-3 bg-white text-gray-900 rounded-lg text-sm font-bold shadow-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all relative z-10 group"
           >
             <Loader2 v-if="completing" class="w-4 h-4 animate-spin flex-shrink-0" />
             <span v-else class="text-base">✅</span> 
             {{ completing ? 'VERIFYING...' : 'Finalize Delivery' }}
           </button>
+          
+          <div class="pt-4 mt-4 border-t border-white/10 text-center relative z-10 space-y-3">
+            <p class="text-gray-400 text-xs">Customer unavailable?</p>
+            <label class="block w-full cursor-pointer py-3 bg-transparent border border-gray-600 text-gray-300 rounded-lg text-sm font-bold shadow-sm hover:bg-white/5 disabled:opacity-50 transition-all">
+              <input type="file" class="hidden" accept="image/*" @change="handleContactlessDropoff" :disabled="uploadingDropoff" />
+              <div class="flex items-center justify-center gap-2">
+                <Loader2 v-if="uploadingDropoff" class="w-4 h-4 animate-spin" />
+                <span v-else class="text-base">📸</span>
+                {{ uploadingDropoff ? 'UPLOADING...' : 'Contactless Drop-off (Take Photo)' }}
+              </div>
+            </label>
+          </div>
         </div>
 
         <!-- Delivery Completed State -->
@@ -400,7 +412,7 @@ const updateStatus = async (status: string) => {
 };
 
 const completeOrder = async () => {
-  if (verificationCode.value.length !== 6) return;
+  if (verificationCode.value.length !== 4) return;
   completing.value = true;
   try {
     const res = await api.post<any>(`/orders/${route.params.id}/complete`, { 
@@ -410,7 +422,7 @@ const completeOrder = async () => {
     if (res && res.type === 'ERROR') {
       showToast({
         title: 'Verification Failed',
-        message: res.data?.message || 'Invalid code. Verify and try again.',
+        message: res.data?.message || 'Invalid PIN. Verify and try again.',
         toastType: 'error'
       });
       return;
@@ -426,11 +438,56 @@ const completeOrder = async () => {
   } catch (e: any) { 
     showToast({
       title: 'Verification Failed',
-      message: e.data?.message || e.response?.data?.message || 'Invalid code. Verify and try again.',
+      message: e.data?.message || e.response?.data?.message || 'Invalid PIN. Verify and try again.',
       toastType: 'error'
     });
   } finally {
     completing.value = false;
+  }
+};
+
+const uploadingDropoff = ref(false);
+const handleContactlessDropoff = async (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (!file) return;
+
+  uploadingDropoff.value = true;
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const config = useRuntimeConfig();
+    const uploadRes = await fetch(`${config.public.apiBase}/upload?resourceType=image`, {
+      method: 'POST',
+      body: formData,
+    });
+    const uploadData = await uploadRes.json();
+    if (!uploadData.url) throw new Error('Upload failed');
+
+    const res = await api.post<any>(`/orders/${route.params.id}/complete-contactless`, { 
+      imageUrl: uploadData.url 
+    });
+    
+    if (res && res.type === 'ERROR') {
+      throw new Error(res.data?.message || 'Failed to complete contactless delivery');
+    }
+
+    order.value = res.data;
+    emit('orderStatusUpdate', { orderId: route.params.id, status: 'delivered' });
+    showToast({
+      title: 'Drop-off Confirmed',
+      message: 'Photo submitted successfully!',
+      toastType: 'success'
+    });
+  } catch (e: any) {
+    showToast({
+      title: 'Upload Failed',
+      message: e.message || e.response?.data?.message || 'Could not upload photo.',
+      toastType: 'error'
+    });
+  } finally {
+    uploadingDropoff.value = false;
   }
 };
 
