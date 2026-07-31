@@ -232,8 +232,24 @@
           <p class="text-[11px] font-medium text-blue-500">Make sure your bank details are set up in Wallet → Settings.</p>
         </div>
 
+        <!-- Awaiting Payment Block -->
+        <div v-if="selectedOrder.status === 'awaiting_payment'" class="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl flex flex-col items-center text-center mt-4 space-y-3">
+           <div class="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/30">
+              <Check class="w-6 h-6" />
+           </div>
+           <h3 class="text-xl font-black text-emerald-900 tracking-tight">Offer Accepted!</h3>
+           <p class="text-sm font-medium text-emerald-700 leading-relaxed">The student has accepted your bid of ₦{{ selectedOrder.deliveryFee?.toLocaleString() }}. The system is now waiting for them to make the escrow payment.</p>
+           <div class="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg border border-emerald-100 shadow-sm">
+             <span class="relative flex h-2.5 w-2.5">
+               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+               <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+             </span>
+             <span class="text-xs font-bold text-emerald-800">Waiting for payment...</span>
+           </div>
+        </div>
+
         <!-- Actions inside drawer -->
-        <div class="space-y-3">
+        <div v-if="selectedOrder.status !== 'awaiting_payment'" class="space-y-3">
           <div class="flex gap-3">
             <button 
               @click="rejectOrder(selectedOrder._id)"
@@ -284,8 +300,9 @@
 import { ref, watch, onMounted, onUnmounted, computed } from 'vue'
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
 import { useRealtimeSocket } from '@/composables/core/useRealtimeSocket'
+import { useUser } from '@/composables/modules/auth/user'
 import { useRouter } from 'vue-router'
-import { Clock, Zap, ChevronRight, Eye, User, X, Banknote } from 'lucide-vue-next'
+import { Clock, Zap, ChevronRight, Eye, User, X, Banknote, Check } from 'lucide-vue-next'
 import SideDrawer from '@/components/ui/SideDrawer.vue'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 
@@ -364,6 +381,9 @@ const viewDetails = (order: any) => {
   isDrawerOpen.value = true
   if (socket.value && order._id) {
     socket.value.emit('viewing_errand', { orderId: order._id, isViewing: true })
+  }
+  if (order._id) {
+    api.post(`/orders/${order._id}/view`).catch(e => console.error('Failed to record view:', e))
   }
 }
 
@@ -464,9 +484,22 @@ const handleNewOrder = (payload: any) => {
   }
 }
 
+const { user } = useUser()
+
 const handleOrderAccepted = (payload: any) => {
-  availableOrders.value = availableOrders.value.filter(o => o._id !== payload.orderId)
-  if (selectedOrder.value?._id === payload.orderId) {
+  const orderId = payload.data?.orderId || payload.orderId
+  const winningUserId = payload.data?.winningUserId
+  
+  if (winningUserId && user.value?._id === winningUserId) {
+    if (selectedOrder.value?._id === orderId) {
+      selectedOrder.value.status = 'awaiting_payment'
+    }
+    availableOrders.value = availableOrders.value.filter(o => o._id !== orderId)
+    return
+  }
+
+  availableOrders.value = availableOrders.value.filter(o => o._id !== orderId)
+  if (selectedOrder.value?._id === orderId) {
     isDrawerOpen.value = false
   }
 }

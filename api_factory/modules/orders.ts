@@ -28,4 +28,8 @@ export const orders_api = {
   assignOrder: (id: string) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${id}/assign`);
   },
+
+  placeBid: (id: string, amount: number) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.post(`/orders/${id}/custom/bid`, { amount });
+  },
 };

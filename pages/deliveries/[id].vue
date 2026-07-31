@@ -1,27 +1,32 @@
 <template>
   <div class="max-w-4xl mx-auto space-y-10 pb-32 animate-fade-in mt-6" v-if="order">
-    <!-- Delivery Header -->
-    <div class="bg-white p-6 rounded-2xl border border-gray-50 shadow-sm relative overflow-hidden group">
-      <div class="absolute -right-16 -top-16 w-48 h-48 bg-[#FF5C1A]/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000" />
+    <!-- Stunning Header -->
+    <div class="relative p-8 rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-gradient-to-br from-gray-950 via-gray-900 to-black group">
+      <!-- Animated Background Effects -->
+      <div class="absolute -right-20 -top-20 w-64 h-64 bg-[#FF5C1A]/30 rounded-full blur-[80px] group-hover:scale-150 group-hover:opacity-70 transition-all duration-1000 ease-in-out" />
+      <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-indigo-500/20 rounded-full blur-[80px] group-hover:scale-150 transition-all duration-1000 ease-in-out" />
       
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 relative z-10">
-        <div class="space-y-1">
-          <p class="text-[10px] font-bold text-[#FF5C1A] uppercase tracking-wider mb-1">Delivery Details</p>
-          <h1 class="text-xl font-bold text-gray-900 tracking-tight">Order #{{ order.orderNumber }}</h1>
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 relative z-10">
+        <div class="space-y-2">
+          <div class="inline-flex items-center gap-2 bg-white/5 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-[#FF5C1A] animate-pulse"></span>
+            <p class="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Live Delivery Tracking</p>
+          </div>
+          <h1 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400 tracking-tight">Order #{{ order.orderNumber }}</h1>
         </div>
-        <div class="flex items-center gap-3">
-          <StatusBadge :status="order.status" class="scale-100" />
+        <div class="flex items-center gap-3 bg-white/5 p-2 rounded-2xl backdrop-blur-md border border-white/5 shadow-xl">
+          <StatusBadge :status="order.status" class="scale-110 shadow-lg" />
         </div>
       </div>
 
-      <div class="space-y-4 relative z-10">
+      <div class="space-y-4 relative z-10 bg-white/5 p-5 rounded-2xl border border-white/10 backdrop-blur-sm shadow-inner">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-gray-400">Delivery Progress</span>
-          <span class="text-xs font-bold text-[#FF5C1A]">Step {{ currentStep + 1 }} / 4</span>
+          <span class="text-xs font-bold text-gray-400 tracking-wide uppercase">Delivery Progress</span>
+          <span class="text-xs font-black text-[#FF5C1A] bg-[#FF5C1A]/10 px-3 py-1 rounded-full border border-[#FF5C1A]/20">Step {{ currentStep + 1 }} of 4</span>
         </div>
-        <div class="flex items-center gap-2">
-          <div v-for="(step, i) in steps" :key="step" class="flex-1 h-2 rounded-full transition-all duration-1000 relative overflow-hidden border border-gray-50" :class="currentStep >= i ? 'bg-[#FF5C1A]' : 'bg-gray-100'">
-            <div v-if="currentStep === i" class="absolute inset-0 bg-white/20 animate-pulse" />
+        <div class="flex items-center gap-3">
+          <div v-for="(step, i) in steps" :key="step" class="flex-1 h-2.5 rounded-full transition-all duration-1000 relative overflow-hidden shadow-inner" :class="currentStep >= i ? 'bg-gradient-to-r from-[#FF5C1A] to-orange-500 shadow-[0_0_10px_rgba(255,92,26,0.5)]' : 'bg-gray-800'">
+            <div v-if="currentStep === i" class="absolute inset-0 bg-white/30 animate-pulse" />
           </div>
         </div>
       </div>
@@ -129,20 +134,24 @@
 
       <!-- Sidebar: Actions & Customer -->
       <div class="lg:col-span-2 space-y-6">                   
-        <!-- Customer Details -->
-        <div class="bg-white p-6 rounded-2xl border border-gray-50 shadow-sm flex flex-col items-center text-center group hover:shadow-lg transition-all">
-          <div class="w-16 h-16 bg-gray-900 rounded-xl flex items-center justify-center text-white text-xl font-bold shadow-xl mb-3 group-hover:-translate-y-1 transition-transform border-2 border-white">
+        <!-- Customer Details Card -->
+        <div class="bg-gradient-to-b from-gray-50 to-white p-8 rounded-3xl border border-gray-100 shadow-xl flex flex-col items-center text-center group hover:-translate-y-1 hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-blue-500"></div>
+          
+          <div class="w-20 h-20 bg-gray-900 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-2xl mb-4 group-hover:rotate-6 transition-transform border-4 border-white relative overflow-hidden">
+             <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
             {{ order.customer?.firstName?.[0] }}{{ order.customer?.lastName?.[0] }}
           </div>
-          <p class="text-[10px] font-bold text-[#FF5C1A] uppercase mb-1.5 bg-[#FF5C1A]/5 px-2 py-0.5 rounded-full">Primary Contact</p>
-          <h4 class="text-sm font-bold text-gray-900 mb-4 truncate w-full">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</h4>
           
-          <div class="flex flex-col gap-2 w-full">
-            <a :href="`tel:${order.customer?.phone}`" class="w-full py-2 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all transform active:scale-95 border border-emerald-100 flex items-center justify-center gap-2">
-              <Phone class="w-3.5 h-3.5" /> Call Customer
+          <p class="text-[9px] font-black text-teal-600 uppercase tracking-[0.2em] mb-2 bg-teal-50 px-3 py-1 rounded-full border border-teal-100 shadow-sm">Primary Contact</p>
+          <h4 class="text-lg font-black text-gray-900 mb-6 truncate w-full tracking-tight">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</h4>
+          
+          <div class="flex flex-col gap-3 w-full">
+            <a :href="`tel:${order.customer?.phone}`" class="w-full py-3.5 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-bold hover:bg-emerald-600 hover:text-white hover:shadow-lg hover:shadow-emerald-500/20 transition-all transform active:scale-95 border border-emerald-200 flex items-center justify-center gap-2">
+              <Phone class="w-4 h-4" /> Call Customer
             </a>
-            <button @click="openChat(String(order.customer?._id || ''), order.customer?.firstName + ' ' + order.customer?.lastName, order.customer?.avatar)" class="w-full py-2 bg-[#FF5C1A]/5 text-[#FF5C1A] rounded-lg text-xs font-bold hover:bg-[#FF5C1A] hover:text-white transition-all transform active:scale-95 border border-[#FF5C1A]/10 flex items-center justify-center gap-2">
-              <MessageSquare class="w-3.5 h-3.5" /> Message Customer
+            <button @click="openChat(String(order.customer?._id || ''), order.customer?.firstName + ' ' + order.customer?.lastName, order.customer?.avatar)" class="w-full py-3.5 bg-blue-50 text-blue-700 rounded-xl text-sm font-bold hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-500/20 transition-all transform active:scale-95 border border-blue-200 flex items-center justify-center gap-2">
+              <MessageSquare class="w-4 h-4" /> Message Customer
             </button>
           </div>
         </div>
@@ -206,43 +215,43 @@
           </div>
         </div>
 
-        <!-- Verification Interface -->
-        <div v-if="order.status === 'in_transit' || order.status === 'picked_up'" class="bg-gray-900 rounded-2xl p-6 space-y-6 shadow-xl relative overflow-hidden group border border-white/5">
-          <div class="absolute -right-32 -top-32 w-64 h-64 bg-[#FF5C1A]/20 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000" />
+        <!-- Premium Verification Interface -->
+        <div v-if="order.status === 'in_transit' || order.status === 'picked_up'" class="bg-gradient-to-br from-gray-950 via-gray-900 to-black rounded-3xl p-8 space-y-6 shadow-2xl relative overflow-hidden group border border-white/10">
+          <div class="absolute -right-32 -top-32 w-64 h-64 bg-emerald-500/20 rounded-full blur-[80px] group-hover:scale-125 transition-transform duration-1000" />
            
-          <div class="text-center space-y-2 relative z-10">
-            <h3 class="text-white text-lg font-medium tracking-tight leading-none">Delivery PIN</h3>
-            <p class="text-gray-500 text-sm font-bold tracking-wider">Request the 4-digit PIN from user</p>
+          <div class="text-center space-y-3 relative z-10">
+            <h3 class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 text-2xl font-black tracking-tight leading-none">Security PIN</h3>
+            <p class="text-gray-400 text-xs font-bold tracking-[0.1em] uppercase">Request the 4-digit code from the user</p>
           </div>
            
-          <div class="flex justify-center relative z-10">
+          <div class="flex justify-center relative z-10 px-4">
             <input
               v-model="verificationCode"
               type="text"
               maxlength="4"
-              placeholder="0000"
-              class="bg-white/5 text-white text-xl font-bold text-center tracking-widest w-full py-3 rounded-lg border border-white/10 focus:border-[#FF5C1A]/50 focus:bg-white/10 transition-all focus:outline-none placeholder:text-white/20 shadow-inner"
+              placeholder="••••"
+              class="bg-black/50 text-white text-3xl font-black text-center tracking-[1em] pl-[1em] w-full py-4 rounded-2xl border border-white/10 focus:border-emerald-500/50 focus:bg-white/5 focus:ring-4 focus:ring-emerald-500/10 transition-all focus:outline-none placeholder:text-white/10 shadow-inner"
             />
           </div>
           
           <button 
             @click="completeOrder" 
             :disabled="verificationCode.length !== 4 || completing"
-            class="w-full py-3 bg-white text-gray-900 rounded-lg text-sm font-bold shadow-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all relative z-10 group"
+            class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl text-sm font-black shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/40 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all relative z-10 group active:scale-95"
           >
-            <Loader2 v-if="completing" class="w-4 h-4 animate-spin flex-shrink-0" />
-            <span v-else class="text-base">✅</span> 
-            {{ completing ? 'VERIFYING...' : 'Finalize Delivery' }}
+            <Loader2 v-if="completing" class="w-5 h-5 animate-spin flex-shrink-0" />
+            <span v-else class="text-lg">✅</span> 
+            {{ completing ? 'VERIFYING SECURE PIN...' : 'Finalize Secure Delivery' }}
           </button>
           
-          <div class="pt-4 mt-4 border-t border-white/10 text-center relative z-10 space-y-3">
-            <p class="text-gray-400 text-xs">Customer unavailable?</p>
-            <label class="block w-full cursor-pointer py-3 bg-transparent border border-gray-600 text-gray-300 rounded-lg text-sm font-bold shadow-sm hover:bg-white/5 disabled:opacity-50 transition-all">
+          <div class="pt-6 mt-6 border-t border-white/10 text-center relative z-10 space-y-3">
+            <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Customer unavailable?</p>
+            <label class="block w-full cursor-pointer py-3.5 bg-white/5 border border-white/10 text-gray-300 rounded-xl text-sm font-bold shadow-sm hover:bg-white/10 hover:border-white/20 disabled:opacity-50 transition-all active:scale-95 backdrop-blur-sm">
               <input type="file" class="hidden" accept="image/*" @change="handleContactlessDropoff" :disabled="uploadingDropoff" />
               <div class="flex items-center justify-center gap-2">
-                <Loader2 v-if="uploadingDropoff" class="w-4 h-4 animate-spin" />
-                <span v-else class="text-base">📸</span>
-                {{ uploadingDropoff ? 'UPLOADING...' : 'Contactless Drop-off (Take Photo)' }}
+                <Loader2 v-if="uploadingDropoff" class="w-4 h-4 animate-spin text-[#FF5C1A]" />
+                <span v-else class="text-lg">📸</span>
+                <span :class="uploadingDropoff ? 'text-[#FF5C1A]' : ''">{{ uploadingDropoff ? 'UPLOADING PROOF...' : 'Contactless Drop-off' }}</span>
               </div>
             </label>
           </div>
@@ -457,16 +466,14 @@ const handleContactlessDropoff = async (event: Event) => {
     const formData = new FormData();
     formData.append('file', file);
     
-    const config = useRuntimeConfig();
-    const uploadRes = await fetch(`${config.public.apiBase}/upload?resourceType=image`, {
-      method: 'POST',
-      body: formData,
+    const resUpload = await api.post<any>('/upload?resourceType=image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
     });
-    const uploadData = await uploadRes.json();
-    if (!uploadData.url) throw new Error('Upload failed');
+    
+    if (!resUpload || !resUpload.url) throw new Error('Upload failed');
 
     const res = await api.post<any>(`/orders/${route.params.id}/complete-contactless`, { 
-      imageUrl: uploadData.url 
+      imageUrl: resUpload.url 
     });
     
     if (res && res.type === 'ERROR') {
