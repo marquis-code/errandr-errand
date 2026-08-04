@@ -15,6 +15,7 @@ export const useAuth = () => {
     try {
       payload.role = 'errander';
       const res = await auth_api.login(payload);
+      if (res?.type === 'ERROR') throw res;
       setUser(res.data.user);
       setToken(res.data.token);
       showToast({
@@ -28,6 +29,7 @@ export const useAuth = () => {
       }
       return res.data;
     } catch (e: any) {
+      console.error('Login error:', e);
       throw e;
     } finally {
       loading.value = false;
@@ -38,6 +40,7 @@ export const useAuth = () => {
     loading.value = true;
     try {
       const res = await auth_api.register(payload);
+      if (res?.type === 'ERROR') throw res;
       setUser(res.data.user);
       setToken(res.data.token);
       showToast({
@@ -50,6 +53,7 @@ export const useAuth = () => {
       }
       return res.data;
     } catch (e: any) {
+      console.error('Register error:', e);
       throw e;
     } finally {
       loading.value = false;
@@ -59,8 +63,10 @@ export const useAuth = () => {
   const fetchProfile = async () => {
     try {
       const res = await auth_api.getProfile();
-      setUser(res.data);
-    } catch (e) {
+      if (res?.type === 'ERROR') throw res;
+      setUser(res.data.user || res.data);
+    } catch (e: any) {
+      console.error('Fetch profile error:', e);
       logOut();
     }
   };
@@ -69,6 +75,7 @@ export const useAuth = () => {
     loading.value = true;
     try {
       const res = await auth_api.verifyOtp({ email, otp });
+      if (res?.type === 'ERROR') throw res;
       setUser(res.data.user);
       setToken(res.data.token);
       showToast({
@@ -81,6 +88,7 @@ export const useAuth = () => {
       }
       return res.data;
     } catch (e: any) {
+      console.error('Verify OTP error:', e);
       throw e;
     } finally {
       loading.value = false;
@@ -91,6 +99,7 @@ export const useAuth = () => {
     loading.value = true;
     try {
       const res = await auth_api.resendOtp(email);
+      if (res?.type === 'ERROR') throw res;
       showToast({
         title: "Code Sent!",
         message: "A new verification code has been sent to your email.",
@@ -98,6 +107,7 @@ export const useAuth = () => {
       });
       return res.data;
     } catch (e: any) {
+      console.error('Resend OTP error:', e);
       throw e;
     } finally {
       loading.value = false;
@@ -108,6 +118,7 @@ export const useAuth = () => {
     loading.value = true;
     try {
       const res = await auth_api.forgotPassword(email);
+      if (res?.type === 'ERROR') throw res;
       showToast({
         title: "Code Sent!",
         message: res.data?.message || "Check your inbox for the reset code.",
@@ -116,6 +127,7 @@ export const useAuth = () => {
       navigateTo(`/auth/verify-reset-otp?email=${encodeURIComponent(email)}`);
       return res.data;
     } catch (e: any) {
+      console.error('Forgot password error:', e);
       throw e;
     } finally {
       loading.value = false;
@@ -126,6 +138,7 @@ export const useAuth = () => {
     loading.value = true;
     try {
       const res = await auth_api.verifyResetOtp({ email, otp });
+      if (res?.type === 'ERROR') throw res;
       showToast({
         title: "Code Verified!",
         message: res.data?.message || "Perfect! Now set your new password.",
@@ -134,6 +147,7 @@ export const useAuth = () => {
       navigateTo(`/auth/reset-password?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`);
       return res.data;
     } catch (e: any) {
+      console.error('Verify reset OTP error:', e);
       throw e;
     } finally {
       loading.value = false;
@@ -144,6 +158,7 @@ export const useAuth = () => {
     loading.value = true;
     try {
       const res = await auth_api.resetPassword(payload);
+      if (res?.type === 'ERROR') throw res;
       showToast({
         title: "Password Changed!",
         message: "You can now log in securely.",
@@ -152,6 +167,7 @@ export const useAuth = () => {
       navigateTo('/auth/login');
       return res.data;
     } catch (e: any) {
+      console.error('Reset password error:', e);
       throw e;
     } finally {
       loading.value = false;
