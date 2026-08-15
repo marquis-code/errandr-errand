@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth selection:bg-parentPrimary selection:text-white">
+    <ExamPromoBanner />
     <!-- Hero Section with Background Carousel & Continuous Marquee -->
     <section class="relative pt-24 lg:pt-32 pb-24 overflow-hidden bg-gradient-to-b from-slate-50/80 via-white to-white border-b border-slate-100">
       <!-- Soft Minimalist Grid Dot Overlay -->

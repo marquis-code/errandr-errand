@@ -4,7 +4,7 @@
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
         <h1 class="text-xl md:text-2xl font-medium text-gray-900 tracking-tight mb-1">Available Errands</h1>
-        <p class="text-gray-400 text-xs md:text-sm font-medium">Claim available orders in real-time from the global pool.</p>
+        <p class="text-gray-400 text-xs md:text-sm font-medium">Claim available orders in real-time from the open orders list.</p>
       </div>
       <div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -16,8 +16,8 @@
     <div v-if="batchStatus?.isActive" class="bg-parentPrimary/[0.03] border border-parentPrimary/10 rounded-2xl p-5 flex items-center gap-4 group hover:bg-parentPrimary/5 transition-all">
       <div class="w-12 h-12 rounded-xl bg-parentPrimary flex items-center justify-center text-white text-xl flex-shrink-0">📦</div>
       <div>
-        <h4 class="text-sm font-medium text-gray-900">Batch Window Active</h4>
-        <p class="text-[11px] text-gray-400 font-medium">You can accept up to 5 orders simultaneously. Optimized routing enabled!</p>
+        <h4 class="text-sm font-medium text-gray-900">Multi-Order Mode Active</h4>
+        <p class="text-[11px] text-gray-400 font-medium">You can accept up to 5 orders at once. Deliver multiple orders to save time!</p>
       </div>
     </div>
 
@@ -31,7 +31,7 @@
     <div v-else-if="availableOrders.length === 0" class="bg-white rounded-2xl border border-gray-100 py-32 text-center">
       <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 scale-110">🚲</div>
       <h3 class="text-xl font-medium text-gray-900 mb-2">The pool is currently empty</h3>
-      <p class="text-xs text-gray-400 max-w-xs mx-auto mb-8 font-medium">All orders have been claimed. New orders will appear here automatically!</p>
+      <p class="text-xs text-gray-400 max-w-xs mx-auto mb-8 font-medium">All orders have been claimed. New orders will appear here automatically.</p>
     </div>
 
     <div v-else class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
@@ -39,9 +39,9 @@
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-gray-50/50 border-b border-gray-100">
-              <th class="py-5 px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em]">Errand Details</th>
-              <th class="py-5 px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] hidden lg:table-cell">Destination</th>
-              <th class="py-5 px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] text-right">Potential Pay</th>
+              <th class="py-5 px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em]">Order Details</th>
+              <th class="py-5 px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] hidden lg:table-cell">Drop-off</th>
+              <th class="py-5 px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] text-right">You Earn</th>
               <th class="py-5 px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] text-center">Action</th>
             </tr>
           </thead>
@@ -60,7 +60,7 @@
                   </div>
                   <div>
                     <h3 class="text-sm font-medium text-gray-900 mb-1 line-clamp-1">
-                      {{ order.type === 'custom_errand' ? 'Custom Errand' : (order.vendor?.storeName || 'Store Order') }}
+                      {{ order.type === 'custom_errand' ? 'Special Request' : (order.vendor?.storeName || 'Store Order') }}
                     </h3>
                     <div class="flex items-center gap-2 mb-1.5">
                       <span class="text-[9px] font-medium tracking-widest text-[#FF5C1A] uppercase bg-[#FF5C1A]/5 px-2 py-0.5 rounded">#{{ order.orderNumber?.slice(-8) }}</span>
@@ -99,8 +99,8 @@
               <!-- Pay -->
               <td class="py-5 px-4 text-right">
                 <div class="flex flex-col items-end">
-                  <p class="text-lg font-medium text-emerald-600 tracking-tight leading-none mb-1">₦{{ (order.erranderShare || order.deliveryFee || 150).toLocaleString() }}</p>
-                  <p class="text-[8px] font-medium text-gray-300 uppercase tracking-widest">Instant Pay</p>
+                  <p class="text-lg font-medium text-emerald-600 tracking-tight leading-none mb-1">₦{{ (order.erranderPayout || order.erranderShare || order.deliveryFee || 150).toLocaleString() }}</p>
+                  <p class="text-[8px] font-medium text-gray-300 uppercase tracking-widest">Paid Immediately</p>
                 </div>
               </td>
 
@@ -141,7 +141,7 @@
           </div>
           <div>
             <h2 class="text-xl font-medium text-gray-900 leading-tight">
-              {{ selectedOrder.type === 'custom_errand' ? 'Custom Errand' : selectedOrder.vendor?.storeName }}
+              {{ selectedOrder.type === 'custom_errand' ? 'Special Request' : selectedOrder.vendor?.storeName }}
             </h2>
             <p class="text-xs font-bold text-gray-400 tracking-widest uppercase">#{{ selectedOrder.orderNumber }}</p>
           </div>
@@ -150,11 +150,11 @@
         <!-- Info Grid -->
         <div class="grid grid-cols-2 gap-4">
           <div class="p-4 bg-gray-50 rounded-2xl">
-            <p class="text-[9px] font-medium text-gray-400 uppercase tracking-widest mb-1">Potential Pay</p>
-            <p class="text-xl font-medium text-emerald-600 tracking-tight">₦{{ (selectedOrder.erranderShare || selectedOrder.deliveryFee).toLocaleString() }}</p>
+            <p class="text-[9px] font-medium text-gray-400 uppercase tracking-widest mb-1">You Earn</p>
+            <p class="text-xl font-medium text-emerald-600 tracking-tight">₦{{ (selectedOrder.erranderPayout || selectedOrder.erranderShare || selectedOrder.deliveryFee).toLocaleString() }}</p>
           </div>
           <div class="p-4 bg-gray-50 rounded-2xl">
-            <p class="text-[9px] font-medium text-gray-400 uppercase tracking-widest mb-1">Estimated Prep</p>
+            <p class="text-[9px] font-medium text-gray-400 uppercase tracking-widest mb-1">Prep Time</p>
             <p class="text-xl font-medium text-gray-900 tracking-tight">~15 Mins</p>
           </div>
         </div>
@@ -185,7 +185,7 @@
 
         <!-- Order Items or Description -->
         <div class="space-y-4 pt-4 border-t border-gray-100">
-          <h4 class="text-xs font-medium text-gray-900 uppercase tracking-widest">{{ selectedOrder.type === 'custom_errand' ? 'Errand Description' : 'Order Summary' }}</h4>
+          <h4 class="text-xs font-medium text-gray-900 uppercase tracking-widest">{{ selectedOrder.type === 'custom_errand' ? 'Request Details' : 'Order Summary' }}</h4>
           <div v-if="selectedOrder.type === 'custom_errand'" class="p-4 bg-gray-50/50 rounded-xl text-sm text-gray-700 leading-relaxed whitespace-pre-line">
             {{ selectedOrder.customDetails?.description }}
             
@@ -224,10 +224,10 @@
         <div v-if="selectedOrder.type === 'custom_errand' && selectedOrder.customDetails?.estimatedItemCost > 0" class="p-4 bg-blue-50 border border-blue-200 rounded-2xl space-y-2">
           <div class="flex items-center gap-2">
             <Banknote class="w-4 h-4 text-blue-600" />
-            <h4 class="text-xs font-bold text-blue-800 uppercase tracking-wide">Item Cost Transfer</h4>
+            <h4 class="text-xs font-bold text-blue-800 uppercase tracking-wide">Money for Items</h4>
           </div>
           <p class="text-sm font-medium text-blue-700 leading-relaxed">
-            ₦{{ (selectedOrder.customDetails.estimatedItemCost).toLocaleString() }} will be transferred to your <strong>bank account</strong> immediately when you accept this errand, so you can purchase the items.
+            ₦{{ (selectedOrder.customDetails.estimatedItemCost).toLocaleString() }} will be transferred to your <strong>bank account</strong> immediately when you accept this order, so you can purchase the items.
           </p>
           <p class="text-[11px] font-medium text-blue-500">Make sure your bank details are set up in Wallet → Settings.</p>
         </div>
@@ -238,7 +238,7 @@
               <Check class="w-6 h-6" />
            </div>
            <h3 class="text-xl font-black text-emerald-900 tracking-tight">Offer Accepted!</h3>
-           <p class="text-sm font-medium text-emerald-700 leading-relaxed">The student has accepted your bid of ₦{{ selectedOrder.deliveryFee?.toLocaleString() }}. The system is now waiting for them to make the escrow payment.</p>
+           <p class="text-sm font-medium text-emerald-700 leading-relaxed">The student has accepted your offer of ₦{{ selectedOrder.deliveryFee?.toLocaleString() }}. The system is now waiting for them to make a secure payment.</p>
            <div class="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg border border-emerald-100 shadow-sm">
              <span class="relative flex h-2.5 w-2.5">
                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -267,27 +267,27 @@
             >
               <Zap v-if="acceptingId !== selectedOrder._id" class="w-4 h-4 fill-current" />
               <span v-else class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-              {{ acceptingId === selectedOrder._id ? 'Accepting...' : 'Accept at ₦' + (selectedOrder.erranderShare || selectedOrder.deliveryFee).toLocaleString() }}
+              {{ acceptingId === selectedOrder._id ? 'Accepting...' : 'Accept at ₦' + (selectedOrder.erranderPayout || selectedOrder.erranderShare || selectedOrder.deliveryFee).toLocaleString() }}
             </button>
           </div>
 
           <div v-if="selectedOrder.type === 'custom_errand'" class="border-t border-gray-100 pt-4 mt-2">
-            <p class="text-xs font-bold text-gray-500 mb-2">Or propose a different fee:</p>
+            <p class="text-xs font-bold text-gray-500 mb-2">Or offer a different price:</p>
             <div class="flex gap-2">
               <div class="relative flex-1">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₦</span>
-                <input v-model="formattedBidAmount" type="text" placeholder="New Fee" class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-4 py-2.5 outline-none focus:border-parentPrimary font-bold text-gray-900 text-base" />
+                <input v-model="formattedBidAmount" type="text" placeholder="Your Price" class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-4 py-2.5 outline-none focus:border-parentPrimary font-bold text-gray-900 text-base" />
               </div>
               <button 
                 @click="placeBid(selectedOrder._id)"
                 :disabled="!bidAmount || biddingId === selectedOrder._id"
                 class="bg-parentPrimary text-white text-sm font-bold px-4 py-2.5 rounded-lg disabled:opacity-50 hover:bg-orange-600 transition-colors shrink-0"
               >
-                {{ biddingId === selectedOrder._id ? 'Bidding...' : 'Submit Bid' }}
+                {{ biddingId === selectedOrder._id ? 'Sending...' : 'Send Offer' }}
               </button>
             </div>
             <p v-if="hasPlacedBid(selectedOrder)" class="text-xs font-bold text-green-600 mt-2 bg-green-50 p-2 rounded-lg text-center">
-              You proposed ₦{{ getMyBid(selectedOrder) }}
+              You offered ₦{{ getMyBid(selectedOrder) }}
             </p>
           </div>
         </div>
@@ -429,7 +429,7 @@ const placeBid = async (id: string) => {
   try {
     const res = await api.post(`/orders/${id}/custom/bid`, { amount: bidAmount.value });
     if (res && (res as any).type !== 'ERROR') {
-      pushToast('Bid Submitted!', 'Your counter-offer has been sent to the customer.', 'SUCCESS');
+      pushToast('Offer Sent!', 'Your offer has been sent to the customer.', 'SUCCESS');
       selectedOrder.value = res.data;
       const idx = availableOrders.value.findIndex(o => o._id === id);
       if (idx !== -1) availableOrders.value[idx] = res.data;
@@ -477,6 +477,7 @@ const handleNewOrder = (payload: any) => {
       },
       deliveryAddress: orderData.deliveryAddress,
       total: orderData.total,
+      erranderPayout: orderData.erranderPayout,
       erranderShare: orderData.erranderShare,
       createdAt: new Date().toISOString()
     }

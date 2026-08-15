@@ -227,12 +227,12 @@
  </div>
 
  <!-- Premium Verification Interface -->
- <div v-if="order.status === 'in_transit' || order.status === 'picked_up'" class="bg-gradient-to-br from-gray-950 via-gray-900 to-black rounded-xl md:rounded-3xl p-4 md:p-5 space-y-4 md:space-y-6 relative overflow-hidden group border border-white/10">
- <div class="absolute -right-32 -top-32 w-64 h-64 bg-emerald-500/20 rounded-full blur-[80px] group-hover:scale-125 transition-transform duration-1000" />
+ <div v-if="order.status === 'in_transit' || order.status === 'picked_up'" class="bg-white rounded-xl md:rounded-3xl p-4 md:p-5 space-y-4 md:space-y-6 relative overflow-hidden group border border-gray-100 shadow-sm">
+ <div class="absolute -right-32 -top-32 w-64 h-64 bg-[#FF5C1A]/5 rounded-full blur-[80px] group-hover:scale-125 transition-transform duration-1000" />
  
- <div class="text-center space-y-3 relative z-10">
- <h3 class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 text-2xl font-black tracking-tight leading-none">Security PIN</h3>
- <p class="text-gray-400 text-xs font-bold tracking-[0.1em] uppercase">Request the 4-digit code from the user</p>
+ <div class="text-center space-y-2 relative z-10">
+ <h3 class="text-[#FF5C1A] text-2xl font-black tracking-tight leading-none">Security PIN</h3>
+ <p class="text-gray-500 text-xs font-bold tracking-[0.1em] uppercase">Request the 4-digit code from the user</p>
  </div>
  
  <div class="flex justify-center relative z-10 px-4">
@@ -241,27 +241,27 @@
  type="text"
  maxlength="4"
  placeholder="••••"
- class="bg-black/50 text-white text-3xl font-black text-center tracking-[1em] pl-[1em] w-full py-4 rounded-2xl border border-white/10 focus:border-emerald-500/50 focus:bg-white/5 focus:ring-4 focus:ring-emerald-500/10 transition-all focus:outline-none placeholder:text-white/10 "
+ class="bg-gray-50 text-gray-900 text-3xl font-black text-center tracking-[1em] pl-[1em] w-full py-4 rounded-2xl border border-gray-200 focus:border-[#FF5C1A] focus:bg-white focus:ring-4 focus:ring-[#FF5C1A]/10 transition-all focus:outline-none placeholder:text-gray-300"
  />
  </div>
  
  <button 
  @click="completeOrder" 
  :disabled="verificationCode.length !== 4 || completing"
- class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl text-sm font-black shadow-emerald-500/20 hover: hover:shadow-emerald-500/40 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all relative z-10 group active:scale-95"
+ class="w-full py-4 bg-[#FF5C1A] text-white rounded-xl text-sm font-black shadow-sm hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all relative z-10 group active:scale-95"
  >
  <Loader2 v-if="completing" class="w-5 h-5 animate-spin flex-shrink-0" />
- <span v-else class="text-lg">✅</span> 
+ <span v-else class="text-lg group-hover:scale-110 transition-transform">✅</span> 
  {{ completing ? 'VERIFYING SECURE PIN...' : 'Finalize Secure Delivery' }}
  </button>
  
- <div class="pt-6 mt-6 border-t border-white/10 text-center relative z-10 space-y-3">
+ <div class="pt-6 mt-6 border-t border-gray-100 text-center relative z-10 space-y-3">
  <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Customer unavailable?</p>
- <label class="block w-full cursor-pointer py-3.5 bg-white/5 border border-white/10 text-gray-300 rounded-xl text-sm font-bold hover:bg-white/10 hover:border-white/20 disabled:opacity-50 transition-all active:scale-95 backdrop-blur-sm">
+ <label class="block w-full cursor-pointer py-3.5 bg-gray-50 border border-gray-200 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-100 hover:border-gray-300 disabled:opacity-50 transition-all active:scale-95">
  <input type="file" class="hidden" accept="image/*" @change="handleContactlessDropoff" :disabled="uploadingDropoff" />
  <div class="flex items-center justify-center gap-2">
  <Loader2 v-if="uploadingDropoff" class="w-4 h-4 animate-spin text-[#FF5C1A]" />
- <span v-else class="text-lg">📸</span>
+ <span v-else class="text-lg opacity-80">📸</span>
  <span :class="uploadingDropoff ? 'text-[#FF5C1A]' : ''">{{ uploadingDropoff ? 'UPLOADING PROOF...' : 'Contactless Drop-off' }}</span>
  </div>
  </label>
@@ -534,15 +534,31 @@ const startLocation = () => {
  }
 };
 
-onMounted(async () => {
- try {
- const res = await api.get<any>(`/orders/${route.params.id}`);
- order.value = res.data;
- } catch (e) { console.error(e); }
+ onMounted(async () => {
+  const loadOrder = async () => {
+    try {
+      const res = await api.get<any>(`/orders/${route.params.id}`);
+      order.value = res.data;
+    } catch (e) { console.error(e); }
+  };
+  
+  await loadOrder();
 
- connect();
- emit('trackOrder', { orderId: route.params.id });
- startLocation();
+  connect();
+  emit('trackOrder', { orderId: route.params.id });
+  startLocation();
+  
+  on('notification:order-status-update', (payload: any) => {
+    if (payload.orderId === route.params.id || payload.data?.orderId === route.params.id) {
+      loadOrder();
+    }
+  });
+  
+  on('notification:order-accepted', (payload: any) => {
+    if (payload.orderId === route.params.id || payload.data?.orderId === route.params.id) {
+      loadOrder();
+    }
+  });
 });
 
 useHead({ title: computed(() => `Delivery #${order.value?.orderNumber || ''} - Errandr`) });
