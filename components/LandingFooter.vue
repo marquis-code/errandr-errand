@@ -1,6 +1,6 @@
 <template>
   <footer class="bg-gray-50 border-t border-gray-200 py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-4 lg:px-5">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div class="md:col-span-1">
           <div class="flex items-center gap-2 mb-6 cursor-pointer" @click="$router.push('/')">

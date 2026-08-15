@@ -7,19 +7,19 @@
  <h1 class="text-2xl font-bold text-gray-900 mb-1">Earnings & Payouts</h1>
  <p class="text-gray-500 text-base">Track your delivery tips, base fees, and withdrawal history.</p>
  </div>
- <button v-if="balance > 0" @click="showWithdrawDrawer = true" class="px-6 py-2.5 bg-parentPrimary text-white rounded-full font-bold text-base shadow-sm shadow-parentPrimary/20 hover:brightness-110 active:scale-[0.98] transition-all flex items-center gap-2">
+ <button v-if="balance > 0" @click="showWithdrawDrawer = true" class="px-4 py-2.5 bg-parentPrimary text-white rounded-full font-bold text-base shadow-sm shadow-parentPrimary/20 hover:brightness-110 active:scale-[0.98] transition-all flex items-center gap-2">
  Request Payout
  </button>
  </div>
 
  <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 gap-6">
- <div v-for="i in 2" :key="i" class="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 animate-pulse h-40" />
+ <div v-for="i in 2" :key="i" class="bg-white rounded-3xl p-4 md:p-5 border border-gray-100 animate-pulse h-40" />
  </div>
 
  <div v-else class="space-y-8 animate-fade-in">
  <!-- Balance Cards -->
  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
- <div class="bg-white p-6 md:p-8 rounded-[2.5rem] relative overflow-hidden group border border-gray-100 shadow-sm">
+ <div class="bg-white p-4 md:p-5 rounded-[2.5rem] relative overflow-hidden group border border-gray-100 shadow-sm">
  <div class="absolute -right-10 -top-10 w-40 h-40 bg-parentPrimary/5 rounded-full group-hover:scale-110 transition-all duration-700"></div>
  <p class="text-sm font-bold text-gray-400 mb-2 relative z-10">Available for Payout</p>
  <h2 class="text-5xl font-bold text-gray-900 mb-2 relative z-10 ">₦{{ balance?.toLocaleString() || '0' }}</h2>
@@ -29,7 +29,7 @@
  </div>
  </div>
 
- <div class="bg-gray-50 p-6 md:p-8 rounded-[2.5rem] border border-gray-200/50 shadow-inner relative overflow-hidden">
+ <div class="bg-gray-50 p-4 md:p-5 rounded-[2.5rem] border border-gray-200/50 shadow-inner relative overflow-hidden">
  <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-gray-200/20 rounded-full blur-3xl"></div>
  <p class="text-sm font-semibold text-gray-400 mb-2">Lifetime Earnings</p>
  <h2 class="text-5xl font-bold text-gray-400 ">₦{{ wallet?.totalEarned?.toLocaleString() || '0' }}</h2>
@@ -38,7 +38,7 @@
  </div>
 
  <!-- Payout Preferences -->
- <section class="bg-white p-6 md:p-8 rounded-[2.5rem] border border-gray-100 shadow-sm space-y-8">
+ <section class="bg-white p-4 md:p-5 rounded-[2.5rem] border border-gray-100 shadow-sm space-y-8">
  <div class="flex items-center gap-3">
  <div class="w-10 h-10 rounded-2xl bg-parentPrimary/10 text-parentPrimary flex items-center justify-center text-xl shadow-inner border border-white">🏦</div>
  <h3 class="text-xl font-bold text-gray-900 ">Payout Settings</h3>
@@ -51,7 +51,7 @@
  <button v-for="p in ['instant', 'weekly']" :key="p"
  @click="handleUpdateFrequency(p)"
  class="flex-1 py-3 rounded-xl text-sm font-bold transition-all"
- :class="wallet?.payoutPreference === p ? 'bg-white text-parentPrimary shadow-md' : 'text-gray-500 hover:text-gray-700'"
+ :class="wallet?.payoutPreference === p ? 'bg-white text-parentPrimary shadow-sm border border-gray-100' : 'text-gray-500 hover:text-gray-700'"
  >
  {{ p }}
  </button>
@@ -98,14 +98,14 @@
  <table class="w-full text-left border-collapse">
  <thead>
  <tr class="border-b border-gray-100">
- <th class="py-4 px-6 font-medium text-gray-400 text-sm whitespace-nowrap">Description</th>
- <th class="py-4 px-6 font-medium text-gray-400 text-sm whitespace-nowrap text-right">Amount</th>
- <th class="py-4 px-6 font-medium text-gray-400 text-sm whitespace-nowrap text-right">Date</th>
+ <th class="py-4 px-4 font-medium text-gray-400 text-sm whitespace-nowrap">Description</th>
+ <th class="py-4 px-4 font-medium text-gray-400 text-sm whitespace-nowrap text-right">Amount</th>
+ <th class="py-4 px-4 font-medium text-gray-400 text-sm whitespace-nowrap text-right">Date</th>
  </tr>
  </thead>
  <tbody class="divide-y divide-gray-50/50">
  <tr v-for="tx in transactions" :key="tx._id" class="hover:bg-gray-50/80 transition-colors group cursor-default">
- <td class="py-4 px-6 min-w-[200px]">
+ <td class="py-4 px-4 min-w-[200px]">
  <div class="flex items-center gap-3">
  <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center shadow-sm border border-gray-100">
  <span class="text-base">{{ tx.type === 'credit' ? '📥' : '📤' }}</span>
@@ -116,12 +116,12 @@
  </div>
  </div>
  </td>
- <td class="py-4 px-6 text-right">
+ <td class="py-4 px-4 text-right">
  <p :class="tx.type === 'credit' ? 'text-emerald-600 bg-emerald-50/50' : 'text-rose-600 bg-rose-50/50'" class="text-base font-bold inline-block px-3 py-1 rounded-lg">
  {{ tx.type === 'credit' ? '+' : '-' }} ₦{{ tx.amount.toLocaleString() }}
  </p>
  </td>
- <td class="py-4 px-6 text-right">
+ <td class="py-4 px-4 text-right">
  <p class="text-sm text-gray-900 font-medium ">{{ new Date(tx.createdAt).toLocaleDateString() }}</p>
  <p class="text-sm text-gray-400 font-medium">{{ new Date(tx.createdAt).toLocaleTimeString() }}</p>
  </td>
@@ -160,7 +160,7 @@
  <button 
  @click="resolveAccount" 
  :disabled="bankForm.accountNumber.length !== 10 || !bankForm.bankCode || resolving"
- class="absolute right-2 top-1.5 bottom-1.5 px-4 rounded-lg bg-gray-900 text-white text-sm font-bold disabled:opacity-30 hover:bg-black transition-all shadow-lg shadow-gray-900/10"
+ class="absolute right-2 top-1.5 bottom-1.5 px-4 rounded-lg bg-gray-900 text-white text-sm font-bold disabled:opacity-30 hover:bg-black transition-all shadow-sm border border-gray-100 shadow-gray-900/10"
  >
  {{ resolving ? 'Wait...' : 'Verify' }}
  </button>
@@ -175,14 +175,14 @@
  </div>
  
  <div class="pt-6 border-t border-gray-100 flex gap-4 mt-6">
- <button @click="handleSaveBank" :disabled="!isAccountVerified" class="w-full py-4 bg-parentPrimary text-white rounded-xl text-base font-bold shadow-xl shadow-parentPrimary/20 disabled:opacity-30 hover:brightness-110 active:scale-[0.98] transition-all">Update Bank Account</button>
+ <button @click="handleSaveBank" :disabled="!isAccountVerified" class="w-full py-4 bg-parentPrimary text-white rounded-xl text-base font-bold shadow-sm border border-gray-100 shadow-parentPrimary/20 disabled:opacity-30 hover:brightness-110 active:scale-[0.98] transition-all">Update Bank Account</button>
  </div>
  </div>
  </SideDrawer>
 
  <!-- Withdraw SideDrawer -->
  <SideDrawer :isOpen="showWithdrawDrawer" @close="showWithdrawDrawer = false">
- <div class="flex flex-col items-center justify-center py-6 border-b border-gray-100 space-y-4">
+ <div class="flex flex-col items-center justify-center py-4 border-b border-gray-100 space-y-4">
  <div class="w-20 h-20 bg-parentPrimary/10 text-parentPrimary rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner border border-white">💸</div>
  <div class="text-center">
  <h3 class="text-2xl font-bold text-gray-900 mb-1">Request Payout</h3>
@@ -194,7 +194,7 @@
  <div class="space-y-2">
  <div class="relative">
  <span class="absolute left-6 top-1/2 -translate-y-1/2 text-xl font-bold text-gray-400">₦</span>
- <input v-model="formattedWithdrawAmount" type="text" class="w-full pl-12 pr-6 py-6 bg-gray-50 border border-gray-100 rounded-3xl text-3xl font-bold text-center focus:ring-4 focus:ring-parentPrimary/10 focus:bg-white transition-all shadow-inner" placeholder="0">
+ <input v-model="formattedWithdrawAmount" type="text" class="w-full pl-12 pr-6 py-4 bg-gray-50 border border-gray-100 rounded-3xl text-3xl font-bold text-center focus:ring-4 focus:ring-parentPrimary/10 focus:bg-white transition-all shadow-inner" placeholder="0">
  </div>
  <p class="text-sm text-gray-400 font-medium text-center">Available: ₦{{ balance?.toLocaleString() }}</p>
  </div>
@@ -213,7 +213,7 @@
   </label>
   <p v-if="isInstant && withdrawAmount > 5000" class="text-[10px] text-red-500 font-bold px-1">Instant withdrawal is limited to ₦5,000</p>
 
-  <button @click="handleWithdraw" :disabled="withdrawAmount <= 0 || withdrawAmount > (balance || 0) || (isInstant && withdrawAmount > 5000)" class="w-full py-4 bg-parentPrimary text-white rounded-xl font-bold text-base shadow-xl shadow-parentPrimary/20 hover:brightness-110 disabled:opacity-30 active:scale-[0.98] transition-all ">
+  <button @click="handleWithdraw" :disabled="withdrawAmount <= 0 || withdrawAmount > (balance || 0) || (isInstant && withdrawAmount > 5000)" class="w-full py-4 bg-parentPrimary text-white rounded-xl font-bold text-base shadow-sm border border-gray-100 shadow-parentPrimary/20 hover:brightness-110 disabled:opacity-30 active:scale-[0.98] transition-all ">
   Confirm Withdrawal
   </button>
  </div>

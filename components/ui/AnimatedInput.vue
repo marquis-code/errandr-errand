@@ -89,10 +89,10 @@
         @click="closeDatePicker"
       >
         <div 
-          class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform"
+          class="bg-white rounded-3xl shadow-sm border border-gray-100 w-full max-w-md overflow-hidden transform"
           @click.stop
         >
-          <div class="bg-gradient-to-br from-[#033958] to-[#055a8c] p-6 text-white">
+          <div class="bg-gradient-to-br from-[#033958] to-[#055a8c] p-4 text-white">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xl font-bold">Select Date</h3>
               <button 
@@ -110,7 +110,7 @@
             </p>
           </div>
           
-          <div class="p-6">
+          <div class="p-4">
             <div class="flex items-center justify-between mb-6">
               <button 
                 type="button" 
@@ -165,7 +165,7 @@
             </div>
           </div>
           
-          <div class="px-6 pb-6 pt-2 flex justify-between border-t">
+          <div class="px-4 pb-6 pt-2 flex justify-between border-t">
             <button 
               type="button" 
               @click.stop="setToday" 
@@ -193,10 +193,10 @@
         @click="closeTimePicker"
       >
         <div 
-          class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden transform"
+          class="bg-white rounded-3xl shadow-sm border border-gray-100 w-full max-w-sm overflow-hidden transform"
           @click.stop
         >
-          <div class="bg-gradient-to-br from-[#033958] to-[#055a8c] p-6 text-white">
+          <div class="bg-gradient-to-br from-[#033958] to-[#055a8c] p-4 text-white">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xl font-bold">Select Time</h3>
               <button 
@@ -214,7 +214,7 @@
             </p>
           </div>
           
-          <div class="p-8">
+          <div class="p-5">
             <div class="flex items-center justify-center gap-6 mb-8">
               <div class="flex flex-col items-center">
                 <button type="button" @click.stop="incHour" class="p-3 hover:bg-gray-100 rounded-xl mb-3 transition-all group">
@@ -262,9 +262,9 @@
                 type="button" 
                 @click.stop="setPeriod('AM')"
                 :class="[
-                  'flex-1 px-6 py-4 text-lg font-bold rounded-2xl transition-all transform',
+                  'flex-1 px-4 py-4 text-lg font-bold rounded-2xl transition-all transform',
                   selectedPeriod === 'AM' 
-                    ? 'bg-[#033958] text-white shadow-lg scale-105' 
+                    ? 'bg-[#033958] text-white shadow-sm border border-gray-100 scale-105' 
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 ]"
               >
@@ -274,9 +274,9 @@
                 type="button" 
                 @click.stop="setPeriod('PM')"
                 :class="[
-                  'flex-1 px-6 py-4 text-lg font-bold rounded-2xl transition-all transform',
+                  'flex-1 px-4 py-4 text-lg font-bold rounded-2xl transition-all transform',
                   selectedPeriod === 'PM' 
-                    ? 'bg-[#033958] text-white shadow-lg scale-105' 
+                    ? 'bg-[#033958] text-white shadow-sm border border-gray-100 scale-105' 
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 ]"
               >
@@ -285,7 +285,7 @@
             </div>
           </div>
           
-          <div class="px-6 pb-6 flex justify-between border-t pt-4">
+          <div class="px-4 pb-6 flex justify-between border-t pt-4">
             <button 
               type="button" 
               @click.stop="setNow"
@@ -304,7 +304,7 @@
               <button 
                 type="button" 
                 @click.stop="confirmTimeValue"
-                class="px-6 py-2.5 text-sm text-white bg-[#033958] hover:bg-[#022f42] rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+                class="px-4 py-2.5 text-sm text-white bg-[#033958] hover:bg-[#022f42] rounded-xl font-bold shadow-sm border border-gray-100 hover:shadow-sm border border-gray-100 transition-all"
               >
                 Confirm
               </button>
@@ -322,10 +322,10 @@
         @click="closeDateTimePicker"
       >
         <div 
-          class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl my-8 overflow-hidden transform"
+          class="bg-white rounded-3xl shadow-sm border border-gray-100 w-full max-w-4xl my-8 overflow-hidden transform"
           @click.stop
         >
-          <div class="bg-gradient-to-br from-[#033958] to-[#055a8c] p-6 text-white">
+          <div class="bg-gradient-to-br from-[#033958] to-[#055a8c] p-4 text-white">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-2xl font-bold">Select Date & Time</h3>
               <button 
@@ -341,7 +341,7 @@
             </p>
           </div>
           
-          <div class="p-6 md:p-8 grid md:grid-cols-2 gap-8">
+          <div class="p-4 md:p-5 grid md:grid-cols-2 gap-8">
             <div>
               <h4 class="text-lg font-bold mb-4 flex items-center gap-2">
                 <span class="p-2 bg-[#033958]/10 rounded-lg">📅</span> DATE
@@ -432,14 +432,14 @@
                 <button 
                   type="button" 
                   @click.stop="setPeriod('AM')"
-                  :class="['flex-1 px-4 py-3 text-base font-bold rounded-xl transition-all', selectedPeriod === 'AM' ? 'bg-[#033958] text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200']"
+                  :class="['flex-1 px-4 py-3 text-base font-bold rounded-xl transition-all', selectedPeriod === 'AM' ? 'bg-[#033958] text-white shadow-sm border border-gray-100' : 'bg-gray-100 text-gray-600 hover:bg-gray-200']"
                 >
                   AM
                 </button>
                 <button 
                   type="button" 
                   @click.stop="setPeriod('PM')"
-                  :class="['flex-1 px-4 py-3 text-base font-bold rounded-xl transition-all', selectedPeriod === 'PM' ? 'bg-[#033958] text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200']"
+                  :class="['flex-1 px-4 py-3 text-base font-bold rounded-xl transition-all', selectedPeriod === 'PM' ? 'bg-[#033958] text-white shadow-sm border border-gray-100' : 'bg-gray-100 text-gray-600 hover:bg-gray-200']"
                 >
                   PM
                 </button>
@@ -447,7 +447,7 @@
             </div>
           </div>
           
-          <div class="px-6 pb-6 flex justify-between border-t pt-4">
+          <div class="px-4 pb-6 flex justify-between border-t pt-4">
             <button 
               type="button" 
               @click.stop="setDTNow"
@@ -466,7 +466,7 @@
               <button 
                 type="button" 
                 @click.stop="confirmDTValue"
-                class="px-6 py-2.5 text-sm text-white bg-[#033958] hover:bg-[#022f42] rounded-xl font-bold shadow-lg transition-all"
+                class="px-4 py-2.5 text-sm text-white bg-[#033958] hover:bg-[#022f42] rounded-xl font-bold shadow-sm border border-gray-100 transition-all"
               >
                 Confirm
               </button>
@@ -638,7 +638,7 @@ function getDayClass(day: CalendarDay) {
     'aspect-square p-2 text-sm font-semibold rounded-xl transition-all relative',
     day.isCurrentMonth ? 'hover:bg-gray-100 hover:scale-105 cursor-pointer' : 'text-gray-300 opacity-40 cursor-not-allowed',
     day.isToday && !day.isSelected ? 'bg-blue-50 text-[#033958] ring-2 ring-[#033958] ring-inset font-bold' : '',
-    day.isSelected ? 'bg-[#033958] text-white shadow-lg scale-105' : ''
+    day.isSelected ? 'bg-[#033958] text-white shadow-sm border border-gray-100 scale-105' : ''
   ]
 }
 
@@ -647,7 +647,7 @@ function getDTDayClass(day: CalendarDay) {
     'aspect-square p-2 text-xs font-medium rounded-lg transition-all',
     day.isCurrentMonth ? 'hover:bg-gray-100 cursor-pointer' : 'text-gray-300 opacity-30 cursor-not-allowed',
     day.isToday && !day.isSelected ? 'border border-[#033958] text-[#033958] font-bold' : '',
-    day.isSelected ? 'bg-[#033958] text-white shadow-md' : ''
+    day.isSelected ? 'bg-[#033958] text-white shadow-sm border border-gray-100' : ''
   ]
 }
 

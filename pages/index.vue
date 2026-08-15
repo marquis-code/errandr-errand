@@ -5,7 +5,7 @@
       <!-- Soft Minimalist Grid Dot Overlay -->
       <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
 
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-10 relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
           <!-- Left Column: Elegant, Balanced Content -->
           <div class="lg:col-span-7 text-left flex flex-col items-start space-y-6">
@@ -24,7 +24,7 @@
             </p>
             
             <div class="flex flex-row items-center gap-4 w-full sm:w-auto">
-              <NuxtLink :to="isLoggedIn ? '/dashboard' : '/auth/register'" class="px-6 py-3 bg-parentPrimary hover:bg-[#E54D12] text-white rounded-full font-extrabold text-sm shadow-md shadow-parentPrimary/10 transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer">
+              <NuxtLink :to="isLoggedIn ? '/dashboard' : '/auth/register'" class="px-4 py-3 bg-parentPrimary hover:bg-[#E54D12] text-white rounded-full font-extrabold text-sm shadow-sm border border-gray-100 shadow-parentPrimary/10 transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer">
                 {{ isLoggedIn ? 'Enter Dashboard' : 'Start Earning Now' }}
                 <Rocket class="w-4 h-4 text-white" />
               </NuxtLink>
@@ -34,7 +34,7 @@
           <!-- Right Column: Minimalist Light Live Rider Simulator -->
           <div class="lg:col-span-5 relative w-full flex justify-center lg:justify-end mt-10 lg:mt-0">
             <!-- The Main Light Glass Console -->
-            <div class="w-full max-w-[380px] bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.03)] relative overflow-hidden">
+            <div class="w-full max-w-[380px] bg-white border border-slate-100 rounded-[2.5rem] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.03)] relative overflow-hidden">
               <!-- Mockup Header -->
               <div class="flex items-center justify-between border-b border-slate-100 pb-5 mb-5">
                 <div class="flex items-center gap-3">
@@ -92,7 +92,7 @@
               </div>
 
               <!-- Decorative Floating Widgets -->
-              <div class="absolute -top-4 -right-4 bg-white border border-slate-100 rounded-2xl p-2.5 shadow-md flex items-center gap-2 animate-bounce [animation-duration:4s]">
+              <div class="absolute -top-4 -right-4 bg-white border border-slate-100 rounded-2xl p-2.5 shadow-sm border border-gray-100 flex items-center gap-2 animate-bounce [animation-duration:4s]">
                 <div class="w-7 h-7 rounded-lg bg-yellow-50 text-yellow-500 flex items-center justify-center font-medium text-xs">⭐</div>
                 <div>
                   <p class="text-[11px] font-medium text-slate-900">Top Rated</p>
@@ -100,7 +100,7 @@
                 </div>
               </div>
 
-              <div class="absolute -bottom-4 -left-4 bg-white border border-slate-100 rounded-2xl p-2.5 shadow-md flex items-center gap-2.5 animate-bounce [animation-duration:5s]">
+              <div class="absolute -bottom-4 -left-4 bg-white border border-slate-100 rounded-2xl p-2.5 shadow-sm border border-gray-100 flex items-center gap-2.5 animate-bounce [animation-duration:5s]">
                 <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center font-medium text-xs">⚡</div>
                 <div>
                   <p class="text-[11px] font-medium text-slate-900">Instant Cash</p>
@@ -113,9 +113,9 @@
       </div>
 
       <!-- Marquee Row 1 -->
-      <div class="mt-24 relative bg-slate-900 overflow-hidden py-3 transform -rotate-1 shadow-md border-y border-slate-800 z-10">
+      <div class="mt-24 relative bg-slate-900 overflow-hidden py-3 transform -rotate-1 shadow-sm border border-gray-100 border-y border-slate-800 z-10">
         <div class="flex animate-marquee-fast w-max items-center">
-          <div class="flex items-center gap-12 px-6" v-for="i in 6" :key="i">
+          <div class="flex items-center gap-12 px-4" v-for="i in 6" :key="i">
             <span class="text-2xl font-medium text-white tracking-tight">Flexible Hours</span>
             <Star class="w-6 h-6 text-yellow-300 fill-current" />
             <span class="text-2xl font-medium text-white tracking-tight outline-text">Work Between Classes</span>
@@ -129,7 +129,7 @@
       <!-- Marquee Row 2 -->
       <div class="relative bg-white overflow-hidden py-2 transform rotate-1 shadow-sm -mt-3 border-y border-slate-100 z-10">
         <div class="flex animate-marquee-reverse w-max items-center">
-          <div class="flex items-center gap-12 px-6" v-for="i in 6" :key="`rev-${i}`">
+          <div class="flex items-center gap-12 px-4" v-for="i in 6" :key="`rev-${i}`">
             <span class="text-base font-bold text-slate-700">Instant Withdrawals</span>
             <Banknote class="w-5 h-5 text-emerald-500" />
             <span class="text-base font-bold text-slate-700">Safe Campus Deliveries</span>
@@ -141,7 +141,7 @@
 
     <!-- Features Section -->
     <section id="features" class="py-32 bg-gray-50/50">
-      <div class="max-w-7xl mx-auto px-6 sm:px-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-10">
         <div class="text-center mb-20 max-w-3xl mx-auto">
           <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-100/50 text-emerald-600 text-sm font-medium  mb-6">
             <Zap class="w-4 h-4" /> The Rider Toolkit
@@ -156,7 +156,7 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div v-for="(feature, idx) in toolkitFeatures" :key="idx" 
-               class="group bg-white p-8 rounded-[2rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.03)] border border-slate-100 hover:border-parentPrimary/30 transition-all duration-500 hover:-translate-y-1 relative overflow-hidden flex flex-col items-start">
+               class="group bg-white p-5 rounded-[2rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.03)] border border-slate-100 hover:border-parentPrimary/30 transition-all duration-500 hover:-translate-y-1 relative overflow-hidden flex flex-col items-start">
             <div class="absolute -right-6 -top-6 w-32 h-32 bg-slate-50 rounded-full blur-2xl group-hover:bg-parentPrimary/5 transition-all duration-500"></div>
             <div class="w-12 h-12 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-700 mb-6 group-hover:scale-110 group-hover:bg-parentPrimary group-hover:text-white group-hover:border-parentPrimary transition-all duration-300 relative z-10">
               <component :is="feature.icon" class="w-5 h-5" />
@@ -173,7 +173,7 @@
       <!-- Soft Minimalist Grid Dot Overlay -->
       <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
       
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 mb-12 text-center">
+      <div class="max-w-7xl mx-auto px-4 sm:px-10 relative z-10 mb-12 text-center">
         <h2 class="text-3xl lg:text-4xl font-medium text-slate-900 tracking-tighter">Loved by student riders.</h2>
         <p class="text-slate-500 font-medium mt-3 text-sm">Hear from students who are funding their campus life with Errander.</p>
       </div>
@@ -188,7 +188,7 @@
           <!-- Repeat the cards twice for seamless looping -->
           <div class="flex gap-6 px-4" v-for="loop in 2" :key="`loop-${loop}`">
             <div v-for="(story, idx) in successStories" :key="`${loop}-${idx}`" 
-                 class="w-[340px] flex-shrink-0 bg-white/80 backdrop-blur-xl p-6 rounded-[2rem] border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:border-parentPrimary/30 transition-all duration-500 flex flex-col justify-between">
+                 class="w-[340px] flex-shrink-0 bg-white/80 backdrop-blur-xl p-4 rounded-[2rem] border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:border-parentPrimary/30 transition-all duration-500 flex flex-col justify-between">
               <div>
                 <Quote class="w-7 h-7 text-parentPrimary/20 mb-4" />
                 <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed mb-6">"{{ story.quote }}"</p>
@@ -223,7 +223,7 @@
         <p class="text-slate-500 font-medium text-lg mb-10 max-w-xl">
           Join thousands of successful student riders on Errander today.
         </p>
-        <NuxtLink to="/auth/register" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-parentPrimary hover:bg-[#E54D12] text-white rounded-full font-bold shadow-md shadow-parentPrimary/10 transition-all text-sm group cursor-pointer active:scale-95">
+        <NuxtLink to="/auth/register" class="inline-flex items-center justify-center gap-2 px-4 py-3 bg-parentPrimary hover:bg-[#E54D12] text-white rounded-full font-bold shadow-sm border border-gray-100 shadow-parentPrimary/10 transition-all text-sm group cursor-pointer active:scale-95">
           Join the Fleet <ArrowRight class="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform"/>
         </NuxtLink>
       </div>

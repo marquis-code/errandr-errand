@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center py-20 px-6 text-center animate-fade-in w-full max-w-lg mx-auto">
+  <div class="flex flex-col items-center justify-center py-20 px-4 text-center animate-fade-in w-full max-w-lg mx-auto">
     <div class="w-20 h-20 mb-6 rounded-full bg-gray-50 flex items-center justify-center text-4xl shadow-sm border border-gray-100">
       <slot name="icon">
         <span v-if="!$slots.icon" class="text-xl">📋</span>
@@ -9,7 +9,7 @@
     <p class="text-gray-500 max-w-sm mx-auto mb-8 text-sm leading-relaxed font-medium">
       {{ description }}
     </p>
-    <button v-if="actionLabel" @click="$emit('action')" class="px-8 py-3.5 rounded-full font-bold text-sm shadow-sm transition-all focus:ring-4 focus:ring-parentPrimary/20 bg-parentPrimary text-white hover:bg-green-600 active:scale-[0.98]">
+    <button v-if="actionLabel" @click="$emit('action')" class="px-5 py-3.5 rounded-full font-bold text-sm shadow-sm transition-all focus:ring-4 focus:ring-parentPrimary/20 bg-parentPrimary text-white hover:bg-green-600 active:scale-[0.98]">
       {{ actionLabel }}
     </button>
   </div>

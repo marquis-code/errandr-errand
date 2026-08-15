@@ -1,5 +1,5 @@
 <template>
- <div class="space-y-6 animate-fade-in max-w-7xl mx-auto pb-10">
+ <div class="space-y-4 md:space-y-6 animate-fade-in max-w-7xl w-full mx-auto pb-10">
  <!-- Header -->
  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
  <div>
@@ -27,7 +27,7 @@
  :key="status.key" 
  @click="activeFilter = status.key"
  class="px-4 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap"
- :class="activeFilter === status.key ? 'bg-[#FF5C1A] text-white shadow-sm' : 'text-gray-500 hover:bg-gray-100 bg-white border border-gray-200'"
+ :class="activeFilter === status.key ? 'bg-[#FF5C1A] text-white ' : 'text-gray-500 hover:bg-gray-100 bg-white border border-gray-200'"
  >
  {{ status.label }}
  </button>
@@ -44,7 +44,7 @@
  <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">📦</div>
  <h3 class="text-base font-bold text-gray-900 mb-1">{{ activeFilter === 'all' ? 'No deliveries yet' : `No ${activeFilter} deliveries` }}</h3>
  <p class="text-sm text-gray-400 mb-6">{{ activeFilter === 'all' ? 'Accept orders from the marketplace to get started!' : 'Check back later for updates.' }}</p>
- <NuxtLink v-if="activeFilter === 'all'" to="/" class="inline-block px-6 py-2.5 bg-[#FF5C1A] text-white rounded-xl font-semibold text-sm shadow-sm shadow-[#FF5C1A]/20 hover:brightness-110 transition-all">
+ <NuxtLink v-if="activeFilter === 'all'" to="/" class="inline-block px-4 md:px-4 py-2.5 bg-[#FF5C1A] text-white rounded-xl font-semibold text-sm shadow-[#FF5C1A]/20 hover:brightness-110 transition-all">
  Browse Marketplace
  </NuxtLink>
  </div>
@@ -83,12 +83,12 @@
  </td>
  <td class="py-3.5 px-5">
  <p class="text-sm font-medium text-gray-700 truncate max-w-[140px]">
-   {{ order.type === 'custom_errand' ? (order.customer?.firstName ? `${order.customer.firstName}'s Errand` : 'Custom Errand') : (order.vendor?.storeName || 'Unknown Store') }}
+ {{ order.type === 'custom_errand' ? (order.customer?.firstName ? `${order.customer.firstName}'s Errand` : 'Custom Errand') : (order.vendor?.storeName || 'Unknown Store') }}
  </p>
  </td>
  <td class="py-3.5 px-5 hidden md:table-cell">
  <p class="text-sm text-gray-500 truncate max-w-[180px]">
-   {{ order.type === 'custom_errand' ? 'Dynamic Route' : (order.deliveryAddress || 'No Address Provided') }}
+ {{ order.type === 'custom_errand' ? 'Dynamic Route' : (order.deliveryAddress || 'No Address Provided') }}
  </p>
  </td>
  <td class="py-3.5 px-5 text-right">
@@ -114,8 +114,8 @@
  <!-- Delivery Details Drawer -->
  <SideDrawer :isOpen="!!selectedOrder" @close="selectedOrder = null">
  <template v-if="selectedOrder">
- <div class="flex flex-col items-center justify-center py-6 border-b border-gray-100">
- <div class="w-14 h-14 bg-white rounded-[1.25rem] shadow-sm border border-gray-50 flex items-center justify-center text-2xl mb-3">
+ <div class="flex flex-col items-center justify-center py-4 border-b border-gray-100">
+ <div class="w-14 h-14 bg-white rounded-[1.25rem] border border-gray-50 flex items-center justify-center text-2xl mb-3">
  {{ statusEmoji(selectedOrder.status) }}
  </div>
  <h3 class="text-lg font-medium text-gray-900 tracking-tighter">Delivery #{{ selectedOrder.orderNumber }}</h3>
@@ -124,7 +124,7 @@
  </span>
  </div>
 
- <div class="py-6 space-y-6">
+ <div class="py-4 space-y-4 md:space-y-6">
  <!-- Route Info -->
  <div class="bg-gray-50/50 rounded-2xl p-5 border border-gray-100 space-y-4">
  <p class="text-[10px] font-medium text-gray-400 tracking-widest mb-2">Delivery Intelligence</p>
@@ -133,7 +133,7 @@
  <div class="absolute left-3 top-4 bottom-4 w-px border-l-2 border-dashed border-gray-200"></div>
  
  <div class="flex items-start gap-4 relative z-10">
- <div class="w-6 h-6 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-[10px] shadow-sm">🏪</div>
+ <div class="w-6 h-6 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-[10px] ">🏪</div>
  <div>
  <p class="text-[9px] text-gray-400 font-bold tracking-widest mb-0.5 whitespace-nowrap">Source: Prep Station</p>
  <p class="text-sm font-medium text-gray-900 tracking-tight">{{ selectedOrder.vendor?.storeName || 'Store' }}</p>
@@ -141,7 +141,7 @@
  </div>
  
  <div class="flex items-start gap-4 relative z-10">
- <div class="w-6 h-6 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-[10px] shadow-sm">📍</div>
+ <div class="w-6 h-6 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-[10px] ">📍</div>
  <div>
  <p class="text-[9px] text-gray-400 font-bold tracking-widest mb-0.5 whitespace-nowrap">Destination: Customer</p>
  <p class="text-sm font-medium text-[#FF5C1A] tracking-tight">{{ selectedOrder.deliveryAddress }}</p>
@@ -165,7 +165,7 @@
  <!-- Actions -->
  <NuxtLink 
  :to="`/deliveries/${selectedOrder._id}`" 
- class="w-full px-5 py-3.5 bg-gray-900 text-white rounded-xl text-sm font-semibold shadow-md hover:bg-black transition-all flex items-center justify-center gap-2 group"
+ class="w-full px-5 py-3.5 bg-gray-900 text-white rounded-xl text-sm font-semibold hover:bg-black transition-all flex items-center justify-center gap-2 group"
  >
  Open Live Tracker <span class="group-hover:translate-x-0.5 inline-block transition-transform">→</span>
  </NuxtLink>

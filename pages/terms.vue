@@ -8,7 +8,7 @@
         <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-parentPrimary/5 rounded-full blur-[120px] translate-x-1/4"></div>
       </div>
 
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
+      <div class="max-w-7xl mx-auto px-4 sm:px-10 relative z-10 text-center">
         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-gray-100 text-[10px] font-medium tracking-[0.2em] uppercase text-gray-400 mb-8 shadow-sm">
           <ShieldCheck class="w-3.5 h-3.5 text-parentPrimary" />
           Rider Agreement
@@ -22,7 +22,7 @@
 
     <!-- Content Section -->
     <section class="py-24 bg-white">
-      <div class="max-w-4xl mx-auto px-6 sm:px-10">
+      <div class="max-w-4xl mx-auto px-4 sm:px-10">
         <div class="space-y-16">
           <div v-for="(section, index) in termsSections" :key="index" class="group">
             <div class="flex gap-8">

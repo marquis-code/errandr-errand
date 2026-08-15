@@ -40,7 +40,7 @@
               <div 
                 v-if="isOpen" 
                 :style="dropdownStyle"
-                class="fixed w-80 bg-white border-[0.5px] border-gray-25 rounded-lg shadow-2xl max-h-96 flex flex-col"
+                class="fixed w-80 bg-white border-[0.5px] border-gray-25 rounded-lg shadow-sm border border-gray-100 max-h-96 flex flex-col"
                 style="z-index: 9999;"
               >
               <!-- Search -->
@@ -95,7 +95,7 @@
                     </svg>
                   </button>
                 </template>
-                <div v-else class="px-4 py-8 text-center text-gray-500 text-sm">
+                <div v-else class="px-4 py-5 text-center text-gray-500 text-sm">
                   No countries found
                 </div>
               </div>

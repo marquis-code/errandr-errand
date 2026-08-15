@@ -42,7 +42,7 @@
         <div v-if="loading" class="p-4 space-y-3">
           <div v-for="i in 5" :key="i" class="h-16 bg-gray-100 animate-pulse rounded-lg" />
         </div>
-        <div v-else-if="filteredChats.length === 0" class="flex flex-col items-center justify-center h-full text-[#54656F] space-y-2 p-6 text-center">
+        <div v-else-if="filteredChats.length === 0" class="flex flex-col items-center justify-center h-full text-[#54656F] space-y-2 p-4 text-center">
           <MessageSquare class="w-12 h-12 opacity-20" />
           <p class="text-[14px]">No active chats found.</p>
         </div>
@@ -91,7 +91,7 @@
         !activeChat ? 'hidden md:flex' : 'flex'
       ]"
     >
-      <div v-if="!activeChat" class="flex-1 flex flex-col items-center justify-center text-center p-8 bg-[#F0F2F5]">
+      <div v-if="!activeChat" class="flex-1 flex flex-col items-center justify-center text-center p-5 bg-[#F0F2F5]">
         <div class="w-80 h-80 mb-8 opacity-20 mx-auto">
           <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M50 100C77.6142 100 100 77.6142 100 50C100 22.3858 77.6142 0 50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100Z" fill="#075E54"/>

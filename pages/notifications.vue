@@ -33,7 +33,7 @@
         v-for="notif in notifications"
         :key="notif.id"
         :class="notif.read ? 'bg-white' : 'bg-[#FF5C1A]/[0.02] border-[#FF5C1A]/10'"
-        class="rounded-2xl border border-gray-100 overflow-hidden transition-all hover:shadow-md group cursor-pointer"
+        class="rounded-2xl border border-gray-100 overflow-hidden transition-all hover:shadow-sm border border-gray-100 group cursor-pointer"
         @click="handleNotifClick(notif)"
       >
         <div class="p-4 flex items-start gap-4">

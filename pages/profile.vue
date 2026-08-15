@@ -12,9 +12,9 @@
 
  <div v-else class="space-y-6">
  <!-- Avatar & Name -->
- <div class="bg-white rounded-2xl border border-gray-100 p-6">
+ <div class="bg-white rounded-2xl border border-gray-100 p-4">
  <div class="flex items-center gap-5">
- <div class="w-20 h-20 rounded-2xl bg-[#FF5C1A] text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-[#FF5C1A]/20 flex-shrink-0">
+ <div class="w-20 h-20 rounded-2xl bg-[#FF5C1A] text-white flex items-center justify-center font-bold text-2xl shadow-sm border border-gray-100 shadow-[#FF5C1A]/20 flex-shrink-0">
  {{ userInitials }}
  </div>
  <div class="flex-1 min-w-0">
@@ -32,7 +32,7 @@
 
  <!-- Personal Information -->
  <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
- <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+ <div class="px-4 py-4 border-b border-gray-50 flex items-center justify-between">
  <h3 class="text-base font-bold text-gray-900">Personal Information</h3>
  <button v-if="!isEditing" @click="startEdit" class="text-xs font-semibold text-[#FF5C1A] hover:underline">Edit</button>
  <div v-else class="flex gap-2">
@@ -43,7 +43,7 @@
  </div>
  </div>
 
- <div class="p-6 space-y-5">
+ <div class="p-4 space-y-5">
  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
  <div>
  <label class="text-[11px] font-medium text-gray-400 tracking-wider mb-1.5 block">First Name</label>
@@ -84,10 +84,10 @@
 
  <!-- Account Stats -->
  <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
- <div class="px-6 py-4 border-b border-gray-50">
+ <div class="px-4 py-4 border-b border-gray-50">
  <h3 class="text-base font-bold text-gray-900">Account Overview</h3>
  </div>
- <div class="p-6">
+ <div class="p-4">
  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
  <div class="text-center p-4 bg-gray-50 rounded-xl">
  <p class="text-2xl font-bold text-gray-900 mb-1">{{ errandrProfile?.totalDeliveries || 0 }}</p>
@@ -111,10 +111,10 @@
 
  <!-- Availability Toggle -->
  <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
- <div class="px-6 py-4 border-b border-gray-50">
+ <div class="px-4 py-4 border-b border-gray-50">
  <h3 class="text-base font-bold text-gray-900">Availability</h3>
  </div>
- <div class="p-6">
+ <div class="p-4">
  <div class="flex items-center justify-between">
  <div>
  <p class="text-sm font-semibold text-gray-900">Accept New Deliveries</p>
@@ -128,7 +128,7 @@
  >
  <span 
  :class="isOnline ? 'translate-x-6' : 'translate-x-1'"
- class="inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform"
+ class="inline-block h-5 w-5 transform rounded-full bg-white shadow-sm border border-gray-100 transition-transform"
  />
  </button>
  </div>
@@ -137,10 +137,10 @@
 
  <!-- Security -->
  <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
- <div class="px-6 py-4 border-b border-gray-50">
+ <div class="px-4 py-4 border-b border-gray-50">
  <h3 class="text-base font-bold text-gray-900">Security</h3>
  </div>
- <div class="p-6 space-y-4">
+ <div class="p-4 space-y-4">
  <button class="w-full flex items-center justify-between px-4 py-3.5 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-xl transition-all group">
  <span class="flex items-center gap-3">
  <span class="text-base">🔒</span>

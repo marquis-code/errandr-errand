@@ -4,7 +4,7 @@
 
     <!-- Hero Section -->
     <section class="relative pt-40 pb-20 overflow-hidden bg-gray-50/20">
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
+      <div class="max-w-7xl mx-auto px-4 sm:px-10 relative z-10 text-center">
         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-gray-100 text-[10px] font-medium tracking-[0.2em] uppercase text-gray-400 mb-8 shadow-sm">
           <HelpCircle class="w-3.5 h-3.5 text-parentPrimary" />
           Rider Knowledge Base
@@ -20,17 +20,17 @@
 
     <!-- FAQ Accordion -->
     <section class="py-24 bg-white font-sans">
-      <div class="max-w-4xl mx-auto px-6 sm:px-10">
+      <div class="max-w-4xl mx-auto px-4 sm:px-10">
         <div class="space-y-4">
-          <div v-for="(faq, i) in faqs" :key="i" class="group border border-gray-100 rounded-[2rem] overflow-hidden transition-all duration-500" :class="{ 'bg-gray-50/50 border-parentPrimary/20 shadow-xl shadow-parentPrimary/5': openIndex === i }">
-            <button @click="openIndex = openIndex === i ? -1 : i" class="w-full flex items-center justify-between p-8 text-left outline-none">
+          <div v-for="(faq, i) in faqs" :key="i" class="group border border-gray-100 rounded-[2rem] overflow-hidden transition-all duration-500" :class="{ 'bg-gray-50/50 border-parentPrimary/20 shadow-sm border border-gray-100 shadow-parentPrimary/5': openIndex === i }">
+            <button @click="openIndex = openIndex === i ? -1 : i" class="w-full flex items-center justify-between p-5 text-left outline-none">
               <span class="text-xl font-medium text-gray-900 tracking-tight group-hover:text-parentPrimary transition-colors">{{ faq.q }}</span>
               <div class="w-10 h-10 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-400 group-hover:text-parentPrimary transition-all" :class="{ 'rotate-180 bg-parentPrimary text-white border-transparent': openIndex === i }">
                 <ChevronDown class="w-5 h-5" />
               </div>
             </button>
             <transition name="fade">
-              <div v-show="openIndex === i" class="px-8 pb-8">
+              <div v-show="openIndex === i" class="px-5 pb-8">
                 <div class="h-px bg-gray-200/50 mb-6"></div>
                 <p class="text-lg text-gray-500 font-bold leading-relaxed tracking-tight">{{ faq.a }}</p>
               </div>

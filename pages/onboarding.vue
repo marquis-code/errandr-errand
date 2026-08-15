@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-6 pb-24 relative overflow-hidden">
+  <div class="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-4 pb-24 relative overflow-hidden">
     <!-- Ambient Background -->
     <div class="absolute inset-0 z-0">
       <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-[#FF5C1A]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4"></div>
@@ -16,7 +16,7 @@
       </div>
 
       <!-- Step Content -->
-      <div class="bg-white/5 backdrop-blur-xl p-10 rounded-[2.5rem] border border-white/10 relative overflow-hidden shadow-2xl">
+      <div class="bg-white/5 backdrop-blur-xl p-10 rounded-[2.5rem] border border-white/10 relative overflow-hidden shadow-sm border border-gray-100">
         
         <!-- Step 1: Rider Profile -->
         <div v-if="step === 1" class="space-y-6 animate-fade-in">
@@ -32,16 +32,16 @@
             <div class="grid grid-cols-2 gap-4">
               <div class="space-y-1.5">
                 <label class="block text-[10px] font-medium text-gray-500 uppercase tracking-widest ml-1">First Name</label>
-                <input v-model="form.firstName" type="text" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white font-bold focus:ring-4 focus:ring-[#FF5C1A]/20 outline-none transition-all" placeholder="John" />
+                <input v-model="form.firstName" type="text" class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-white font-bold focus:ring-4 focus:ring-[#FF5C1A]/20 outline-none transition-all" placeholder="John" />
               </div>
               <div class="space-y-1.5">
                 <label class="block text-[10px] font-medium text-gray-500 uppercase tracking-widest ml-1">Last Name</label>
-                <input v-model="form.lastName" type="text" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white font-bold focus:ring-4 focus:ring-[#FF5C1A]/20 outline-none transition-all" placeholder="Doe" />
+                <input v-model="form.lastName" type="text" class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-white font-bold focus:ring-4 focus:ring-[#FF5C1A]/20 outline-none transition-all" placeholder="Doe" />
               </div>
             </div>
             <div class="space-y-1.5">
               <label class="block text-[10px] font-medium text-gray-500 uppercase tracking-widest ml-1">Phone Number</label>
-              <input v-model="form.phone" type="tel" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white font-bold focus:ring-4 focus:ring-[#FF5C1A]/20 outline-none transition-all" placeholder="0801 234 5678" />
+              <input v-model="form.phone" type="tel" class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-white font-bold focus:ring-4 focus:ring-[#FF5C1A]/20 outline-none transition-all" placeholder="0801 234 5678" />
             </div>
           </div>
         </div>
@@ -58,8 +58,8 @@
 
           <div class="grid grid-cols-1 gap-4">
             <div v-for="mode in deliveryModes" :key="mode.id" 
-              class="flex items-center justify-between p-6 rounded-[2rem] border transition-all cursor-pointer group"
-              :class="form.deliveryMode === mode.id ? 'bg-[#FF5C1A] border-[#FF5C1A] shadow-xl' : 'bg-white/5 border-white/10 hover:border-white/30'"
+              class="flex items-center justify-between p-4 rounded-[2rem] border transition-all cursor-pointer group"
+              :class="form.deliveryMode === mode.id ? 'bg-[#FF5C1A] border-[#FF5C1A] shadow-sm border border-gray-100' : 'bg-white/5 border-white/10 hover:border-white/30'"
               @click="form.deliveryMode = mode.id"
             >
               <div class="flex items-center gap-5">
@@ -90,7 +90,7 @@
 
           <div class="space-y-6">
             <div class="grid grid-cols-2 gap-4">
-              <div class="p-8 border-2 border-dashed border-white/10 rounded-[2rem] text-center hover:border-[#FF5C1A]/50 transition-all cursor-pointer group bg-white/5 flex flex-col items-center justify-center">
+              <div class="p-5 border-2 border-dashed border-white/10 rounded-[2rem] text-center hover:border-[#FF5C1A]/50 transition-all cursor-pointer group bg-white/5 flex flex-col items-center justify-center">
                 <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Upload class="w-6 h-6 text-gray-400" />
                 </div>
@@ -98,7 +98,7 @@
                 <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest leading-tight">Required</p>
               </div>
               
-              <div class="p-8 border-2 border-dashed border-white/10 rounded-[2rem] text-center hover:border-[#FF5C1A]/50 transition-all cursor-pointer group bg-white/5 flex flex-col items-center justify-center">
+              <div class="p-5 border-2 border-dashed border-white/10 rounded-[2rem] text-center hover:border-[#FF5C1A]/50 transition-all cursor-pointer group bg-white/5 flex flex-col items-center justify-center">
                 <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Upload class="w-6 h-6 text-gray-400" />
                 </div>
@@ -117,7 +117,7 @@
         <!-- Nav Buttons -->
         <div class="flex gap-4 mt-12 pt-6 border-t border-white/10">
           <button v-if="step > 1" @click="step--" class="flex-1 py-5 bg-white/5 text-white rounded-2xl text-[10px] font-medium uppercase tracking-widest hover:bg-white/10 transition-all">Back</button>
-          <button @click="nextStep" class="flex-[2] py-5 bg-[#FF5C1A] text-white rounded-2xl text-[10px] font-medium uppercase tracking-widest hover:brightness-110 transition-all shadow-xl shadow-[#FF5C1A]/20">
+          <button @click="nextStep" class="flex-[2] py-5 bg-[#FF5C1A] text-white rounded-2xl text-[10px] font-medium uppercase tracking-widest hover:brightness-110 transition-all shadow-sm border border-gray-100 shadow-[#FF5C1A]/20">
             {{ step === 3 ? 'Start My Journey' : 'Continue' }}
           </button>
         </div>

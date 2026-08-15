@@ -24,7 +24,7 @@
  </div>
 
  <!-- Messages Area with WhatsApp-like background -->
- <div ref="messageContainer" class="flex-1 overflow-y-auto px-4 py-6 space-y-2 scroll-smooth bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat">
+ <div ref="messageContainer" class="flex-1 overflow-y-auto px-4 py-4 space-y-2 scroll-smooth bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat">
  
  <!-- Date Marker -->
  <div class="flex justify-center mb-6 sticky top-2 z-10">
@@ -151,7 +151,7 @@
  <button 
  @click="isRecording ? stopRecording() : (newMsgText.trim() ? handleSend() : startRecording())"
  :class="[
- 'w-12 h-12 text-white rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all shadow-md shrink-0',
+ 'w-12 h-12 text-white rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all shadow-sm border border-gray-100 shrink-0',
  isRecording ? 'bg-red-500' : 'bg-[#00A884]'
  ]"
  >

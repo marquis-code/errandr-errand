@@ -5,9 +5,9 @@
  <div @click="$emit('close')" class="absolute inset-0 bg-black/20 backdrop-blur-[2px] transition-opacity" />
  
  <!-- Chat Panel -->
- <div class="relative w-full max-w-md bg-[#E5DDD5] h-full shadow-2xl flex flex-col animate-slide-left overflow-hidden">
+ <div class="relative w-full max-w-md bg-[#E5DDD5] h-full shadow-sm border border-gray-100 flex flex-col animate-slide-left overflow-hidden">
  <!-- WhatsApp Green Header -->
- <div class="px-4 py-3 bg-[#075E54] text-white flex items-center gap-3 sticky top-0 z-20 shadow-md">
+ <div class="px-4 py-3 bg-[#075E54] text-white flex items-center gap-3 sticky top-0 z-20 shadow-sm border border-gray-100">
  <button @click="$emit('close')" class="p-1 hover:bg-white/10 rounded-full transition-colors mr-1">
  <ArrowLeft class="w-5 h-5 text-white" />
  </button>
@@ -29,7 +29,7 @@
  </div>
 
  <!-- Messages Area with WhatsApp-like background -->
- <div ref="messageContainer" class="flex-1 overflow-y-auto px-4 py-6 space-y-2 scroll-smooth bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat">
+ <div ref="messageContainer" class="flex-1 overflow-y-auto px-4 py-4 space-y-2 scroll-smooth bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat">
  
  <!-- Date Marker -->
  <div class="flex justify-center mb-6 sticky top-2 z-10">
@@ -156,7 +156,7 @@
  <button 
  @click="isRecording ? stopRecording() : (newMsgText.trim() ? handleSend() : startRecording())"
  :class="[
- 'w-12 h-12 text-white rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all shadow-md shrink-0',
+ 'w-12 h-12 text-white rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all shadow-sm border border-gray-100 shrink-0',
  isRecording ? 'bg-red-500' : 'bg-[#00A884]'
  ]"
  >

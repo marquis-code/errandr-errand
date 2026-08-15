@@ -1,11 +1,11 @@
 <template>
   <header 
     class="fixed w-full top-0 z-[100] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-    :class="[scrolled ? 'py-4' : 'py-6']"
+    :class="[scrolled ? 'py-4' : 'py-4']"
   >
     <div 
       class="mx-auto transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-      :class="[scrolled ? 'max-w-5xl px-2 sm:px-6' : 'max-w-7xl px-6 sm:px-10']"
+      :class="[scrolled ? 'max-w-5xl px-2 sm:px-4' : 'max-w-7xl px-4 sm:px-10']"
     >
       <nav 
         class="flex items-center justify-between transition-all duration-500 relative"
@@ -76,7 +76,7 @@
 
     <!-- Mobile Menu Overlay -->
     <transition name="menu-fade">
-      <div v-if="isMobileMenuOpen" class="fixed inset-0 z-40 bg-white/95 backdrop-blur-3xl lg:hidden flex flex-col pt-32 px-8 pb-10 overflow-y-auto">
+      <div v-if="isMobileMenuOpen" class="fixed inset-0 z-40 bg-white/95 backdrop-blur-3xl lg:hidden flex flex-col pt-32 px-5 pb-10 overflow-y-auto">
         <div class="flex flex-col gap-6 mb-12">
            <NuxtLink 
              v-for="link in links" 
@@ -101,7 +101,7 @@
           <NuxtLink 
             :to="isLoggedIn ? '/dashboard' : '/auth/register'" 
             @click="isMobileMenuOpen = false"
-            class="w-full py-3 text-center text-sm font-bold text-white bg-parentPrimary rounded-2xl shadow-xl shadow-parentPrimary/20 flex items-center justify-center gap-2"
+            class="w-full py-3 text-center text-sm font-bold text-white bg-parentPrimary rounded-2xl shadow-sm border border-gray-100 shadow-parentPrimary/20 flex items-center justify-center gap-2"
           >
             {{ isLoggedIn ? 'Go to Dashboard' : 'Apply Now' }} <ArrowRight class="w-5 h-5" />
           </NuxtLink>

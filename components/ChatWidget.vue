@@ -5,7 +5,7 @@
         <div
           v-if="isOpen"
           :class="[
-            'bg-white shadow-2xl overflow-hidden flex flex-col transition-all duration-300',
+            'bg-white shadow-sm border border-gray-100 overflow-hidden flex flex-col transition-all duration-300',
             // Mobile (default)
             'fixed inset-0 w-full h-[100dvh] rounded-none z-[999999]',
             // Desktop (sm and up)
@@ -17,7 +17,8 @@
             <!-- Beautiful Orange Gradient Background behind everything -->
             <div class="absolute inset-0 bg-gradient-to-br from-[#FF6B35] via-[#FF5C1A] to-[#E54D12] pointer-events-none"></div>
 
-          <div class="relative z-10 flex items-center justify-between px-6 py-5 text-white">
+          <!-- Header -->
+          <div class="relative z-10 flex items-center justify-between px-4 py-5 text-white">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-md border border-white/30">
                 <Smile class="w-6 h-6 text-white" />
@@ -39,12 +40,14 @@
             </button>
           </div>
 
-          <div class="relative z-10 flex-1 overflow-y-auto px-6 py-2 flex flex-col scrollbar-hide">
+          <!-- Body Content Area -->
+          <div class="relative z-10 flex-1 overflow-y-auto px-4 py-2 flex flex-col scrollbar-hide">
             
             <p v-if="!messages.length" class="text-white/95 text-base leading-relaxed mb-6">
               Start chatting with us - we will be happy to help.
             </p>
 
+            <!-- Details Dropdown -->
             <div class="mb-6" v-if="!messages.length">
               <button 
                 @click="showDetails = !showDetails" 
@@ -83,13 +86,14 @@
                       <Lock v-if="isLoggedIn" class="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-white/50" />
                     </div>
                   </div>
-                  <button v-if="!isLoggedIn && needsGuestInfo" @click="startChat" class="w-full rounded-xl bg-white text-[#FF5C1A] hover:bg-gray-50 py-3 text-sm font-bold shadow-lg transition-transform active:scale-[0.98]">
+                  <button v-if="!isLoggedIn && needsGuestInfo" @click="startChat" class="w-full rounded-xl bg-white text-[#FF5C1A] hover:bg-gray-50 py-3 text-sm font-bold shadow-sm border border-gray-100 transition-transform active:scale-[0.98]">
                     Submit Details
                   </button>
                 </div>
               </Transition>
             </div>
 
+            <!-- Chat Messages -->
             <div class="space-y-4 flex-1 mb-4" v-if="messages.length">
               <div
                 v-for="(message, idx) in messages"
@@ -101,7 +105,7 @@
                 }"
               >
                 <div
-                  class="max-w-[85%] rounded-[1.5rem] px-5 py-3.5 shadow-md backdrop-blur-md"
+                  class="max-w-[85%] rounded-[1.5rem] px-5 py-3.5 shadow-sm border border-gray-100 backdrop-blur-md"
                   :class="getBubbleStyle(message)"
                 >
                   <p class="text-[11px] font-bold uppercase tracking-wider mb-1" :class="getBubbleLabelStyle(message)" v-if="showSenderLabel(message)">
@@ -122,12 +126,15 @@
               </div>
             </div>
 
+            <!-- Spacer -->
             <div class="flex-1"></div>
           </div>
           </div>
 
+          <!-- Bottom White Area -->
           <div class="bg-white relative z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] flex flex-col">
-            <div class="px-6 pt-5 pb-3" v-if="faqs.length > 0 && messages.length === 0">
+            <!-- Quick Actions / FAQs -->
+            <div class="px-4 pt-5 pb-3" v-if="faqs.length > 0 && messages.length === 0">
               <div class="flex flex-wrap gap-2">
                 <button
                   v-for="faq in faqs.slice(0, 8)"
@@ -140,7 +147,8 @@
               </div>
             </div>
 
-            <div class="px-6 py-4 flex items-center gap-3 border-t border-gray-100">
+            <!-- Input Area -->
+            <div class="px-4 py-4 flex items-center gap-3 border-t border-gray-100">
               <div class="flex-1 relative flex items-center">
                 <input
                   v-model="newMessage"
@@ -159,7 +167,7 @@
                 v-if="newMessage.trim()"
                 @click="handleSend"
                 :disabled="sending || !newMessage.trim() || (isGuest && needsGuestInfo)"
-                class="w-10 h-10 rounded-full bg-[#FF5C1A] hover:bg-[#E54D12] text-white flex items-center justify-center disabled:opacity-50 transition-all shadow-md shadow-orange-500/20 animate-in zoom-in"
+                class="w-10 h-10 rounded-full bg-[#FF5C1A] hover:bg-[#E54D12] text-white flex items-center justify-center disabled:opacity-50 transition-all shadow-sm border border-gray-100 shadow-orange-500/20 animate-in zoom-in"
               >
                 <ArrowRight class="w-5 h-5" />
               </button>
@@ -168,9 +176,10 @@
         </div>
       </Transition>
 
+      <!-- Floating Button -->
       <button
         @click="toggleChat"
-        class="group relative w-16 h-16 rounded-full bg-gradient-to-tr from-[#FF6B35] to-[#FF5C1A] text-white shadow-2xl shadow-[#FF5C1A]/40 flex items-center justify-center hover:scale-105 hover:-translate-y-1 transition-all duration-300"
+        class="group relative w-16 h-16 rounded-full bg-gradient-to-tr from-[#FF6B35] to-[#FF5C1A] text-white shadow-sm border border-gray-100 shadow-[#FF5C1A]/40 flex items-center justify-center hover:scale-105 hover:-translate-y-1 transition-all duration-300"
         aria-label="Open chat"
       >
         <div class="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
@@ -231,35 +240,36 @@ watch(isLoggedIn, (logged) => {
 const needsGuestInfo = computed(() => !guestProfile.value.name || !guestProfile.value.email)
 
 function getBubblePosition(message: ChatMessage) {
-  if (message.senderType === 'customer' || message.senderType === 'guest' || message.senderType === 'errander') {
+  if (message.senderType === 'customer' || message.senderType === 'guest' || message.senderType === 'vendor') {
+    // If it's the vendor using the chat widget, their messages should align right if they are the "sender"
     return 'justify-end';
   }
   return 'justify-start';
 }
 
 function getBubbleStyle(message: ChatMessage) {
-  if (message.senderType === 'customer' || message.senderType === 'guest' || message.senderType === 'errander') {
-    return 'bg-white text-gray-900 rounded-br-sm shadow-xl shadow-black/5';
+  if (message.senderType === 'customer' || message.senderType === 'guest' || message.senderType === 'vendor') {
+    return 'bg-white text-gray-900 rounded-br-sm shadow-sm border border-gray-100 shadow-black/5';
   }
   return 'bg-white/20 text-white rounded-bl-sm border border-white/20';
 }
 
 function getBubbleLabelStyle(message: ChatMessage) {
-  if (message.senderType === 'customer' || message.senderType === 'guest' || message.senderType === 'errander') {
+  if (message.senderType === 'customer' || message.senderType === 'guest' || message.senderType === 'vendor') {
     return 'text-gray-400';
   }
   return 'text-white/70';
 }
 
 function getBubbleTimeStyle(message: ChatMessage) {
-  if (message.senderType === 'customer' || message.senderType === 'guest' || message.senderType === 'errander') {
+  if (message.senderType === 'customer' || message.senderType === 'guest' || message.senderType === 'vendor') {
     return 'text-gray-400';
   }
   return 'text-white/60';
 }
 
 function showSenderLabel(message: ChatMessage) {
-  return message.senderType !== 'customer' && message.senderType !== 'guest' && message.senderType !== 'errander';
+  return message.senderType !== 'customer' && message.senderType !== 'guest' && message.senderType !== 'vendor';
 }
 
 const { socket, connectSocket, isConnected } = useRealtimeSocket()

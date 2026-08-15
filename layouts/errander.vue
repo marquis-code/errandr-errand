@@ -3,8 +3,8 @@
  <!-- Desktop Sidebar -->
  <aside class="hidden lg:flex flex-col bg-white border-r border-gray-100 min-h-screen fixed left-0 top-0 z-50 transition-all duration-300" :class="isSidebarMinimized ? 'w-20' : 'w-64'">
  <!-- Logo -->
- <div class="p-6 pb-8 flex items-center gap-3 relative" :class="isSidebarMinimized ? 'justify-center px-0' : ''">
- <div class="w-10 h-10 bg-gradient-to-br from-[#FF5C1A] to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-[#FF5C1A]/20 shrink-0">
+ <div class="p-4 pb-8 flex items-center gap-3 relative" :class="isSidebarMinimized ? 'justify-center px-0' : ''">
+ <div class="w-10 h-10 bg-gradient-to-br from-[#FF5C1A] to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm border border-gray-100 shadow-[#FF5C1A]/20 shrink-0">
  E
  </div>
  <div v-if="!isSidebarMinimized" class="flex flex-col">
@@ -31,7 +31,7 @@
       :to="item.path"
       class="flex items-center py-3 text-sm font-medium rounded-xl transition-all group"
       :class="[
-        isActive(item.path) ? 'bg-[#FF5C1A] text-white shadow-md shadow-[#FF5C1A]/20' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50',
+        isActive(item.path) ? 'bg-[#FF5C1A] text-white shadow-sm border border-gray-100 shadow-[#FF5C1A]/20' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50',
         isSidebarMinimized ? 'justify-center px-0' : 'px-4'
       ]"
       :title="isSidebarMinimized ? item.label : ''"
@@ -72,7 +72,7 @@
  <!-- Mobile Header -->
  <header class="lg:hidden bg-white border-b border-gray-100 sticky top-0 z-40 px-5 py-3.5 flex items-center justify-between">
  <div class="flex items-center gap-2.5">
- <div class="w-9 h-9 bg-gradient-to-br from-[#FF5C1A] to-indigo-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md shadow-[#FF5C1A]/10">
+ <div class="w-9 h-9 bg-gradient-to-br from-[#FF5C1A] to-indigo-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-sm border border-gray-100 shadow-[#FF5C1A]/10">
  E
  </div>
  <span class="text-lg font-bold text-gray-900 tracking-tight">Errandr</span>
@@ -100,7 +100,7 @@
 
  <!-- Mobile Sidebar -->
  <Transition name="slide">
- <aside v-if="showMobileMenu" class="lg:hidden w-72 bg-white min-h-screen fixed left-0 top-0 z-50 shadow-2xl flex flex-col">
+ <aside v-if="showMobileMenu" class="lg:hidden w-72 bg-white min-h-screen fixed left-0 top-0 z-50 shadow-sm border border-gray-100 flex flex-col">
  <div class="p-5 border-b border-gray-100 flex items-center justify-between">
  <div class="flex items-center gap-2.5">
  <div class="w-9 h-9 bg-[#FF5C1A] rounded-lg flex items-center justify-center text-white font-bold text-sm">E</div>
@@ -111,7 +111,7 @@
 
  <div class="p-5 bg-gray-50 border-b border-gray-100">
  <div class="flex items-center gap-4">
- <div class="w-12 h-12 rounded-xl bg-[#FF5C1A] text-white flex items-center justify-center font-bold text-lg shadow-md shadow-[#FF5C1A]/20">
+ <div class="w-12 h-12 rounded-xl bg-[#FF5C1A] text-white flex items-center justify-center font-bold text-lg shadow-sm border border-gray-100 shadow-[#FF5C1A]/20">
  {{ userInitials }}
  </div>
  <div class="min-w-0">
@@ -127,7 +127,7 @@
       v-if="!isRestricted(item.path)"
       :to="item.path"
       class="flex items-center px-4 py-3.5 text-sm font-medium rounded-xl transition-all"
-      :class="isActive(item.path) ? 'bg-[#FF5C1A] text-white shadow-md shadow-[#FF5C1A]/20' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
+      :class="isActive(item.path) ? 'bg-[#FF5C1A] text-white shadow-sm border border-gray-100 shadow-[#FF5C1A]/20' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
       @click="showMobileMenu = false"
     >
       <component :is="item.icon" class="w-[18px] h-[18px] mr-3" />
@@ -155,7 +155,7 @@
  <!-- Main Content -->
  <main class="flex-1 flex flex-col min-h-screen transition-all duration-300" :class="isSidebarMinimized ? 'lg:ml-20' : 'lg:ml-64'">
  <!-- Desktop Header -->
- <header class="bg-white/80 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-30 px-8 py-5 hidden lg:flex items-center justify-between">
+ <header class="bg-white/80 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-30 px-5 py-5 hidden lg:flex items-center justify-between">
  <div>
  <h1 class="text-xl font-bold text-gray-900 tracking-tight leading-none">{{ pageTitle }}</h1>
  <p class="text-xs text-gray-400 font-medium mt-1">{{ pageDescription }}</p>
@@ -163,7 +163,7 @@
  
  <div class="flex items-center gap-4">
  <NuxtLink to="/notifications" class="relative group">
- <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-white group-hover:shadow-md group-hover:text-[#FF5C1A] transition-all border border-transparent group-hover:border-gray-100">
+ <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-white group-hover:shadow-sm border border-gray-100 group-hover:text-[#FF5C1A] transition-all border border-transparent group-hover:border-gray-100">
  <Bell class="w-[18px] h-[18px]" />
  </div>
  <div v-if="unreadCount > 0" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-[#FF5C1A] border border-white rounded-full flex items-center justify-center shadow-sm">
@@ -178,7 +178,7 @@
  <p class="text-sm font-semibold text-gray-900 leading-none mb-0.5">{{ userDisplayName }}</p>
  <p class="text-[10px] font-medium text-gray-400">Rider</p>
  </div>
- <div class="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center text-white text-sm font-bold shadow-md">
+ <div class="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center text-white text-sm font-bold shadow-sm border border-gray-100">
  {{ userInitials }}
  </div>
  </div>
@@ -186,12 +186,12 @@
  </header>
 
   <!-- Global Verification Banner -->
-  <div v-if="errandrProfile && (!errandrProfile.verificationLevel || errandrProfile.verificationLevel < 3) && route.path !== '/verification'" class="bg-gray-900 m-5 md:mx-8 md:mt-8 rounded-xl p-4 flex items-center justify-between gap-4 shadow-lg animate-fade-in z-20 flex-col sm:flex-row">
+  <div v-if="errandrProfile && (!errandrProfile.verificationLevel || errandrProfile.verificationLevel < 3) && route.path !== '/verification'" class="bg-gray-900 m-5 md:mx-8 md:mt-8 rounded-xl p-4 flex items-center justify-between gap-4 shadow-sm border border-gray-100 animate-fade-in z-20 flex-col sm:flex-row">
     
     <!-- Pending / Not Started / Upgrade -->
     <template v-if="!errandrProfile.verificationStatus || errandrProfile.verificationStatus === 'pending' || errandrProfile.verificationStatus === 'approved'">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-[#FF5C1A] rounded-lg flex items-center justify-center text-white shrink-0 shadow-md">
+        <div class="w-10 h-10 bg-[#FF5C1A] rounded-lg flex items-center justify-center text-white shrink-0 shadow-sm border border-gray-100">
           <ShieldAlert class="w-5 h-5" />
         </div>
         <div>
@@ -203,7 +203,7 @@
           </p>
         </div>
       </div>
-      <NuxtLink to="/verification" class="px-5 py-2.5 bg-[#FF5C1A] hover:bg-[#E54D12] text-white text-xs font-bold rounded-lg transition-all whitespace-nowrap shadow-md w-full sm:w-auto text-center">
+      <NuxtLink to="/verification" class="px-5 py-2.5 bg-[#FF5C1A] hover:bg-[#E54D12] text-white text-xs font-bold rounded-lg transition-all whitespace-nowrap shadow-sm border border-gray-100 w-full sm:w-auto text-center">
         {{ errandrProfile.verificationLevel === 2 ? 'Upgrade Now' : 'Verify Now' }}
       </NuxtLink>
     </template>
@@ -211,7 +211,7 @@
    <!-- Reviewing -->
    <template v-else-if="errandrProfile.verificationStatus === 'reviewing'">
      <div class="flex items-center gap-3">
-       <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white shrink-0 shadow-md">
+       <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white shrink-0 shadow-sm border border-gray-100">
          <Clock class="w-5 h-5" />
        </div>
        <div>
@@ -219,7 +219,7 @@
          <p class="text-gray-400 text-xs mt-0.5 max-w-sm">Your documents are being reviewed. We will notify you once approved.</p>
        </div>
      </div>
-     <button disabled class="px-5 py-2.5 bg-gray-800 text-gray-400 text-xs font-bold rounded-lg whitespace-nowrap shadow-md w-full sm:w-auto text-center cursor-not-allowed border border-gray-700">
+     <button disabled class="px-5 py-2.5 bg-gray-800 text-gray-400 text-xs font-bold rounded-lg whitespace-nowrap shadow-sm border border-gray-100 w-full sm:w-auto text-center cursor-not-allowed border border-gray-700">
        Pending Approval
      </button>
    </template>
@@ -227,7 +227,7 @@
    <!-- Rejected -->
    <template v-else-if="errandrProfile.verificationStatus === 'rejected'">
      <div class="flex items-center gap-3">
-       <div class="w-10 h-10 bg-rose-500 rounded-lg flex items-center justify-center text-white shrink-0 shadow-md">
+       <div class="w-10 h-10 bg-rose-500 rounded-lg flex items-center justify-center text-white shrink-0 shadow-sm border border-gray-100">
          <XCircle class="w-5 h-5" />
        </div>
        <div>
@@ -235,7 +235,7 @@
          <p class="text-gray-400 text-xs mt-0.5 max-w-sm">There was an issue with your documents. Please review and resubmit.</p>
        </div>
      </div>
-     <NuxtLink to="/verification" class="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-lg transition-all whitespace-nowrap shadow-md w-full sm:w-auto text-center">
+     <NuxtLink to="/verification" class="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-lg transition-all whitespace-nowrap shadow-sm border border-gray-100 w-full sm:w-auto text-center">
        Try Again
      </NuxtLink>
    </template>
@@ -243,12 +243,12 @@
  </div>
 
  <!-- Page Content -->
- <div class="flex-1 p-5 md:p-8">
+ <div class="flex-1 p-5 md:p-5">
  <slot />
  </div>
  
  <!-- Footer -->
- <footer class="px-8 py-5 border-t border-gray-100 flex items-center justify-between">
+ <footer class="px-5 py-5 border-t border-gray-100 flex items-center justify-between">
  <p class="text-xs text-gray-400 font-medium">© {{ new Date().getFullYear() }} Errandr</p>
  <div class="flex items-center gap-5">
  <a href="#" class="text-xs text-gray-400 hover:text-[#FF5C1A] font-medium transition-colors">Terms</a>
@@ -259,8 +259,8 @@
 
  <!-- Logout Confirmation Modal -->
  <Transition name="fade">
- <div v-if="logoutModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm px-6" @click.self="logoutModalOpen = false">
- <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 flex flex-col items-center text-center space-y-6 animate-scale-in">
+ <div v-if="logoutModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm px-4" @click.self="logoutModalOpen = false">
+ <div class="bg-white rounded-3xl shadow-sm border border-gray-100 max-w-sm w-full p-5 flex flex-col items-center text-center space-y-6 animate-scale-in">
  <div class="w-16 h-16 rounded-2xl bg-rose-50 flex items-center justify-center border border-rose-100">
  <LogOut class="w-8 h-8 text-rose-500" />
  </div>
@@ -273,7 +273,7 @@
  </div>
 
  <div class="flex flex-col gap-2.5 w-full">
- <button @click="confirmLogout" class="w-full py-3.5 rounded-xl text-sm font-semibold text-white bg-rose-500 hover:bg-rose-600 shadow-md shadow-rose-500/20 transition-all active:scale-[0.98]">
+ <button @click="confirmLogout" class="w-full py-3.5 rounded-xl text-sm font-semibold text-white bg-rose-500 hover:bg-rose-600 shadow-sm border border-gray-100 shadow-rose-500/20 transition-all active:scale-[0.98]">
  Yes, Log Out
  </button>
  <button @click="logoutModalOpen = false" class="w-full py-3.5 rounded-xl text-sm font-semibold text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all">

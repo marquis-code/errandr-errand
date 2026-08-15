@@ -8,7 +8,7 @@
       </div>
       <div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="text-[9px] font-medium text-emerald-600 uppercase tracking-[0.2em]">Live Pool</span>
+        <span class="text-[9px] font-medium text-emerald-600 uppercase tracking-[0.2em]">Available Orders</span>
       </div>
     </div>
 
@@ -23,7 +23,7 @@
 
     <!-- Orders Table -->
     <div v-if="loading" class="bg-white rounded-2xl border border-gray-100 overflow-hidden animate-pulse">
-      <div class="p-8 space-y-4">
+      <div class="p-5 space-y-4">
         <div v-for="i in 4" :key="i" class="h-24 bg-gray-50 rounded-xl w-full"></div>
       </div>
     </div>
@@ -39,10 +39,10 @@
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-gray-50/50 border-b border-gray-100">
-              <th class="py-5 px-6 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em]">Errand Details</th>
-              <th class="py-5 px-6 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] hidden lg:table-cell">Destination</th>
-              <th class="py-5 px-6 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] text-right">Potential Pay</th>
-              <th class="py-5 px-6 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] text-center">Action</th>
+              <th class="py-5 px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em]">Errand Details</th>
+              <th class="py-5 px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] hidden lg:table-cell">Destination</th>
+              <th class="py-5 px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] text-right">Potential Pay</th>
+              <th class="py-5 px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] text-center">Action</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-50">
@@ -52,7 +52,7 @@
               class="group hover:bg-gray-50/50 transition-all duration-300"
             >
               <!-- Errand Info -->
-              <td class="py-5 px-6">
+              <td class="py-5 px-4">
                 <div class="flex items-center gap-4">
                   <div class="w-12 h-12 rounded-xl bg-gray-950 flex items-center justify-center text-xl overflow-hidden">
                     <img v-if="order.type !== 'custom_errand' && order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
@@ -79,7 +79,7 @@
               </td>
 
               <!-- Destination -->
-              <td class="py-5 px-6 hidden lg:table-cell max-w-[200px]">
+              <td class="py-5 px-4 hidden lg:table-cell max-w-[200px]">
                 <div class="flex flex-col gap-2">
                   <div class="flex items-start gap-2">
                     <div class="w-5 h-5 rounded-md bg-gray-50 flex items-center justify-center text-[9px] flex-shrink-0 mt-0.5">S</div>
@@ -97,7 +97,7 @@
               </td>
 
               <!-- Pay -->
-              <td class="py-5 px-6 text-right">
+              <td class="py-5 px-4 text-right">
                 <div class="flex flex-col items-end">
                   <p class="text-lg font-medium text-emerald-600 tracking-tight leading-none mb-1">₦{{ (order.erranderShare || order.deliveryFee || 150).toLocaleString() }}</p>
                   <p class="text-[8px] font-medium text-gray-300 uppercase tracking-widest">Instant Pay</p>
@@ -105,7 +105,7 @@
               </td>
 
               <!-- Action -->
-              <td class="py-5 px-6">
+              <td class="py-5 px-4">
                 <div class="flex items-center justify-center gap-2">
                   <button 
                     @click="viewDetails(order)"
@@ -117,7 +117,7 @@
                   <button 
                     @click="acceptOrder(order._id)"
                     :disabled="acceptingId === order._id"
-                    class="px-4 py-2 bg-gray-900 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-parentPrimary hover:shadow-md hover:shadow-parentPrimary/20 transition-all disabled:opacity-50 min-w-[90px]"
+                    class="px-4 py-2 bg-gray-900 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-parentPrimary hover:shadow-sm border border-gray-100 hover:shadow-parentPrimary/20 transition-all disabled:opacity-50 min-w-[90px]"
                   >
                     <span v-if="acceptingId === order._id" class="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                     <span v-else>Accept</span>
@@ -233,8 +233,8 @@
         </div>
 
         <!-- Awaiting Payment Block -->
-        <div v-if="selectedOrder.status === 'awaiting_payment'" class="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl flex flex-col items-center text-center mt-4 space-y-3">
-           <div class="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/30">
+        <div v-if="selectedOrder.status === 'awaiting_payment'" class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex flex-col items-center text-center mt-4 space-y-3">
+           <div class="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-sm border border-gray-100 shadow-emerald-500/30">
               <Check class="w-6 h-6" />
            </div>
            <h3 class="text-xl font-black text-emerald-900 tracking-tight">Offer Accepted!</h3>

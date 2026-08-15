@@ -34,8 +34,8 @@
       <div class="lg:col-span-2 space-y-6">
 
         <!-- Active Deliveries Section -->
-        <div class="bg-white/70 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden shadow-md">
-          <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+        <div class="bg-white/70 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden shadow-sm border border-gray-100">
+          <div class="px-4 py-4 border-b border-gray-50 flex items-center justify-between">
             <h3 class="text-base font-bold text-gray-900">Active Deliveries</h3>
             <div v-if="batchStatus?.isActive" class="flex items-center gap-2 px-3 py-1 bg-parentPrimary/10 border border-parentPrimary/20 rounded-full animate-pulse">
               <span class="w-1.5 h-1.5 rounded-full bg-parentPrimary"></span>
@@ -44,11 +44,11 @@
             <span v-else-if="activeOrders.length > 0" class="text-[10px] font-semibold text-[#FF5C1A] bg-[#FF5C1A]/5 px-3 py-1 rounded-full border border-[#FF5C1A]/10">In Progress</span>
           </div>
 
-          <div v-if="loadingOrders" class="p-8">
+          <div v-if="loadingOrders" class="p-5">
             <div class="h-20 bg-gray-50 rounded-xl animate-pulse"></div>
           </div>
           <div v-else-if="activeOrders.length > 0" class="divide-y divide-gray-50">
-            <div v-for="order in activeOrders" :key="order._id" class="p-6 bg-white/70 backdrop-blur-md rounded-2xl border border-white/20 shadow-sm hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+            <div v-for="order in activeOrders" :key="order._id" class="p-4 bg-white/70 backdrop-blur-md rounded-2xl border border-white/20 shadow-sm hover:shadow-sm border border-gray-100 transition-all transform hover:-translate-y-0.5">
               <div class="flex flex-col md:flex-row gap-6 items-start">
                 <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-2xl flex-shrink-0">
                   {{ statusEmoji(order.status) }}
@@ -78,26 +78,26 @@
                   </div>
                 </div>
                 
-                <NuxtLink :to="`/deliveries/${order._id}`" class="px-6 py-3 bg-gray-900 text-white rounded-xl font-semibold text-sm shadow-md hover:bg-black hover:shadow-lg transition-all flex-shrink-0">
+                <NuxtLink :to="`/deliveries/${order._id}`" class="px-4 py-3 bg-gray-900 text-white rounded-xl font-semibold text-sm shadow-sm border border-gray-100 hover:bg-black hover:shadow-sm border border-gray-100 transition-all flex-shrink-0">
                   Manage Dispatch
                 </NuxtLink>
               </div>
             </div>
           </div>
           
-          <div v-else class="py-16 text-center px-6">
+          <div v-else class="py-16 text-center px-4">
             <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">🚲</div>
             <h4 class="text-base font-bold text-gray-900 mb-1">No active deliveries</h4>
             <p class="text-sm text-gray-400 mb-6">You don't have any deliveries in progress right now.</p>
-            <NuxtLink to="/deliveries" class="inline-block px-6 py-3 bg-[#FF5C1A] text-white rounded-xl font-semibold text-sm shadow-md shadow-[#FF5C1A]/20 hover:brightness-110 transition-all">
+            <NuxtLink to="/deliveries" class="inline-block px-4 py-3 bg-[#FF5C1A] text-white rounded-xl font-semibold text-sm shadow-sm border border-gray-100 shadow-[#FF5C1A]/20 hover:brightness-110 transition-all">
               View Available Errands
             </NuxtLink>
           </div>
         </div>
 
         <!-- Recent Deliveries -->
-        <div class="bg-white/70 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden shadow-md">
-          <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+        <div class="bg-white/70 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden shadow-sm border border-gray-100">
+          <div class="px-4 py-4 border-b border-gray-50 flex items-center justify-between">
             <h3 class="text-base font-bold text-gray-900">Recent Deliveries</h3>
             <NuxtLink to="/deliveries" class="text-xs font-semibold text-[#FF5C1A] hover:underline">View All →</NuxtLink>
           </div>
@@ -114,7 +114,7 @@
               v-for="order in recentOrders" 
               :key="order._id" 
               :to="`/deliveries/${order._id}`"
-              class="px-6 py-4 bg-white/70 backdrop-blur-md rounded-xl border border-white/20 hover:shadow-lg transition-all flex items-center gap-4 group cursor-pointer"
+              class="px-4 py-4 bg-white/70 backdrop-blur-md rounded-xl border border-white/20 hover:shadow-sm border border-gray-100 transition-all flex items-center gap-4 group cursor-pointer"
             >
               <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 bg-gray-50 group-hover:scale-105 transition-transform">
                 {{ statusEmoji(order.status) }}
@@ -139,7 +139,7 @@
       <!-- Right Sidebar -->
       <div class="space-y-6">
         <!-- Earnings Summary -->
-        <div class="bg-gray-900 rounded-2xl p-6 text-white relative overflow-hidden">
+        <div class="bg-gray-900 rounded-2xl p-4 text-white relative overflow-hidden">
           <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-[#FF5C1A]/20 rounded-full blur-[60px]" />
           <div class="relative z-10">
             <p class="text-xs text-gray-400 font-medium mb-1">Total Earned</p>
@@ -163,7 +163,7 @@
         </div>
 
         <!-- Rating Card -->
-        <div class="bg-white/70 backdrop-blur-md rounded-2xl border border-white/20 p-6 shadow-sm">
+        <div class="bg-white/70 backdrop-blur-md rounded-2xl border border-white/20 p-4 shadow-sm">
           <p class="text-xs text-gray-400 font-medium mb-3">Your Rating</p>
           <div class="flex items-center gap-0.5 mb-2">
             <span v-for="i in 5" :key="i" class="text-xl" :class="i <= Math.round(errandrProfile?.rating || 0) ? 'text-amber-400' : 'text-gray-200'">★</span>
@@ -176,7 +176,7 @@
         </div>
 
         <!-- Quick Help -->
-        <div class="bg-white/70 backdrop-blur-md rounded-2xl border border-white/20 p-6 shadow-sm">
+        <div class="bg-white/70 backdrop-blur-md rounded-2xl border border-white/20 p-4 shadow-sm">
           <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2 mb-2">
             Need Help?
           </h3>

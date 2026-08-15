@@ -8,23 +8,23 @@
  <th 
  v-for="col in columns" 
  :key="col.key" 
- class="px-8 py-5 text-[9px] font-medium text-gray-400 tracking-widest whitespace-nowrap"
+ class="px-5 py-5 text-[9px] font-medium text-gray-400 tracking-widest whitespace-nowrap"
  :class="col.class"
  >
  {{ col.label }}
  </th>
- <th v-if="hasActions" class="px-8 py-5 text-[9px] font-medium text-gray-400 tracking-widest text-right">Actions</th>
+ <th v-if="hasActions" class="px-5 py-5 text-[9px] font-medium text-gray-400 tracking-widest text-right">Actions</th>
  </tr>
  </thead>
  <tbody class="divide-y divide-gray-50">
  <tr v-if="loading" v-for="i in 5" :key="i" class="animate-pulse">
- <td v-for="col in (hasActions ? columns.length + 1 : columns.length)" :key="col" class="px-8 py-6">
+ <td v-for="col in (hasActions ? columns.length + 1 : columns.length)" :key="col" class="px-5 py-4">
  <div class="h-4 bg-gray-50 rounded-lg w-full"></div>
  </td>
  </tr>
  
  <tr v-else-if="items.length === 0">
- <td :colspan="hasActions ? columns.length + 1 : columns.length" class="px-8 py-32 text-center">
+ <td :colspan="hasActions ? columns.length + 1 : columns.length" class="px-5 py-32 text-center">
  <div class="flex flex-col items-center justify-center max-w-xs mx-auto text-center">
  <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 border border-gray-100/50">
  <component :is="emptyIcon || 'Inbox'" class="w-8 h-8 text-gray-200" />
@@ -45,14 +45,14 @@
  <td 
  v-for="col in columns" 
  :key="col.key" 
- class="px-8 py-6 text-sm font-medium text-gray-700 whitespace-nowrap"
+ class="px-5 py-4 text-sm font-medium text-gray-700 whitespace-nowrap"
  :class="col.class"
  >
  <slot :name="col.key" :item="item" :index="idx">
  {{ item[col.key] }}
  </slot>
  </td>
- <td v-if="hasActions" class="px-8 py-6 text-right whitespace-nowrap">
+ <td v-if="hasActions" class="px-5 py-4 text-right whitespace-nowrap">
  <slot name="actions" :item="item" :index="idx"></slot>
  </td>
  </tr>
@@ -61,7 +61,7 @@
  </div>
 
  <!-- Optional Footer -->
- <div v-if="showFooter" class="p-8 border-t border-gray-50/50 bg-gray-50/20 flex items-center justify-between">
+ <div v-if="showFooter" class="p-5 border-t border-gray-50/50 bg-gray-50/20 flex items-center justify-between">
  <slot name="footer"></slot>
  </div>
  </div>

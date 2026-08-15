@@ -12,7 +12,7 @@
       </Transition>
 
       <!-- Drawer panel -->
-      <div class="relative w-full max-w-md h-full bg-white shadow-2xl flex flex-col pointer-events-auto transform transition-transform duration-500 ease-in-out">
+      <div class="relative w-full max-w-md h-full bg-white shadow-sm border border-gray-100 flex flex-col pointer-events-auto transform transition-transform duration-500 ease-in-out">
         
         <!-- Header area for Close Button -->
         <div class="absolute top-0 right-0 pt-6 pr-6 flex items-center z-10">
@@ -27,7 +27,7 @@
         </div>
 
         <!-- Scrollable Content slot -->
-        <div class="flex-1 overflow-y-auto hide-scrollbar p-8 pt-12">
+        <div class="flex-1 overflow-y-auto hide-scrollbar p-5 pt-12">
           <slot></slot>
         </div>
       </div>

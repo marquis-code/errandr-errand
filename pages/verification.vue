@@ -1,7 +1,7 @@
 <template>
   <div class="fixed inset-0 z-[100] bg-white flex flex-col overflow-y-auto animate-fade-in">
     <!-- Header -->
-    <div class="px-6 py-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10">
+    <div class="px-4 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10">
       <div>
         <h1 class="text-xl font-bold text-gray-900 tracking-tight">Verify Your Account</h1>
         <p class="text-xs text-gray-500 mt-1 max-w-sm">A quick identity check to secure your payouts.</p>
@@ -12,7 +12,7 @@
     </div>
 
     <!-- Progress Steps -->
-    <div v-if="!profileLoading && (!errandrProfile || errandrProfile.verificationLevel < 2)" class="px-6 py-4 bg-gray-50 border-b border-gray-100">
+    <div v-if="!profileLoading && (!errandrProfile || errandrProfile.verificationLevel < 2)" class="px-4 py-4 bg-gray-50 border-b border-gray-100">
       <div class="max-w-md mx-auto flex items-center gap-2">
         <div class="flex-1 h-1.5 rounded-full transition-all" :class="step >= 1 ? 'bg-[#FF5C1A]' : 'bg-gray-200'"></div>
         <div class="flex-1 h-1.5 rounded-full transition-all" :class="step >= 2 ? 'bg-[#FF5C1A]' : 'bg-gray-200'"></div>
@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <div class="flex-1 flex flex-col justify-center px-6 py-8">
+    <div class="flex-1 flex flex-col justify-center px-4 py-5">
       <div v-if="profileLoading" class="flex items-center justify-center py-20">
         <span class="w-8 h-8 rounded-full border-4 border-gray-200 border-t-[#FF5C1A] animate-spin"></span>
       </div>
@@ -41,7 +41,7 @@
           
           <div v-if="cameraActiveFor === 'id'" class="relative rounded-2xl overflow-hidden bg-black aspect-video flex items-center justify-center">
             <video ref="videoRef" autoplay playsinline class="w-full h-full object-cover"></video>
-            <button @click="capturePhoto('idCardImage')" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 font-bold px-6 py-2 rounded-full shadow-lg hover:scale-105 transition-transform">
+            <button @click="capturePhoto('idCardImage')" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 font-bold px-4 py-2 rounded-full shadow-sm border border-gray-100 hover:scale-105 transition-transform">
               📸 Capture
             </button>
             <button @click="stopCamera" class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full hover:bg-black/70">
@@ -49,7 +49,7 @@
             </button>
           </div>
           
-          <div v-else class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-[#FF5C1A] transition-colors cursor-pointer relative" @click="startCamera('id', 'environment')">
+          <div v-else class="border-2 border-dashed border-gray-200 rounded-xl p-4 text-center hover:border-[#FF5C1A] transition-colors cursor-pointer relative" @click="startCamera('id', 'environment')">
             <input 
               type="file" 
               ref="idInput" 
@@ -70,7 +70,7 @@
               <div class="relative w-full aspect-video rounded-lg overflow-hidden border border-gray-200 shadow-sm">
                 <img :src="form.idCardImage" class="w-full h-full object-cover" />
                 <div class="absolute inset-0 bg-gray-900/10 flex items-center justify-center pointer-events-none">
-                  <div class="w-8 h-8 bg-white text-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                  <div class="w-8 h-8 bg-white text-emerald-600 rounded-full flex items-center justify-center shadow-sm border border-gray-100">
                     <CheckCircle2 class="w-5 h-5" />
                   </div>
                 </div>
@@ -86,7 +86,7 @@
           <button 
             @click="step = 2" 
             :disabled="!form.idCardImage" 
-            class="w-full py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E54D12] transition-all shadow-md"
+            class="w-full py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E54D12] transition-all shadow-sm border border-gray-100"
           >
             Continue
           </button>
@@ -106,7 +106,7 @@
           
           <div v-if="cameraActiveFor === 'selfie'" class="relative rounded-2xl overflow-hidden bg-black aspect-video flex items-center justify-center">
             <video ref="videoRef" autoplay playsinline class="w-full h-full object-cover transform scale-x-[-1]"></video>
-            <button @click="capturePhoto('selfieImage')" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 font-bold px-6 py-2 rounded-full shadow-lg hover:scale-105 transition-transform">
+            <button @click="capturePhoto('selfieImage')" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 font-bold px-4 py-2 rounded-full shadow-sm border border-gray-100 hover:scale-105 transition-transform">
               📸 Capture Selfie
             </button>
             <button @click="stopCamera" class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full hover:bg-black/70">
@@ -114,7 +114,7 @@
             </button>
           </div>
 
-          <div v-else class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-[#FF5C1A] transition-colors cursor-pointer relative" @click="startCamera('selfie', 'user')">
+          <div v-else class="border-2 border-dashed border-gray-200 rounded-xl p-4 text-center hover:border-[#FF5C1A] transition-colors cursor-pointer relative" @click="startCamera('selfie', 'user')">
             <input 
               type="file" 
               ref="selfieInput" 
@@ -135,7 +135,7 @@
               <div class="relative w-32 h-32 mx-auto rounded-full overflow-hidden border-2 border-gray-200 shadow-sm">
                 <img :src="form.selfieImage" class="w-full h-full object-cover" />
                 <div class="absolute inset-0 bg-gray-900/10 flex items-center justify-center pointer-events-none">
-                  <div class="w-8 h-8 bg-white text-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                  <div class="w-8 h-8 bg-white text-emerald-600 rounded-full flex items-center justify-center shadow-sm border border-gray-100">
                     <CheckCircle2 class="w-5 h-5" />
                   </div>
                 </div>
@@ -149,11 +149,11 @@
           </div>
 
           <div class="flex gap-3">
-            <button @click="step = 1" class="py-3 px-6 text-sm bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all">Back</button>
+            <button @click="step = 1" class="py-3 px-4 text-sm bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all">Back</button>
             <button 
               @click="step = 3" 
               :disabled="!form.selfieImage" 
-              class="flex-1 py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E54D12] transition-all shadow-md"
+              class="flex-1 py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E54D12] transition-all shadow-sm border border-gray-100"
             >
               Continue
             </button>
@@ -196,7 +196,7 @@
           <div v-if="ninMode === 'slip'">
           <div v-if="cameraActiveFor === 'ninSlip'" class="relative rounded-2xl overflow-hidden bg-black aspect-video flex items-center justify-center">
             <video ref="videoRef" autoplay playsinline class="w-full h-full object-cover"></video>
-            <button @click="capturePhoto('ninSlipImage')" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 font-bold px-6 py-2 rounded-full shadow-lg hover:scale-105 transition-transform">
+            <button @click="capturePhoto('ninSlipImage')" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 font-bold px-4 py-2 rounded-full shadow-sm border border-gray-100 hover:scale-105 transition-transform">
               📸 Capture
             </button>
             <button @click="stopCamera" class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full hover:bg-black/70">
@@ -204,7 +204,7 @@
             </button>
           </div>
           
-          <div v-else class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-[#FF5C1A] transition-colors cursor-pointer relative" @click="startCamera('ninSlip', 'environment')">
+          <div v-else class="border-2 border-dashed border-gray-200 rounded-xl p-4 text-center hover:border-[#FF5C1A] transition-colors cursor-pointer relative" @click="startCamera('ninSlip', 'environment')">
             <input 
               type="file" 
               ref="ninInput" 
@@ -225,7 +225,7 @@
               <div class="relative w-full aspect-video rounded-lg overflow-hidden border border-gray-200 shadow-sm">
                 <img :src="form.ninSlipImage" class="w-full h-full object-cover" />
                 <div class="absolute inset-0 bg-gray-900/10 flex items-center justify-center pointer-events-none">
-                  <div class="w-8 h-8 bg-white text-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                  <div class="w-8 h-8 bg-white text-emerald-600 rounded-full flex items-center justify-center shadow-sm border border-gray-100">
                     <CheckCircle2 class="w-5 h-5" />
                   </div>
                 </div>
@@ -240,11 +240,11 @@
             </div>
 
           <div class="flex gap-3 mt-8">
-            <button @click="step = 2" class="py-3 px-6 text-sm bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all">Back</button>
+            <button @click="step = 2" class="py-3 px-4 text-sm bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all">Back</button>
             <button 
               @click="step = 4" 
               :disabled="ninMode === 'number' ? !(form.ninNumber && form.ninNumber.length === 11) : !form.ninSlipImage" 
-              class="flex-1 py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E54D12] transition-all shadow-md"
+              class="flex-1 py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E54D12] transition-all shadow-sm border border-gray-100"
             >
               Continue
             </button>
@@ -286,11 +286,11 @@
           </div>
 
           <div class="flex gap-3">
-            <button @click="step = 3" class="py-3 px-6 text-sm bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all">Back</button>
+            <button @click="step = 3" class="py-3 px-4 text-sm bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all">Back</button>
             <button 
               @click="submitVerification" 
               :disabled="loading || !form.whatsappNumber || !form.school || !form.matricNumber" 
-              class="flex-1 py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E54D12] transition-all flex justify-center items-center gap-2 shadow-md"
+              class="flex-1 py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E54D12] transition-all flex justify-center items-center gap-2 shadow-sm border border-gray-100"
             >
               <span v-if="loading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
               {{ loading ? 'Submitting...' : 'Submit Verification' }}
@@ -308,7 +308,7 @@
             Your identity documents have been submitted securely. Reviews typically take less than 24 hours.
           </p>
           <div class="pt-6">
-            <NuxtLink to="/dashboard" class="inline-block px-8 py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl hover:bg-[#E54D12] transition-all shadow-md">
+            <NuxtLink to="/dashboard" class="inline-block px-5 py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl hover:bg-[#E54D12] transition-all shadow-sm border border-gray-100">
               Return to Dashboard
             </NuxtLink>
           </div>
@@ -346,7 +346,7 @@
             <button 
               @click="submitTier3" 
               :disabled="loading || !guarantorForm.name || !guarantorForm.phone || !guarantorForm.relationship" 
-              class="w-full py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E54D12] transition-all flex justify-center items-center gap-2 shadow-md"
+              class="w-full py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E54D12] transition-all flex justify-center items-center gap-2 shadow-sm border border-gray-100"
             >
               <span v-if="loading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
               {{ loading ? 'Submitting...' : 'Submit Verification' }}
@@ -363,7 +363,7 @@
               Your guarantor details have been submitted securely. Reviews typically take less than 24 hours.
             </p>
             <div class="pt-6">
-              <NuxtLink to="/dashboard" class="inline-block px-8 py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl hover:bg-[#E54D12] transition-all shadow-md">
+              <NuxtLink to="/dashboard" class="inline-block px-5 py-3 text-sm bg-[#FF5C1A] text-white font-bold rounded-xl hover:bg-[#E54D12] transition-all shadow-sm border border-gray-100">
                 Return to Dashboard
               </NuxtLink>
             </div>
@@ -379,7 +379,7 @@
             <h2 class="text-xl font-bold text-gray-900 tracking-tight">Fully Verified!</h2>
             <p class="text-gray-500 text-xs mt-2 max-w-xs mx-auto">You are a Pro rider (Tier 3) with full access to all deliveries.</p>
             <div class="pt-6">
-              <NuxtLink to="/dashboard" class="inline-block px-8 py-3 text-sm bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition-all shadow-md">
+              <NuxtLink to="/dashboard" class="inline-block px-5 py-3 text-sm bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition-all shadow-sm border border-gray-100">
                 Return to Dashboard
               </NuxtLink>
             </div>
