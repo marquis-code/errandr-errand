@@ -293,6 +293,15 @@
         </div>
       </div>
     </SideDrawer>
+
+    <!-- Full Screen Loading Modal for Accepting Order -->
+    <Teleport to="body">
+      <div v-if="acceptingId" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-gray-900/95 backdrop-blur-sm text-white transition-opacity">
+        <div class="w-16 h-16 border-4 border-white/20 border-t-[#FF5C1A] rounded-full animate-spin mb-6"></div>
+        <h2 class="text-2xl font-bold tracking-tight mb-2">Accepting Order...</h2>
+        <p class="text-white/60 font-medium text-sm">Please wait while we secure this errand for you.</p>
+      </div>
+    </Teleport>
   </div>
 </template>
 

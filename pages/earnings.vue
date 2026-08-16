@@ -48,15 +48,15 @@
  <div class="space-y-4">
  <label class="text-sm font-bold text-gray-400 ml-1">Payout Schedule</label>
  <div class="flex gap-2 p-1.5 bg-gray-100 rounded-2xl">
- <button v-for="p in ['instant', 'weekly']" :key="p"
+ <button v-for="p in ['daily', 'weekly']" :key="p"
  @click="handleUpdateFrequency(p)"
- class="flex-1 py-3 rounded-xl text-sm font-bold transition-all"
+ class="flex-1 py-3 rounded-xl text-sm font-bold transition-all capitalize"
  :class="wallet?.payoutPreference === p ? 'bg-white text-parentPrimary shadow-sm border border-gray-100' : 'text-gray-500 hover:text-gray-700'"
  >
  {{ p }}
  </button>
  </div>
- <p class="text-sm text-gray-400 font-medium px-2 ">Standard processing fees may apply for instant settlements.</p>
+ <p class="text-sm text-gray-400 font-medium px-2 ">Standard processing fees may apply for daily settlements.</p>
  </div>
 
  <div class="space-y-4">

@@ -95,6 +95,52 @@
           </div>
         </div>
 
+        <!-- Available Errands Section -->
+        <div class="bg-white/70 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden shadow-sm border border-emerald-100 mb-6">
+          <div class="px-4 py-4 border-b border-gray-50 flex items-center justify-between">
+            <h3 class="text-base font-bold text-gray-900 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Available Errands
+            </h3>
+            <NuxtLink to="/deliveries/pool" class="text-xs font-semibold text-emerald-600 hover:underline">View All →</NuxtLink>
+          </div>
+          
+          <div v-if="loadingOrders" class="p-4 space-y-3">
+            <div v-for="i in 2" :key="i" class="h-14 bg-gray-50 rounded-xl animate-pulse"></div>
+          </div>
+          <div v-else-if="availableOrders.length === 0" class="py-12 text-center px-4">
+            <div class="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">🚲</div>
+            <p class="text-sm text-gray-400">No new errands available right now. Check back soon!</p>
+          </div>
+          <div v-else class="divide-y divide-gray-50">
+            <NuxtLink 
+              v-for="order in availableOrders.slice(0, 3)" 
+              :key="order._id" 
+              :to="`/deliveries/pool?orderId=${order._id}`"
+              class="px-4 py-4 bg-white/70 backdrop-blur-md hover:bg-emerald-50/50 transition-all flex items-center justify-between gap-4 group cursor-pointer"
+            >
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 bg-gray-950 text-white overflow-hidden">
+                  <img v-if="order.type !== 'custom_errand' && order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
+                  <span v-else class="text-xs font-bold">CUS</span>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-sm text-gray-900 truncate max-w-[200px]">
+                    {{ order.type === 'custom_errand' ? 'Custom Errand' : (order.vendor?.storeName || 'Order') }}
+                  </h4>
+                  <p class="text-xs text-gray-400 line-clamp-1 max-w-[200px]">
+                    {{ order.type === 'custom_errand' ? order.customDetails?.dropoffLocation : (order.deliveryAddress || 'Customer Location') }}
+                  </p>
+                </div>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <p class="font-bold text-sm text-emerald-600">₦{{ (order.erranderPayout || order.erranderShare || order.deliveryFee || 150).toLocaleString() }}</p>
+                <span class="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded uppercase mt-0.5 inline-block border border-emerald-100">Claim Now</span>
+              </div>
+            </NuxtLink>
+          </div>
+        </div>
+
         <!-- Recent Deliveries -->
         <div class="bg-white/70 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden shadow-sm border border-gray-100">
           <div class="px-4 py-4 border-b border-gray-50 flex items-center justify-between">
@@ -212,6 +258,7 @@ useHead({
 const loadingStats = ref(true)
 const loadingOrders = ref(true)
 const orders = ref<any[]>([])
+const availableOrders = ref<any[]>([])
 const errandrProfile = ref<any>(null)
 const earningsData = ref<any>({ totalEarnings: 0, totalDeliveries: 0, rating: 0 })
 
@@ -277,6 +324,15 @@ const loadDashboard = async () => {
   } catch (e) {
     console.error('Failed to load orders:', e)
     orders.value = []
+  }
+  
+  try {
+    const resAvailable = await api.get<any[]>('/orders/available')
+    if (resAvailable && (resAvailable as any).type !== 'ERROR' && Array.isArray(resAvailable.data)) {
+      availableOrders.value = resAvailable.data
+    }
+  } catch (e) {
+    console.error('Failed to load available orders:', e)
   } finally {
     loadingOrders.value = false
   }
