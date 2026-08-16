@@ -73,6 +73,17 @@
             </button>
           </div>
           
+          <!-- Action button for chat updates -->
+          <div v-else-if="toast.type === 'NEW_CHAT_MESSAGE' && toast.data?.orderId" class="mt-3">
+            <NuxtLink
+              :to="`/deliveries/${toast.data.orderId}?openChat=${toast.data.senderId || 'true'}`"
+              @click="dismissToast(toast.id)"
+              class="block w-full py-2 text-xs font-semibold text-center text-[#FF5C1A] bg-[#FF5C1A]/5 border border-[#FF5C1A]/10 rounded-xl hover:bg-[#FF5C1A]/10 transition-all"
+            >
+              Reply to Chat 💬
+            </NuxtLink>
+          </div>
+          
           <!-- Action button for status updates -->
           <div v-else-if="toast.data?.orderId" class="mt-3">
             <NuxtLink
