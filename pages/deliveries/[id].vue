@@ -51,7 +51,7 @@
      <a :href="`tel:${order.vendor.phone}`" class="flex-1 px-3 py-1.5 bg-amber-50 text-amber-600 rounded-lg text-[11px] font-bold hover:bg-amber-100 transition-all transform active:scale-95 border border-amber-100 flex items-center justify-center gap-1.5">
        Call Store
      </a>
-     <a :href="`https://wa.me/${order.vendor.phone.replace(/[^0-9]/g, '').replace(/^0/, '234')}?text=${encodeURIComponent('Hi, I am the delivery rider for order #' + order.orderNumber)}`" target="_blank" class="flex-1 px-3 py-1.5 bg-[#25D366]/10 text-[#25D366] rounded-lg text-[11px] font-bold hover:bg-[#25D366]/20 transition-all transform active:scale-95 border border-[#25D366]/30 flex items-center justify-center gap-1.5">
+     <a :href="getWhatsAppLink(order.vendor.phone, 'vendor')" target="_blank" class="flex-1 px-3 py-1.5 bg-[#25D366]/10 text-[#25D366] rounded-lg text-[11px] font-bold hover:bg-[#25D366]/20 transition-all transform active:scale-95 border border-[#25D366]/30 flex items-center justify-center gap-1.5">
        WhatsApp
      </a>
    </div>
@@ -160,7 +160,7 @@
    <a :href="`tel:${order.customer?.phone}`" class="flex-1 py-3.5 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-bold hover:bg-emerald-600 hover:text-white hover: hover:shadow-emerald-500/20 transition-all transform active:scale-95 border border-emerald-200 flex items-center justify-center gap-2">
      <Phone class="w-4 h-4" /> Call
    </a>
-   <a v-if="order.customer?.phone" :href="`https://wa.me/${order.customer.phone.replace(/[^0-9]/g, '').replace(/^0/, '234')}?text=${encodeURIComponent('Hi, I am the delivery rider for order #' + order.orderNumber)}`" target="_blank" class="flex-1 py-3.5 bg-[#25D366]/10 text-[#25D366] rounded-xl text-sm font-bold hover:bg-[#25D366]/20 transition-all transform active:scale-95 border border-[#25D366]/30 flex items-center justify-center gap-2">
+   <a v-if="order.customer?.phone" :href="getWhatsAppLink(order.customer.phone, 'customer')" target="_blank" class="flex-1 py-3.5 bg-[#25D366]/10 text-[#25D366] rounded-xl text-sm font-bold hover:bg-[#25D366]/20 transition-all transform active:scale-95 border border-[#25D366]/30 flex items-center justify-center gap-2">
      WhatsApp
    </a>
  </div>
@@ -412,6 +412,34 @@ const submitReconciliation = async () => {
  } finally {
  submittingReconciliation.value = false;
  }
+};
+
+const getWhatsAppLink = (phone: string, type: 'customer' | 'vendor') => {
+  if (!phone || !order.value) return '#';
+  const cleanPhone = phone.replace(/[^0-9]/g, '').replace(/^0/, '234');
+  const o = order.value;
+  let message = '';
+  
+  if (type === 'customer') {
+    const storeName = o.type === 'custom_errand' ? (o.customDetails?.pickupLocation || 'Pickup Location') : (o.vendor?.storeName || 'the store');
+    const deliveryAddress = o.type === 'custom_errand' ? (o.customDetails?.deliveryAddress || 'your address') : (o.customerAddress?.address || 'your address');
+    
+    message = `Hello ${o.customer?.firstName}, I am the delivery rider for your order #${o.orderNumber}.
+
+I am handling your pickup from *${storeName}*.
+
+*Delivery Address:* ${deliveryAddress}
+
+I'll keep you updated on my way!`;
+  } else if (type === 'vendor') {
+    message = `Hello, I am the delivery rider for order #${o.orderNumber}.
+
+I am on my way to pick up the order for *${o.customer?.firstName || 'the customer'}*.
+
+Please confirm if the order is ready for pickup at ${o.vendor?.address || 'your store'}.`;
+  }
+
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
 };
 
 const updateStatus = async (status: string) => {
