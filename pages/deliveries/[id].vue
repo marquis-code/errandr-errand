@@ -1,5 +1,20 @@
 <template>
- <div class="max-w-4xl w-full mx-auto space-y-4 md:space-y-6 md:space-y-10 pb-32 animate-fade-in mt-6" v-if="order">
+ <div>
+  <!-- Loading State -->
+  <div v-if="loadingOrder" class="max-w-4xl w-full mx-auto space-y-4 md:space-y-6 md:space-y-10 pb-32 mt-6 flex flex-col items-center justify-center pt-20">
+    <Loader2 class="w-10 h-10 animate-spin text-[#FF5C1A] mb-4" />
+    <p class="text-gray-500 font-medium">Loading delivery details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div v-else-if="orderError" class="max-w-4xl w-full mx-auto space-y-4 md:space-y-6 md:space-y-10 pb-32 mt-6 flex flex-col items-center justify-center pt-20">
+    <div class="text-4xl mb-4">⚠️</div>
+    <h2 class="text-xl font-bold text-gray-900 mb-2">Could not load order</h2>
+    <p class="text-gray-500 mb-6">{{ orderError }}</p>
+    <button @click="loadOrder" class="px-6 py-2 bg-[#FF5C1A] text-white rounded-lg font-bold hover:bg-orange-600 transition-colors">Try Again</button>
+  </div>
+
+  <div class="max-w-4xl w-full mx-auto space-y-4 md:space-y-6 md:space-y-10 pb-32 animate-fade-in mt-6" v-else-if="order">
  <!-- Stunning Header -->
  <div class="relative p-4 md:p-5 rounded-xl md:rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-br from-gray-950 via-gray-900 to-black group">
  <!-- Animated Background Effects -->
@@ -345,6 +360,7 @@
  @close="isChatOpen = false"
  />
  </div>
+ </div>
 </template>
 
 <script setup lang="ts">
@@ -364,6 +380,8 @@ definePageMeta({
 })
 
 const order = ref<any>(null);
+const loadingOrder = ref(true);
+const orderError = ref('');
 const verificationCode = ref('');
 const completing = ref(false);
 
@@ -603,14 +621,27 @@ const startLocation = () => {
  }
 };
 
- onMounted(async () => {
   const loadOrder = async () => {
+    loadingOrder.value = true;
+    orderError.value = '';
     try {
       const res = await api.get<any>(`/orders/${route.params.id}`);
-      order.value = res.data;
-    } catch (e) { console.error(e); }
+      if (res && res.type === 'ERROR') {
+        orderError.value = res.data?.message || res.statusText || 'Failed to load order. Please check your network and try again.';
+        order.value = null;
+      } else {
+        order.value = res.data;
+      }
+    } catch (e: any) {
+      console.error(e);
+      orderError.value = e.message || 'An unexpected error occurred.';
+      order.value = null;
+    } finally {
+      loadingOrder.value = false;
+    }
   };
-  
+
+ onMounted(async () => {
   await loadOrder();
 
   connect();
