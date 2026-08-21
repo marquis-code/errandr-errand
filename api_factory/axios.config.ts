@@ -46,6 +46,8 @@ const instanceArray = [
   GATEWAY_ENDPOINT_WITH_AUTH,
   GATEWAY_ENDPOINT_WITHOUT_VERSION,
   GATEWAY_ENDPOINT_WITHOUT_VERSION_WITH_AUTH,
+  GATEWAY_ENDPOINT_WITH_AUTH_FORM_DATA,
+  IMAGE_UPLOAD_ENDPOINT,
 ];
 
 instanceArray.forEach((instance) => {
@@ -141,6 +143,21 @@ instanceArray.forEach((instance) => {
           toastType: "error",
           duration: 3000
         });
+        return {
+          type: "ERROR",
+          ...err.response,
+        };
+      } else {
+        useCustomToast().showToast({
+          title: "Error",
+          message: err?.response?.data?.message || err?.response?.data?.error || "An unexpected error occurred",
+          toastType: "error",
+          duration: 3000
+        });
+        return {
+          type: "ERROR",
+          ...err.response,
+        };
       }
     }
   );
