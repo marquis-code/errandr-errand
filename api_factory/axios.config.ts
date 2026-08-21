@@ -1,9 +1,6 @@
 import axios, { type AxiosResponse } from "axios";
-import { useUser } from "@/composables/modules/auth/user";
 import { useCustomToast } from '@/composables/core/useCustomToast'
-import { useNetworkStatus } from '@/composables/core/useNetworkStatus'// const { showToast } = useCustomToast(); // Removed top-level call
-
-const { token, logOut } = useUser();
+import { useNetworkStatus } from '@/composables/core/useNetworkStatus'
 
 const $GATEWAY_ENDPOINT_WITHOUT_VERSION = import.meta.env.VITE_API_BASE_URL as string;
 const $GATEWAY_ENDPOINT = import.meta.env.VITE_API_BASE_URL + "/api/v1";
@@ -20,15 +17,11 @@ export const GATEWAY_ENDPOINT_V2 = axios.create({
 
 export const GATEWAY_ENDPOINT_WITH_AUTH = axios.create({
   baseURL: $GATEWAY_ENDPOINT,
-  headers: {
-    Authorization: `Bearer ${token.value}`,
-  },
 });
 
 export const GATEWAY_ENDPOINT_WITH_AUTH_FORM_DATA = axios.create({
   baseURL: $GATEWAY_ENDPOINT,
   headers: {
-    Authorization: `Bearer ${token.value}`,
     "Content-Type": "multipart/form-data",
   },
 });
@@ -38,9 +31,6 @@ export const GATEWAY_ENDPOINT_WITHOUT_VERSION = axios.create({
 });
 export const GATEWAY_ENDPOINT_WITHOUT_VERSION_WITH_AUTH = axios.create({
   baseURL: $GATEWAY_ENDPOINT_WITHOUT_VERSION,
-  headers: {
-    Authorization: `Bearer ${token.value}`,
-  },
 });
 export const IMAGE_UPLOAD_ENDPOINT = axios.create({
   baseURL: $IMAGE_UPLOAD_ENDPOINT,
@@ -61,9 +51,18 @@ const instanceArray = [
 instanceArray.forEach((instance) => {
   instance.defaults.timeout = 15000; // Set global timeout to 15 seconds
   instance.interceptors.request.use((config: any) => {
-    const cookie = useCookie('errandr_dispatch_token');
-    if (cookie.value) {
-      config.headers.Authorization = `Bearer ${cookie.value}`;
+    let tokenValue = '';
+    if (typeof window !== 'undefined') {
+      const match = document.cookie.match(new RegExp('(^| )errandr_dispatch_token=([^;]+)'));
+      if (match) {
+        tokenValue = decodeURIComponent(match[2]);
+      } else {
+        tokenValue = localStorage.getItem('token') || '';
+      }
+    }
+    
+    if (tokenValue) {
+      config.headers.Authorization = `Bearer ${tokenValue}`;
     }
     return config;
   });
@@ -87,10 +86,14 @@ instanceArray.forEach((instance) => {
       }
       if (err.response.status === 401) {
         console.log(err.response.data.error)
-        // Only log out if we have a token (it expired) AND we're not already on auth pages
+        // Only log out if we're not already on auth pages
         const isOnAuthPage = typeof window !== 'undefined' && window.location.pathname.startsWith('/auth')
-        if (token.value && !isOnAuthPage) {
-          logOut();
+        if (!isOnAuthPage && typeof window !== 'undefined') {
+          document.cookie = 'errandr_dispatch_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+          document.cookie = 'errandr_dispatch_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = '/auth/login';
         }
         useCustomToast().showToast({
           title: "Error",
