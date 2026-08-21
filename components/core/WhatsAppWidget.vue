@@ -60,6 +60,6 @@ const isOpen = ref(false)
 const agents = [
   { name: 'Brandy', initial: 'B', number: '2348139908262' },
   { name: 'Kim', initial: 'K', number: '2348052854256' },
-  { name: 'Marquis', initial: 'M', number: '2348147626503' }
+  // { name: 'Marquis', initial: 'M', number: '2348147626503' }
 ]
 </script>
