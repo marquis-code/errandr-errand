@@ -7,6 +7,7 @@
     </main>
 
     <LandingFooter />
+    <CoreWhatsAppWidget />
   </div>
 </template>
 

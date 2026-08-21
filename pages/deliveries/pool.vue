@@ -62,8 +62,10 @@
                     <h3 class="text-sm font-medium text-gray-900 mb-1 line-clamp-1">
                       {{ order.type === 'custom_errand' ? 'Special Request' : (order.vendor?.storeName || 'Store Order') }}
                     </h3>
-                    <div class="flex items-center gap-2 mb-1.5">
+                    <div class="flex items-center gap-2 mb-1.5 flex-wrap">
                       <span class="text-[9px] font-medium tracking-widest text-[#FF5C1A] uppercase bg-[#FF5C1A]/5 px-2 py-0.5 rounded">#{{ order.orderNumber?.slice(-8) }}</span>
+                      <span v-if="order.status === 'negotiating'" class="text-[9px] font-bold tracking-widest text-amber-700 uppercase bg-amber-50 px-2 py-0.5 rounded border border-amber-200 animate-pulse">🔥 NEGOTIATING</span>
+                      <span v-if="order.locationType === 'outside_campus'" class="text-[9px] font-bold tracking-widest text-blue-700 uppercase bg-blue-50 px-2 py-0.5 rounded border border-blue-200">📍 Outside Campus</span>
                       <span class="text-[9px] font-bold text-gray-400 flex items-center gap-1">
                         <Clock class="w-2.5 h-2.5" /> {{ formatTime(order.createdAt) }}
                       </span>
@@ -98,7 +100,12 @@
 
               <!-- Pay -->
               <td class="py-5 px-4 text-right">
-                <div class="flex flex-col items-end">
+                <div v-if="order.status === 'negotiating'" class="flex flex-col items-end">
+                  <p class="text-xs font-medium text-amber-600 tracking-tight leading-none mb-1">Student proposed</p>
+                  <p class="text-lg font-bold text-amber-700 tracking-tight leading-none mb-1">₦{{ (order.proposedDeliveryFee || order.deliveryFee || 0).toLocaleString() }}</p>
+                  <p class="text-[8px] font-medium text-amber-500 uppercase tracking-widest">Bid to Earn</p>
+                </div>
+                <div v-else class="flex flex-col items-end">
                   <p class="text-lg font-medium text-emerald-600 tracking-tight leading-none mb-1">₦{{ (order.erranderPayout || order.erranderShare || order.deliveryFee || 150).toLocaleString() }}</p>
                   <p class="text-[8px] font-medium text-gray-300 uppercase tracking-widest">Paid Immediately</p>
                 </div>
@@ -115,6 +122,14 @@
                     <Eye class="w-4 h-4" />
                   </button>
                   <button 
+                    v-if="order.status === 'negotiating'"
+                    @click="viewDetails(order)"
+                    class="px-4 py-2 bg-amber-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-amber-600 hover:shadow-sm border border-amber-400 transition-all min-w-[90px]"
+                  >
+                    Place Bid
+                  </button>
+                  <button 
+                    v-else
                     @click="acceptOrder(order._id)"
                     :disabled="acceptingId === order._id"
                     class="px-4 py-2 bg-gray-900 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-parentPrimary hover:shadow-sm border border-gray-100 hover:shadow-parentPrimary/20 transition-all disabled:opacity-50 min-w-[90px]"
@@ -149,13 +164,39 @@
 
         <!-- Info Grid -->
         <div class="grid grid-cols-2 gap-4">
-          <div class="p-4 bg-gray-50 rounded-2xl">
+          <div v-if="selectedOrder.status === 'negotiating'" class="p-4 bg-amber-50 rounded-2xl border border-amber-100">
+            <p class="text-[9px] font-medium text-amber-500 uppercase tracking-widest mb-1">Student Proposed</p>
+            <p class="text-xl font-bold text-amber-700 tracking-tight">₦{{ (selectedOrder.proposedDeliveryFee || selectedOrder.deliveryFee || 0).toLocaleString() }}</p>
+          </div>
+          <div v-else class="p-4 bg-gray-50 rounded-2xl">
             <p class="text-[9px] font-medium text-gray-400 uppercase tracking-widest mb-1">You Earn</p>
             <p class="text-xl font-medium text-emerald-600 tracking-tight">₦{{ (selectedOrder.erranderPayout || selectedOrder.erranderShare || selectedOrder.deliveryFee).toLocaleString() }}</p>
           </div>
           <div class="p-4 bg-gray-50 rounded-2xl">
             <p class="text-[9px] font-medium text-gray-400 uppercase tracking-widest mb-1">Prep Time</p>
             <p class="text-xl font-medium text-gray-900 tracking-tight">~15 Mins</p>
+          </div>
+        </div>
+
+        <!-- Outside Campus / Negotiation Banner -->
+        <div v-if="selectedOrder.status === 'negotiating' || selectedOrder.locationType === 'outside_campus'" class="p-4 bg-amber-50 border border-amber-200 rounded-2xl space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">📍</span>
+            <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wide">Outside Campus Delivery</h4>
+          </div>
+          <p class="text-sm font-medium text-amber-700 leading-relaxed">
+            This order requires delivery <strong>outside campus</strong>. The student proposed a delivery fee of <strong>₦{{ (selectedOrder.proposedDeliveryFee || selectedOrder.deliveryFee || 0).toLocaleString() }}</strong>. You can accept their offer or counter with your own price.
+          </p>
+          <div v-if="selectedOrder.outsideCampusAddress" class="mt-2 p-3 bg-white/80 rounded-lg border border-amber-100">
+            <p class="text-[9px] font-medium text-amber-500 uppercase tracking-widest mb-1">Delivery Location</p>
+            <p class="text-sm font-bold text-gray-900">{{ selectedOrder.outsideCampusAddress }}</p>
+          </div>
+          <div v-if="negotiationViewerCount > 0" class="flex items-center gap-2 mt-2">
+            <span class="relative flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+            </span>
+            <span class="text-xs font-bold text-amber-700">{{ negotiationViewerCount }} rider{{ negotiationViewerCount === 1 ? '' : 's' }} viewing this request</span>
           </div>
         </div>
 
@@ -250,45 +291,78 @@
 
         <!-- Actions inside drawer -->
         <div v-if="selectedOrder.status !== 'awaiting_payment'" class="space-y-3">
-          <div class="flex gap-3">
+          <!-- NEGOTIATING orders: Bid-only mode -->
+          <div v-if="selectedOrder.status === 'negotiating'" class="space-y-4">
+            <div class="p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl space-y-3">
+              <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wide">Submit Your Delivery Bid</h4>
+              <p class="text-xs text-amber-600">Enter how much you want to charge for this delivery. The student will see your offer in real-time.</p>
+              <div class="flex gap-2">
+                <div class="relative flex-1">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-amber-500 font-bold">₦</span>
+                  <input v-model="formattedBidAmount" type="text" placeholder="Your Price" class="w-full bg-white border border-amber-200 rounded-lg pl-8 pr-4 py-3 outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 font-bold text-gray-900 text-lg" />
+                </div>
+                <button 
+                  @click="placeBid(selectedOrder._id)"
+                  :disabled="!bidAmount || biddingId === selectedOrder._id"
+                  class="bg-amber-500 text-white text-sm font-bold px-5 py-3 rounded-lg disabled:opacity-50 hover:bg-amber-600 transition-colors shrink-0 shadow-sm shadow-amber-200"
+                >
+                  {{ biddingId === selectedOrder._id ? 'Sending...' : '🚀 Send Bid' }}
+                </button>
+              </div>
+              <p v-if="hasPlacedBid(selectedOrder)" class="text-xs font-bold text-green-600 mt-1 bg-green-50 p-2.5 rounded-lg text-center border border-green-100">
+                ✅ You offered ₦{{ getMyBid(selectedOrder)?.toLocaleString() }} — waiting for student's response
+              </p>
+            </div>
             <button 
               @click="rejectOrder(selectedOrder._id)"
-              :disabled="acceptingId === selectedOrder._id || biddingId === selectedOrder._id"
-              class="flex-1 py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-sm font-bold hover:bg-red-100 transition-all flex items-center justify-center gap-2 active:scale-95"
+              class="w-full py-2.5 bg-gray-50 text-gray-400 border border-gray-100 rounded-lg text-sm font-medium hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-all text-center"
             >
-              <X class="w-4 h-4" />
-              Reject
-            </button>
-
-            <button 
-              @click="acceptOrder(selectedOrder._id); isDrawerOpen = false"
-              :disabled="acceptingId === selectedOrder._id || biddingId === selectedOrder._id"
-              class="flex-[2] py-2.5 bg-gray-950 text-white rounded-lg text-sm font-bold hover:bg-parentPrimary transition-all flex items-center justify-center gap-2 active:scale-95"
-            >
-              <Zap v-if="acceptingId !== selectedOrder._id" class="w-4 h-4 fill-current" />
-              <span v-else class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-              {{ acceptingId === selectedOrder._id ? 'Accepting...' : 'Accept at ₦' + (selectedOrder.erranderPayout || selectedOrder.erranderShare || selectedOrder.deliveryFee).toLocaleString() }}
+              Not Interested
             </button>
           </div>
 
-          <div v-if="selectedOrder.type === 'custom_errand'" class="border-t border-gray-100 pt-4 mt-2">
-            <p class="text-xs font-bold text-gray-500 mb-2">Or offer a different price:</p>
-            <div class="flex gap-2">
-              <div class="relative flex-1">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₦</span>
-                <input v-model="formattedBidAmount" type="text" placeholder="Your Price" class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-4 py-2.5 outline-none focus:border-parentPrimary font-bold text-gray-900 text-base" />
-              </div>
+          <!-- Normal orders: Accept/Reject + optional counter-offer -->
+          <div v-else>
+            <div class="flex gap-3">
               <button 
-                @click="placeBid(selectedOrder._id)"
-                :disabled="!bidAmount || biddingId === selectedOrder._id"
-                class="bg-parentPrimary text-white text-sm font-bold px-4 py-2.5 rounded-lg disabled:opacity-50 hover:bg-orange-600 transition-colors shrink-0"
+                @click="rejectOrder(selectedOrder._id)"
+                :disabled="acceptingId === selectedOrder._id || biddingId === selectedOrder._id"
+                class="flex-1 py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-sm font-bold hover:bg-red-100 transition-all flex items-center justify-center gap-2 active:scale-95"
               >
-                {{ biddingId === selectedOrder._id ? 'Sending...' : 'Send Offer' }}
+                <X class="w-4 h-4" />
+                Reject
+              </button>
+
+              <button 
+                @click="acceptOrder(selectedOrder._id); isDrawerOpen = false"
+                :disabled="acceptingId === selectedOrder._id || biddingId === selectedOrder._id"
+                class="flex-[2] py-2.5 bg-gray-950 text-white rounded-lg text-sm font-bold hover:bg-parentPrimary transition-all flex items-center justify-center gap-2 active:scale-95"
+              >
+                <Zap v-if="acceptingId !== selectedOrder._id" class="w-4 h-4 fill-current" />
+                <span v-else class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                {{ acceptingId === selectedOrder._id ? 'Accepting...' : 'Accept at ₦' + (selectedOrder.erranderPayout || selectedOrder.erranderShare || selectedOrder.deliveryFee).toLocaleString() }}
               </button>
             </div>
-            <p v-if="hasPlacedBid(selectedOrder)" class="text-xs font-bold text-green-600 mt-2 bg-green-50 p-2 rounded-lg text-center">
-              You offered ₦{{ getMyBid(selectedOrder) }}
-            </p>
+
+            <div v-if="selectedOrder.type === 'custom_errand'" class="border-t border-gray-100 pt-4 mt-2">
+              <p class="text-xs font-bold text-gray-500 mb-2">Or offer a different price:</p>
+              <div class="flex gap-2">
+                <div class="relative flex-1">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₦</span>
+                  <input v-model="formattedBidAmount" type="text" placeholder="Your Price" class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-4 py-2.5 outline-none focus:border-parentPrimary font-bold text-gray-900 text-base" />
+                </div>
+                <button 
+                  @click="placeBid(selectedOrder._id)"
+                  :disabled="!bidAmount || biddingId === selectedOrder._id"
+                  class="bg-parentPrimary text-white text-sm font-bold px-4 py-2.5 rounded-lg disabled:opacity-50 hover:bg-orange-600 transition-colors shrink-0"
+                >
+                  {{ biddingId === selectedOrder._id ? 'Sending...' : 'Send Offer' }}
+                </button>
+              </div>
+              <p v-if="hasPlacedBid(selectedOrder)" class="text-xs font-bold text-green-600 mt-2 bg-green-50 p-2 rounded-lg text-center">
+                You offered ₦{{ getMyBid(selectedOrder) }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -314,6 +388,7 @@ import { useRouter } from 'vue-router'
 import { Clock, Zap, ChevronRight, Eye, User, X, Banknote, Check } from 'lucide-vue-next'
 import SideDrawer from '@/components/ui/SideDrawer.vue'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
+import { io, Socket } from 'socket.io-client'
 
 definePageMeta({
   layout: 'errander'
@@ -332,6 +407,11 @@ const isDrawerOpen = ref(false)
 const selectedOrder = ref<any>(null)
 const bidAmount = ref<number | null>(null)
 const biddingId = ref<string | null>(null)
+
+// Negotiation WebSocket State
+const negotiationViewerCount = ref(0)
+let negotiationSocket: Socket | null = null
+const runtimeConfig = useRuntimeConfig()
 
 const formattedBidAmount = computed({
   get: () => bidAmount.value ? bidAmount.value.toLocaleString('en-NG') : '',
@@ -385,6 +465,43 @@ const loadBatchStatus = async () => {
   } catch (e) {}
 }
 
+const connectNegotiationSocket = (orderId: string) => {
+  disconnectNegotiationSocket()
+  const baseUrl = runtimeConfig.public.wsBase || runtimeConfig.public.apiBase || 'http://localhost:3005'
+  const wsUrl = baseUrl.replace('/v1', '').replace('/api', '')
+  negotiationSocket = io(`${wsUrl}/negotiation`, {
+    withCredentials: true,
+    transports: ['websocket'],
+  })
+  negotiationSocket.on('connect', () => {
+    negotiationSocket?.emit('joinNegotiation', { orderId, role: 'rider' })
+  })
+  negotiationSocket.on('viewerCountUpdate', (data: { count: number }) => {
+    negotiationViewerCount.value = data.count
+  })
+  negotiationSocket.on('bidAccepted', (data: any) => {
+    if (data.orderId) {
+      // The negotiation is over for this order — remove from available
+      availableOrders.value = availableOrders.value.filter(o => o._id !== data.orderId)
+      if (selectedOrder.value?._id === data.orderId) {
+        pushToast('Negotiation Closed', 'The student accepted a bid for this order.', 'GENERAL')
+        isDrawerOpen.value = false
+      }
+    }
+  })
+}
+
+const disconnectNegotiationSocket = () => {
+  if (negotiationSocket) {
+    if (selectedOrder.value?._id) {
+      negotiationSocket.emit('leaveNegotiation', { orderId: selectedOrder.value._id, role: 'rider' })
+    }
+    negotiationSocket.disconnect()
+    negotiationSocket = null
+    negotiationViewerCount.value = 0
+  }
+}
+
 const viewDetails = (order: any) => {
   selectedOrder.value = order
   isDrawerOpen.value = true
@@ -394,11 +511,18 @@ const viewDetails = (order: any) => {
   if (order._id) {
     api.post(`/orders/${order._id}/view`).catch(e => console.error('Failed to record view:', e))
   }
+  // Connect to negotiation socket for NEGOTIATING orders
+  if (order.status === 'negotiating' && order._id) {
+    connectNegotiationSocket(order._id)
+  }
 }
 
 watch(isDrawerOpen, (newVal) => {
   if (!newVal && selectedOrder.value?._id && socket.value) {
     socket.value.emit('viewing_errand', { orderId: selectedOrder.value._id, isViewing: false })
+  }
+  if (!newVal) {
+    disconnectNegotiationSocket()
   }
 })
 
@@ -436,6 +560,26 @@ const placeBid = async (id: string) => {
   if (!bidAmount.value) return;
   biddingId.value = id;
   try {
+    const order = selectedOrder.value;
+    
+    if (order?.status === 'negotiating' && negotiationSocket?.connected) {
+      // Use WebSocket for NEGOTIATING (outside campus) orders
+      negotiationSocket.emit('submitBid', {
+        orderId: id,
+        riderId: user.value?._id,
+        bidAmount: bidAmount.value,
+      }, (response: any) => {
+        if (response?.success) {
+          pushToast('🚀 Bid Sent!', `Your delivery bid of ₦${bidAmount.value?.toLocaleString()} has been sent to the student.`, 'SUCCESS');
+        } else {
+          pushToast('Bid Error', response?.error || 'Failed to submit bid.', 'ERROR');
+        }
+        biddingId.value = null;
+      });
+      return; // Don't fall through to finally
+    }
+    
+    // REST API for custom errand counter-offers
     const res = await api.post(`/orders/${id}/custom/bid`, { amount: bidAmount.value });
     if (res && (res as any).type !== 'ERROR') {
       pushToast('Offer Sent!', 'Your offer has been sent to the customer.', 'SUCCESS');
@@ -488,6 +632,10 @@ const handleNewOrder = (payload: any) => {
       total: orderData.total,
       erranderPayout: orderData.erranderPayout,
       erranderShare: orderData.erranderShare,
+      status: orderData.status,
+      type: orderData.type,
+      locationType: orderData.locationType,
+      proposedDeliveryFee: orderData.proposedDeliveryFee,
       createdAt: new Date().toISOString()
     }
     availableOrders.value.unshift(newOrder)
@@ -539,6 +687,7 @@ onUnmounted(() => {
     currentSocket.off('notification:new-order', handleNewOrder)
     currentSocket.off('notification:order-accepted', handleOrderAccepted)
   }
+  disconnectNegotiationSocket()
 })
 
 useHead({ 

@@ -134,8 +134,10 @@
                 </div>
               </div>
               <div class="text-right flex-shrink-0">
-                <p class="font-bold text-sm text-emerald-600">₦{{ (order.erranderPayout || order.erranderShare || order.deliveryFee || 150).toLocaleString() }}</p>
-                <span class="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded uppercase mt-0.5 inline-block border border-emerald-100">Claim Now</span>
+                <p v-if="order.status === 'negotiating'" class="font-bold text-sm text-amber-600">₦{{ (order.proposedDeliveryFee || order.deliveryFee || 0).toLocaleString() }}</p>
+                <p v-else class="font-bold text-sm text-emerald-600">₦{{ (order.erranderPayout || order.erranderShare || order.deliveryFee || 150).toLocaleString() }}</p>
+                <span v-if="order.status === 'negotiating'" class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded uppercase mt-0.5 inline-block border border-amber-200 animate-pulse">🔥 Bid Now</span>
+                <span v-else class="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded uppercase mt-0.5 inline-block border border-emerald-100">Claim Now</span>
               </div>
             </NuxtLink>
           </div>
