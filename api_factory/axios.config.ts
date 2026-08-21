@@ -62,7 +62,12 @@ instanceArray.forEach((instance) => {
     }
     
     if (tokenValue) {
-      config.headers.Authorization = `Bearer ${tokenValue}`;
+      config.headers = config.headers || {};
+      if (typeof config.headers.set === 'function') {
+        config.headers.set('Authorization', `Bearer ${tokenValue}`);
+      } else {
+        config.headers.Authorization = `Bearer ${tokenValue}`;
+      }
     }
     return config;
   });

@@ -18,7 +18,7 @@ export const orders_api = {
   },
 
   cancelOrder: (id: string) => {
-    return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${id}/cancel`);
+    return GATEWAY_ENDPOINT_WITH_AUTH.post(`/orders/${id}/cancel`);
   },
 
   getErranderOrders: () => {
@@ -26,7 +26,7 @@ export const orders_api = {
   },
 
   assignOrder: (id: string) => {
-    return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${id}/assign`);
+    return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${id}/accept`);
   },
 
   placeBid: (id: string, amount: number) => {
