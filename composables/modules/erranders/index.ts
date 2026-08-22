@@ -9,7 +9,11 @@ export const useErranderOrders = () => {
     loading.value = true;
     try {
       const res = await erranders_api.getAssignedOrders();
-      orders.value = res.data;
+      if (res && (res as any).type !== 'ERROR' && res.data) {
+        orders.value = res.data;
+      } else {
+        orders.value = [];
+      }
     } finally {
       loading.value = false;
     }

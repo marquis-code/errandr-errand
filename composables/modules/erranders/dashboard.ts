@@ -18,17 +18,23 @@ export const useErranderDashboard = () => {
     loading.value = true;
     try {
       const erranderRes = await erranders_api.getProfile();
-      const errander = erranderRes.data;
+      if (erranderRes && (erranderRes as any).type !== 'ERROR' && erranderRes.data) {
+        const errander = erranderRes.data;
 
-      stats.value = [
-        { label: 'Total Earnings', value: `₦${errander.totalEarnings?.toLocaleString() || '0'}` },
-        { label: 'Completed', value: errander.completedDeliveries?.toString() || '0' },
-        { label: 'Rating', value: `⭐ ${errander.rating?.toFixed(1) || '5.0'}` },
-        { label: 'Status', value: errander.isOnline ? '🟢 Online' : '🔴 Offline' },
-      ];
+        stats.value = [
+          { label: 'Total Earnings', value: `₦${errander.totalEarnings?.toLocaleString() || '0'}` },
+          { label: 'Completed', value: errander.totalDeliveries?.toString() || '0' },
+          { label: 'Rating', value: `⭐ ${errander.rating?.toFixed(1) || '5.0'}` },
+          { label: 'Status', value: errander.status === 'available' ? '🟢 Online' : '🔴 Offline' },
+        ];
+      }
 
       const ordersRes = await orders_api.getErranderOrders();
-      availableOrders.value = ordersRes.data || [];
+      if (ordersRes && (ordersRes as any).type !== 'ERROR' && ordersRes.data) {
+        availableOrders.value = ordersRes.data;
+      } else {
+        availableOrders.value = [];
+      }
     } catch (e) {
       console.error('Errander dashboard data fetch failed', e);
     } finally {
