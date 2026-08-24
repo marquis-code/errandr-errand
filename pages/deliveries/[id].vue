@@ -27,7 +27,10 @@
  <span class="w-2 h-2 rounded-full bg-[#FF5C1A] animate-pulse"></span>
  <p class="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Live Delivery Tracking</p>
  </div>
- <h1 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400 tracking-tight">Order #{{ order.orderNumber }}</h1>
+ <div class="flex flex-col gap-1 items-start">
+   <h1 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400 tracking-tight">Order #{{ order.orderNumber }}</h1>
+   <span v-if="order.isGroupOrder" class="inline-block text-[10px] font-bold tracking-widest text-emerald-300 uppercase bg-emerald-500/10 px-2 py-1 rounded border border-emerald-400/20">👥 GROUP ORDER</span>
+ </div>
  </div>
  <div class="flex items-center gap-3 bg-white/5 p-2 rounded-2xl backdrop-blur-md border border-white/5 ">
  <StatusBadge :status="order.status" class="scale-110 " />
@@ -121,7 +124,7 @@
  <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
  <h3 class="text-sm font-bold text-gray-500 -wider mb-6 flex items-center gap-3 uppercase">
  <div class="w-1.5 h-1.5 rounded-full bg-[#FF5C1A]" /> 
- {{ order.type === 'custom_errand' ? 'Request Details' : `Order Content (${order.items?.length} items)` }}
+ {{ order.type === 'custom_errand' ? 'Request Details' : (order.packs?.length > 0 ? `Order Content (${order.packs.length} packs)` : `Order Content (${order.items?.length || 0} items)`) }}
  </h3>
  
  <div v-if="order.type === 'custom_errand'" class="space-y-4">
@@ -135,32 +138,70 @@
  </div>
 
  <div v-else class="space-y-3">
- <div v-for="item in order.items" :key="item._id" class="flex flex-col p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
- <div class="flex items-start justify-between">
- <div>
- <span class="text-sm font-bold text-gray-200 tracking-tight">{{ item.name }}</span>
- <p v-if="item.customizations?.length" class="text-[10px] font-medium text-gray-400 mt-1">Base: ₦{{ item.price?.toLocaleString() || 0 }}</p>
- </div>
- <div class="flex flex-col items-end gap-1">
- <span class="text-sm font-bold text-white px-2.5 py-1 bg-[#FF5C1A] rounded-md ">x{{ item.quantity }}</span>
- <span class="text-xs font-bold text-gray-300">₦{{ item.price?.toLocaleString() || 0 }}</span>
- </div>
- </div>
- 
- <div v-if="item.customizations?.length" class="mt-3 mb-2 pl-3 border-l-2 border-white/10 space-y-1.5">
- <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-[11px] text-gray-400 flex justify-between font-medium">
- <span class="truncate flex items-center gap-1">
- <span class="text-white/30">+</span>
- {{ c.quantity > 1 ? c.quantity + 'x ' : '' }}{{ c.name }}
- </span>
- <span v-if="c.price > 0" class="text-gray-500 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
- </p>
- </div>
- 
- <div class="flex justify-end mt-2 pt-2 border-t border-white/5">
- <span class="text-xs font-bold text-[#FF5C1A]">Total: ₦{{ (item.subtotal || (item.price * item.quantity)).toLocaleString() }}</span>
- </div>
- </div>
+  <!-- Packs Rendering -->
+  <template v-if="order.packs && order.packs.length > 0">
+    <div v-for="pack in order.packs" :key="pack.name" class="mb-6">
+      <h4 class="text-[11px] font-bold text-emerald-400 uppercase tracking-widest mb-3 pl-1">{{ pack.name || 'Pack' }}</h4>
+      <div class="space-y-3">
+        <div v-for="item in pack.items" :key="item.name" class="flex flex-col p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+         <div class="flex items-start justify-between">
+         <div>
+         <span class="text-sm font-bold text-gray-200 tracking-tight">{{ item.name }}</span>
+         <p v-if="item.customizations?.length" class="text-[10px] font-medium text-gray-400 mt-1">Base: ₦{{ item.price?.toLocaleString() || 0 }}</p>
+         </div>
+         <div class="flex flex-col items-end gap-1">
+         <span class="text-sm font-bold text-white px-2.5 py-1 bg-[#FF5C1A] rounded-md ">x{{ item.quantity || item.qty }}</span>
+         <span class="text-xs font-bold text-gray-300">₦{{ item.price?.toLocaleString() || 0 }}</span>
+         </div>
+         </div>
+         
+         <div v-if="item.customizations?.length" class="mt-3 mb-2 pl-3 border-l-2 border-white/10 space-y-1.5">
+         <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-[11px] text-gray-400 flex justify-between font-medium">
+         <span class="truncate flex items-center gap-1">
+         <span class="text-white/30">+</span>
+         {{ c.quantity > 1 ? c.quantity + 'x ' : '' }}{{ c.name }}
+         </span>
+         <span v-if="c.price > 0" class="text-gray-500 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
+         </p>
+         </div>
+         
+         <div class="flex justify-end mt-2 pt-2 border-t border-white/5">
+         <span class="text-xs font-bold text-[#FF5C1A]">Total: ₦{{ (item.subtotal || (item.price * (item.quantity || item.qty))).toLocaleString() }}</span>
+         </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Fallback Legacy Items Rendering -->
+  <template v-else>
+   <div v-for="item in order.items" :key="item._id" class="flex flex-col p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+   <div class="flex items-start justify-between">
+   <div>
+   <span class="text-sm font-bold text-gray-200 tracking-tight">{{ item.name }}</span>
+   <p v-if="item.customizations?.length" class="text-[10px] font-medium text-gray-400 mt-1">Base: ₦{{ item.price?.toLocaleString() || 0 }}</p>
+   </div>
+   <div class="flex flex-col items-end gap-1">
+   <span class="text-sm font-bold text-white px-2.5 py-1 bg-[#FF5C1A] rounded-md ">x{{ item.quantity || item.qty }}</span>
+   <span class="text-xs font-bold text-gray-300">₦{{ item.price?.toLocaleString() || 0 }}</span>
+   </div>
+   </div>
+   
+   <div v-if="item.customizations?.length" class="mt-3 mb-2 pl-3 border-l-2 border-white/10 space-y-1.5">
+   <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-[11px] text-gray-400 flex justify-between font-medium">
+   <span class="truncate flex items-center gap-1">
+   <span class="text-white/30">+</span>
+   {{ c.quantity > 1 ? c.quantity + 'x ' : '' }}{{ c.name }}
+   </span>
+   <span v-if="c.price > 0" class="text-gray-500 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
+   </p>
+   </div>
+   
+   <div class="flex justify-end mt-2 pt-2 border-t border-white/5">
+   <span class="text-xs font-bold text-[#FF5C1A]">Total: ₦{{ (item.subtotal || (item.price * (item.quantity || item.qty))).toLocaleString() }}</span>
+   </div>
+   </div>
+  </template>
  </div>
  </div>
 
@@ -192,7 +233,11 @@
  </div>
  
  <p class="text-[9px] font-black text-teal-600 uppercase tracking-[0.2em] mb-2 bg-teal-50 px-3 py-1 rounded-full border border-teal-100 ">Primary Contact</p>
- <h4 class="text-lg font-black text-gray-900 mb-6 truncate w-full tracking-tight">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</h4>
+ <h4 class="text-lg font-black text-gray-900 mb-2 truncate w-full tracking-tight">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</h4>
+ <div v-if="order.customer?.gender" class="text-xs font-bold text-gray-500 mb-6 bg-gray-100 px-3 py-1 rounded-full border border-gray-200 inline-flex items-center">
+   {{ order.customer.gender === 'Male' ? '🙋🏽‍♂️ MALE' : (order.customer.gender === 'Female' ? '🙋🏽‍♀️ FEMALE' : '👤 ' + order.customer.gender.toUpperCase()) }}
+ </div>
+ <div v-else class="mb-6"></div>
  
  <div class="flex flex-col gap-3 w-full">
  <div class="flex gap-2 w-full">
@@ -304,11 +349,11 @@
  <button 
  @click="completeOrder" 
  :disabled="verificationCode.length !== 4 || completing"
- class="w-full py-4 bg-[#FF5C1A] text-white rounded-xl text-sm font-black shadow-sm hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all relative z-10 group active:scale-95"
+ class="w-full py-2 bg-[#FF5C1A] text-white rounded-xl text-sm font-black shadow-sm hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all relative z-10 group active:scale-95"
  >
  <Loader2 v-if="completing" class="w-5 h-5 animate-spin flex-shrink-0" />
  <span v-else class="text-lg group-hover:scale-110 transition-transform">✅</span> 
- {{ completing ? 'VERIFYING SECURE PIN...' : 'Finalize Secure Delivery' }}
+ {{ completing ? 'VERIFYING SECURE PIN...' : 'Finalize Secure Delivery' }}                                                       
  </button>
  
  <div class="pt-6 mt-6 border-t border-gray-100 text-center relative z-10 space-y-3">

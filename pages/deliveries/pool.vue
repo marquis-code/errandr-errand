@@ -49,7 +49,8 @@
             <tr 
               v-for="order in availableOrders" 
               :key="order._id"
-              class="group hover:bg-gray-50/50 transition-all duration-300"
+              @click="viewDetails(order)"
+              class="group hover:bg-gray-50/50 transition-all duration-300 cursor-pointer"
             >
               <!-- Errand Info -->
               <td class="py-5 px-4">
@@ -64,8 +65,13 @@
                     </h3>
                     <div class="flex items-center gap-2 mb-1.5 flex-wrap">
                       <span class="text-[9px] font-medium tracking-widest text-[#FF5C1A] uppercase bg-[#FF5C1A]/5 px-2 py-0.5 rounded">#{{ order.orderNumber?.slice(-8) }}</span>
+                      <span v-if="order.isGroupOrder" class="text-[9px] font-bold tracking-widest text-emerald-700 uppercase bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">👥 GROUP ORDER</span>
+                      <span v-if="order.customerGender" class="text-[9px] font-bold tracking-widest text-indigo-700 uppercase bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
+                        {{ order.customerGender === 'Male' ? '🙋🏽‍♂️ MALE' : (order.customerGender === 'Female' ? '🙋🏽‍♀️ FEMALE' : '👤 ' + order.customerGender) }}
+                      </span>
                       <span v-if="order.status === 'negotiating'" class="text-[9px] font-bold tracking-widest text-amber-700 uppercase bg-amber-50 px-2 py-0.5 rounded border border-amber-200 animate-pulse">🔥 NEGOTIATING</span>
-                      <span v-if="order.locationType === 'outside_campus'" class="text-[9px] font-bold tracking-widest text-blue-700 uppercase bg-blue-50 px-2 py-0.5 rounded border border-blue-200">📍 Outside Campus</span>
+                      <span v-if="order.locationType === 'outside_campus'" class="text-[9px] font-bold tracking-widest text-blue-700 uppercase bg-blue-50 px-2 py-0.5 rounded border border-blue-200">📍 Far Off-Campus</span>
+                      <span v-if="order.locationType === 'campus_environs'" class="text-[9px] font-bold tracking-widest text-indigo-700 uppercase bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">📍 Campus Environs</span>
                       <span class="text-[9px] font-bold text-gray-400 flex items-center gap-1">
                         <Clock class="w-2.5 h-2.5" /> {{ formatTime(order.createdAt) }}
                       </span>
@@ -115,7 +121,7 @@
               <td class="py-5 px-4">
                 <div class="flex items-center justify-center gap-2">
                   <button 
-                    @click="viewDetails(order)"
+                    @click.stop="viewDetails(order)"
                     class="p-3 bg-gray-50 text-gray-400 rounded-xl hover:bg-gray-100 hover:text-gray-900 transition-all active:scale-95"
                     title="View Details"
                   >
@@ -123,14 +129,13 @@
                   </button>
                   <button 
                     v-if="order.status === 'negotiating'"
-                    @click="viewDetails(order)"
+                    @click.stop="viewDetails(order)"
                     class="px-4 py-2 bg-amber-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-amber-600 hover:shadow-sm border border-amber-400 transition-all min-w-[90px]"
                   >
                     Place Bid
                   </button>
                   <button 
-                    v-else
-                    @click="acceptOrder(order._id)"
+                    @click.stop="acceptOrder(order._id)"
                     :disabled="acceptingId === order._id"
                     class="px-4 py-2 bg-gray-900 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-parentPrimary hover:shadow-sm border border-gray-100 hover:shadow-parentPrimary/20 transition-all disabled:opacity-50 min-w-[90px]"
                   >
@@ -179,13 +184,13 @@
         </div>
 
         <!-- Outside Campus / Negotiation Banner -->
-        <div v-if="selectedOrder.status === 'negotiating' || selectedOrder.locationType === 'outside_campus'" class="p-4 bg-amber-50 border border-amber-200 rounded-2xl space-y-2">
+        <div v-if="selectedOrder.status === 'negotiating' || selectedOrder.locationType === 'outside_campus' || selectedOrder.locationType === 'campus_environs'" class="p-4 bg-amber-50 border border-amber-200 rounded-2xl space-y-2">
           <div class="flex items-center gap-2">
             <span class="text-lg">📍</span>
-            <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wide">Outside Campus Delivery</h4>
+            <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wide">{{ selectedOrder.locationType === 'campus_environs' ? 'Campus Environs Delivery' : 'Outside Campus Delivery' }}</h4>
           </div>
           <p class="text-sm font-medium text-amber-700 leading-relaxed">
-            This order requires delivery <strong>outside campus</strong>. The student proposed a delivery fee of <strong>₦{{ (selectedOrder.proposedDeliveryFee || selectedOrder.deliveryFee || 0).toLocaleString() }}</strong>. You can accept their offer or counter with your own price.
+            This order requires delivery <strong>{{ selectedOrder.locationType === 'campus_environs' ? 'to the campus environs' : 'outside campus' }}</strong>. The student proposed a delivery fee of <strong>₦{{ (selectedOrder.proposedDeliveryFee || selectedOrder.deliveryFee || 0).toLocaleString() }}</strong>. You can accept their offer or counter with your own price.
           </p>
           <div v-if="selectedOrder.outsideCampusAddress" class="mt-2 p-3 bg-white/80 rounded-lg border border-amber-100">
             <p class="text-[9px] font-medium text-amber-500 uppercase tracking-widest mb-1">Delivery Location</p>
@@ -240,15 +245,18 @@
               <span class="font-bold text-gray-900">₦{{ (selectedOrder.customDetails?.estimatedItemCost || 0).toLocaleString() }}</span>
             </div>
           </div>
-          <div v-else class="space-y-2">
-            <div v-for="item in selectedOrder.items" :key="item._id" class="flex items-center justify-between p-3 bg-gray-50/50 rounded-xl">
-              <div class="flex items-center gap-3">
-                <span class="w-6 h-6 bg-white border border-gray-100 rounded-lg flex items-center justify-center text-[10px] font-medium text-gray-900">{{ item.quantity }}x</span>
-                <span class="text-sm font-bold text-gray-900 tracking-tight">{{ item.name }}</span>
+            <div v-if="groupedOrderItems.length > 0" class="space-y-4">
+              <div v-for="group in groupedOrderItems" :key="group.name" class="space-y-2">
+                <h5 v-if="group.name !== 'Other Items' || groupedOrderItems.length > 1" class="text-xs font-bold text-gray-500 uppercase tracking-widest pl-2">{{ group.name }}</h5>
+                <div v-for="item in group.items" :key="item.name || item._id" class="flex items-center justify-between p-3 bg-gray-50/50 rounded-xl">
+                  <div class="flex items-center gap-3">
+                    <span class="w-6 h-6 bg-white border border-gray-100 rounded-lg flex items-center justify-center text-[10px] font-medium text-gray-900">{{ item.qty || item.quantity }}x</span>
+                    <span class="text-sm font-bold text-gray-900 tracking-tight">{{ item.name }}</span>
+                  </div>
+                  <span class="text-xs font-medium text-gray-400 italic">₦{{ (item.price || 0).toLocaleString() }}</span>
+                </div>
               </div>
-              <span class="text-xs font-medium text-gray-400 italic">₦{{ item.price.toLocaleString() }}</span>
             </div>
-          </div>
         </div>
 
         <!-- Customer Note -->
@@ -304,9 +312,10 @@
                 <button 
                   @click="placeBid(selectedOrder._id)"
                   :disabled="!bidAmount || biddingId === selectedOrder._id"
-                  class="bg-amber-500 text-white text-sm font-bold px-5 py-3 rounded-lg disabled:opacity-50 hover:bg-amber-600 transition-colors shrink-0 shadow-sm shadow-amber-200"
+                  class="bg-amber-500 text-white text-sm font-bold px-5 py-3 rounded-lg disabled:opacity-50 hover:bg-amber-600 transition-colors shrink-0 shadow-sm shadow-amber-200 flex items-center justify-center gap-2"
                 >
-                  {{ biddingId === selectedOrder._id ? 'Sending...' : '🚀 Send Bid' }}
+                  <Loader2 v-if="biddingId === selectedOrder._id" class="w-4 h-4 animate-spin" />
+                  <span>{{ biddingId === selectedOrder._id ? 'Sending...' : '🚀 Send Bid' }}</span>
                 </button>
               </div>
               <p v-if="hasPlacedBid(selectedOrder)" class="text-xs font-bold text-green-600 mt-1 bg-green-50 p-2.5 rounded-lg text-center border border-green-100">
@@ -385,7 +394,7 @@ import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
 import { useRealtimeSocket } from '@/composables/core/useRealtimeSocket'
 import { useUser } from '@/composables/modules/auth/user'
 import { useRouter } from 'vue-router'
-import { Clock, Zap, ChevronRight, Eye, User, X, Banknote, Check } from 'lucide-vue-next'
+import { Clock, Zap, ChevronRight, Eye, User, X, Banknote, Check, Loader2 } from 'lucide-vue-next'
 import SideDrawer from '@/components/ui/SideDrawer.vue'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import { io, Socket } from 'socket.io-client'
@@ -405,6 +414,38 @@ const batchStatus = ref<any>(null)
 // Details Drawer State
 const isDrawerOpen = ref(false)
 const selectedOrder = ref<any>(null)
+
+const groupedOrderItems = computed(() => {
+  if (!selectedOrder.value?.items) return [];
+  
+  const packMap = new Map<string, any[]>();
+  const categoryMap = new Map<string, any[]>();
+  
+  selectedOrder.value.items.forEach((item: any) => {
+    if (item.packId) {
+      if (!packMap.has(item.packId)) packMap.set(item.packId, []);
+      packMap.get(item.packId)!.push(item);
+    } else {
+      const cat = item.category || 'Meals';
+      if (!categoryMap.has(cat)) categoryMap.set(cat, []);
+      categoryMap.get(cat)!.push(item);
+    }
+  });
+  
+  const result = [];
+  let packCounter = 1;
+  
+  for (const [packId, items] of packMap.entries()) {
+    const name = packId.toLowerCase().includes('pack') ? packId : `Pack ${packCounter++}`;
+    result.push({ name, items, isPack: true });
+  }
+  
+  for (const [cat, items] of categoryMap.entries()) {
+    result.push({ name: cat, items, isPack: false });
+  }
+  
+  return result;
+});const localPlacedBid = ref<number | null>(null)
 const bidAmount = ref<number | null>(null)
 const biddingId = ref<string | null>(null)
 
@@ -504,6 +545,7 @@ const disconnectNegotiationSocket = () => {
 
 const viewDetails = (order: any) => {
   selectedOrder.value = order
+  localPlacedBid.value = null
   isDrawerOpen.value = true
   if (socket.value && order._id) {
     socket.value.emit('viewing_errand', { orderId: order._id, isViewing: true })
@@ -562,7 +604,12 @@ const placeBid = async (id: string) => {
   try {
     const order = selectedOrder.value;
     
-    if (order?.status === 'negotiating' && negotiationSocket?.connected) {
+    if (order?.status === 'negotiating') {
+      if (!negotiationSocket) {
+        pushToast('Bid Error', 'Not connected to negotiation server.', 'ERROR');
+        biddingId.value = null;
+        return;
+      }
       // Use WebSocket for NEGOTIATING (outside campus) orders
       negotiationSocket.emit('submitBid', {
         orderId: id,
@@ -571,6 +618,7 @@ const placeBid = async (id: string) => {
       }, (response: any) => {
         if (response?.success) {
           pushToast('🚀 Bid Sent!', `Your delivery bid of ₦${bidAmount.value?.toLocaleString()} has been sent to the student.`, 'SUCCESS');
+          localPlacedBid.value = bidAmount.value;
         } else {
           pushToast('Bid Error', response?.error || 'Failed to submit bid.', 'ERROR');
         }
@@ -598,14 +646,12 @@ const placeBid = async (id: string) => {
 }
 
 const getMyBid = (order: any) => {
-  // Try to find if user has a bid by matching something, but we don't have user object directly here easily without auth composable.
-  // We can just rely on the latest bid in the array or just show "Bid placed".
-  // Let's assume if it returns a populated order, we can check. For now, we will just say 'Bid placed'.
+  if (localPlacedBid.value !== null) return localPlacedBid.value;
   return bidAmount.value; 
 }
 
 const hasPlacedBid = (order: any) => {
-  // In a real app we'd check order.bids.some(b => b.errander === myId)
+  if (localPlacedBid.value !== null) return true;
   return order.bids?.length > 0 && bidAmount.value !== null;
 }
 
