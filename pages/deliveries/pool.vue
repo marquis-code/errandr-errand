@@ -76,11 +76,19 @@
                         <Clock class="w-2.5 h-2.5" /> {{ formatTime(order.createdAt) }}
                       </span>
                     </div>
-                    <p v-if="order.type === 'custom_errand' && order.customDetails?.description" class="text-xs text-gray-500 line-clamp-1 max-w-sm mb-1.5 whitespace-pre-line">
-                      {{ order.customDetails.description }}
-                    </p>
-                    <div v-if="order.type === 'custom_errand' && order.customDetails?.attachedVoiceNote" class="mt-1" @click.stop>
-                      <audio :src="order.customDetails.attachedVoiceNote" controls class="h-8 w-48 max-w-[200px]" preload="metadata" />
+                    <div class="mt-2 p-2 bg-gray-50/70 rounded-lg border border-gray-100/50">
+                      <p v-if="order.type === 'custom_errand' && order.customDetails?.description" class="text-xs text-gray-600 line-clamp-2 max-w-md mb-1.5 whitespace-pre-line">
+                        {{ order.customDetails.description }}
+                      </p>
+                      <div v-if="order.type === 'custom_errand' && order.customDetails?.estimatedItemCost > 0" class="flex items-center gap-1.5 text-[10px] font-medium text-gray-500 mb-1">
+                        <Banknote class="w-3 h-3 text-emerald-500" /> Item Cost: <strong class="text-gray-700">₦{{ order.customDetails.estimatedItemCost.toLocaleString() }}</strong>
+                      </div>
+                      <div v-if="order.type !== 'custom_errand' && order.items?.length > 0" class="text-[10px] font-medium text-gray-500 line-clamp-1 max-w-sm">
+                        📦 {{ order.items.length }} Item{{ order.items.length > 1 ? 's' : '' }}: <span class="text-gray-400">{{ order.items.map((i: any) => i.name).join(', ') }}</span>
+                      </div>
+                    </div>
+                    <div v-if="order.type === 'custom_errand' && order.customDetails?.attachedVoiceNote" class="mt-2" @click.stop>
+                      <audio :src="order.customDetails.attachedVoiceNote" controls class="h-8 w-48 max-w-[200px] shadow-sm rounded-full" preload="metadata" />
                     </div>
                   </div>
                 </div>
@@ -108,8 +116,9 @@
               <td class="py-5 px-4 text-right">
                 <div v-if="order.status === 'negotiating'" class="flex flex-col items-end">
                   <p class="text-xs font-medium text-amber-600 tracking-tight leading-none mb-1">Student proposed</p>
-                  <p class="text-lg font-bold text-amber-700 tracking-tight leading-none mb-1">₦{{ (order.proposedDeliveryFee || order.deliveryFee || 0).toLocaleString() }}</p>
-                  <p class="text-[8px] font-medium text-amber-500 uppercase tracking-widest">Bid to Earn</p>
+                  <p v-if="(order.proposedDeliveryFee || order.deliveryFee) > 0" class="text-lg font-bold text-amber-700 tracking-tight leading-none mb-1">₦{{ (order.proposedDeliveryFee || order.deliveryFee).toLocaleString() }}</p>
+                  <p v-else class="text-sm font-bold text-amber-700 tracking-tight leading-none mb-1 mt-1 border-b border-amber-300 pb-0.5">Make an Offer</p>
+                  <p class="text-[8px] font-medium text-amber-500 uppercase tracking-widest mt-1">Bid to Earn</p>
                 </div>
                 <div v-else class="flex flex-col items-end">
                   <p class="text-lg font-medium text-emerald-600 tracking-tight leading-none mb-1">₦{{ (order.erranderPayout || order.erranderShare || order.deliveryFee || 150).toLocaleString() }}</p>
@@ -171,7 +180,8 @@
         <div class="grid grid-cols-2 gap-4">
           <div v-if="selectedOrder.status === 'negotiating'" class="p-4 bg-amber-50 rounded-2xl border border-amber-100">
             <p class="text-[9px] font-medium text-amber-500 uppercase tracking-widest mb-1">Student Proposed</p>
-            <p class="text-xl font-bold text-amber-700 tracking-tight">₦{{ (selectedOrder.proposedDeliveryFee || selectedOrder.deliveryFee || 0).toLocaleString() }}</p>
+            <p v-if="(selectedOrder.proposedDeliveryFee || selectedOrder.deliveryFee) > 0" class="text-xl font-bold text-amber-700 tracking-tight">₦{{ (selectedOrder.proposedDeliveryFee || selectedOrder.deliveryFee).toLocaleString() }}</p>
+            <p v-else class="text-lg font-bold text-amber-700 tracking-tight">Open to Offers</p>
           </div>
           <div v-else class="p-4 bg-gray-50 rounded-2xl">
             <p class="text-[9px] font-medium text-gray-400 uppercase tracking-widest mb-1">You Earn</p>
@@ -190,7 +200,10 @@
             <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wide">{{ selectedOrder.locationType === 'campus_environs' ? 'Campus Environs Delivery' : 'Outside Campus Delivery' }}</h4>
           </div>
           <p class="text-sm font-medium text-amber-700 leading-relaxed">
-            This order requires delivery <strong>{{ selectedOrder.locationType === 'campus_environs' ? 'to the campus environs' : 'outside campus' }}</strong>. The student proposed a delivery fee of <strong>₦{{ (selectedOrder.proposedDeliveryFee || selectedOrder.deliveryFee || 0).toLocaleString() }}</strong>. You can accept their offer or counter with your own price.
+            This order requires delivery <strong>{{ selectedOrder.locationType === 'campus_environs' ? 'to the campus environs' : 'outside campus' }}</strong>.
+            <span v-if="(selectedOrder.proposedDeliveryFee || selectedOrder.deliveryFee) > 0">The student proposed a delivery fee of <strong>₦{{ (selectedOrder.proposedDeliveryFee || selectedOrder.deliveryFee).toLocaleString() }}</strong>.</span>
+            <span v-else>The student is open to offers.</span>
+            You can accept their offer or counter with your own price.
           </p>
           <div v-if="selectedOrder.outsideCampusAddress" class="mt-2 p-3 bg-white/80 rounded-lg border border-amber-100">
             <p class="text-[9px] font-medium text-amber-500 uppercase tracking-widest mb-1">Delivery Location</p>
@@ -238,6 +251,19 @@
             <div v-if="selectedOrder.customDetails?.attachedVoiceNote" class="mt-4 pt-4 border-t border-gray-200 flex flex-col gap-2">
               <span class="text-xs font-medium text-gray-500 uppercase tracking-widest">Attached Voice Note</span>
               <audio :src="selectedOrder.customDetails.attachedVoiceNote" controls class="w-full h-10 bg-white rounded-full shadow-sm" preload="metadata" />
+            </div>
+
+            <div v-if="selectedOrder.customDetails?.attachedImages?.length > 0 || selectedOrder.customDetails?.attachedImage" class="mt-4 pt-4 border-t border-gray-200 flex flex-col gap-2">
+              <span class="text-xs font-medium text-gray-500 uppercase tracking-widest">Attached Images</span>
+              <div class="flex flex-wrap gap-2">
+                <a v-for="(img, idx) in (selectedOrder.customDetails?.attachedImages?.length ? selectedOrder.customDetails.attachedImages : [selectedOrder.customDetails.attachedImage])" 
+                   :key="idx" 
+                   :href="img" 
+                   target="_blank" 
+                   class="relative inline-block hover:opacity-80 transition-opacity">
+                  <img :src="img" class="h-20 w-20 object-cover rounded-xl border border-gray-200 shadow-sm" />
+                </a>
+              </div>
             </div>
 
             <div class="mt-3 pt-3 border-t border-gray-200 flex justify-between items-center text-xs">
@@ -377,12 +403,12 @@
       </div>
     </SideDrawer>
 
-    <!-- Full Screen Loading Modal for Accepting Order -->
+    <!-- Full Screen Loading Modal for Accepting Order or Bidding -->
     <Teleport to="body">
-      <div v-if="acceptingId" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-gray-900/95 backdrop-blur-sm text-white transition-opacity">
+      <div v-if="acceptingId || biddingId" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-gray-900/95 backdrop-blur-sm text-white transition-opacity">
         <div class="w-16 h-16 border-4 border-white/20 border-t-[#FF5C1A] rounded-full animate-spin mb-6"></div>
-        <h2 class="text-2xl font-bold tracking-tight mb-2">Accepting Order...</h2>
-        <p class="text-white/60 font-medium text-sm">Please wait while we secure this errand for you.</p>
+        <h2 class="text-2xl font-bold tracking-tight mb-2">{{ biddingId ? 'Sending Bid...' : 'Accepting Order...' }}</h2>
+        <p class="text-white/60 font-medium text-sm">{{ biddingId ? 'Please wait while we send your offer to the student.' : 'Please wait while we secure this errand for you.' }}</p>
       </div>
     </Teleport>
   </div>
@@ -522,11 +548,21 @@ const connectNegotiationSocket = (orderId: string) => {
   })
   negotiationSocket.on('bidAccepted', (data: any) => {
     if (data.orderId) {
-      // The negotiation is over for this order — remove from available
-      availableOrders.value = availableOrders.value.filter(o => o._id !== data.orderId)
-      if (selectedOrder.value?._id === data.orderId) {
-        pushToast('Negotiation Closed', 'The student accepted a bid for this order.', 'GENERAL')
-        isDrawerOpen.value = false
+      if (data.riderId === user.value?._id) {
+        // This rider won the bid
+        if (selectedOrder.value?._id === data.orderId) {
+          selectedOrder.value.status = 'awaiting_payment'
+          selectedOrder.value.deliveryFee = data.agreedDeliveryFee
+          pushToast('Offer Accepted!', 'The student accepted your offer. Waiting for payment...', 'SUCCESS')
+        }
+        // Keep in availableOrders momentarily until payment so the drawer stays open
+      } else {
+        // Another rider won the bid, remove from available
+        availableOrders.value = availableOrders.value.filter(o => o._id !== data.orderId)
+        if (selectedOrder.value?._id === data.orderId) {
+          pushToast('Negotiation Closed', 'The student accepted a bid for this order.', 'GENERAL')
+          isDrawerOpen.value = false
+        }
       }
     }
   })
@@ -682,7 +718,9 @@ const handleNewOrder = (payload: any) => {
       type: orderData.type,
       locationType: orderData.locationType,
       proposedDeliveryFee: orderData.proposedDeliveryFee,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      customDetails: orderData.customDetails,
+      bids: orderData.bids || [],
     }
     availableOrders.value.unshift(newOrder)
   }
