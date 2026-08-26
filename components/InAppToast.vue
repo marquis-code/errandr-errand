@@ -137,6 +137,25 @@ const getTypeEmoji = (type: string) => {
 }
 
 const addToast = (toast: InAppToast) => {
+  // Handle clear command
+  if (toast.type === 'CLEAR_ORDER_TOASTS') {
+    const orderId = toast.data?.orderId || toast.data?._id || toast.data?.orderNumber
+    if (orderId) {
+      const existing = activeToasts.value.filter(t => t.data?.orderId === orderId || t.data?._id === orderId || t.data?.orderNumber === orderId)
+      existing.forEach(e => dismissToast(e.id))
+    }
+    return
+  }
+
+  // Clear existing toasts for the same order if this is an update or accepted bid
+  if (toast.type === 'ORDER_BID_ACCEPTED' || toast.type === 'ORDER_STATUS_UPDATE' || toast.type === 'ORDER_ACCEPTED') {
+    const orderId = toast.data?.orderId || toast.data?._id || toast.data?.orderNumber
+    if (orderId) {
+      const existing = activeToasts.value.filter(t => t.data?.orderId === orderId || t.data?._id === orderId || t.data?.orderNumber === orderId)
+      existing.forEach(e => dismissToast(e.id))
+    }
+  }
+
   // Prevent duplicates
   if (activeToasts.value.some(t => t.id === toast.id)) return
   

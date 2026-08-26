@@ -16,34 +16,33 @@
 
   <div class="max-w-4xl w-full mx-auto space-y-4 md:space-y-6 md:space-y-10 pb-32 animate-fade-in mt-6" v-else-if="order">
  <!-- Stunning Header -->
- <div class="relative p-4 md:p-5 rounded-xl md:rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-br from-gray-950 via-gray-900 to-black group">
+ <div class="relative p-4 md:p-5 rounded-xl md:rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-sm group">
  <!-- Animated Background Effects -->
- <div class="absolute -right-20 -top-20 w-64 h-64 bg-[#FF5C1A]/30 rounded-full blur-[80px] group-hover:scale-150 group-hover:opacity-70 transition-all duration-1000 ease-in-out" />
- <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-indigo-500/20 rounded-full blur-[80px] group-hover:scale-150 transition-all duration-1000 ease-in-out" />
+ <div class="absolute -right-20 -top-20 w-64 h-64 bg-[#FF5C1A]/10 rounded-full blur-[80px] group-hover:scale-150 group-hover:opacity-70 transition-all duration-1000 ease-in-out" />
  
  <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-6 mb-10 relative z-10">
  <div class="space-y-2">
- <div class="inline-flex items-center gap-2 bg-white/5 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 ">
+ <div class="inline-flex items-center gap-2 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 ">
  <span class="w-2 h-2 rounded-full bg-[#FF5C1A] animate-pulse"></span>
- <p class="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Live Delivery Tracking</p>
+ <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Live Delivery Tracking</p>
  </div>
  <div class="flex flex-col gap-1 items-start">
-   <h1 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400 tracking-tight">Order #{{ order.orderNumber }}</h1>
-   <span v-if="order.isGroupOrder" class="inline-block text-[10px] font-bold tracking-widest text-emerald-300 uppercase bg-emerald-500/10 px-2 py-1 rounded border border-emerald-400/20">👥 GROUP ORDER</span>
+   <h1 class="text-3xl font-black text-gray-900 tracking-tight">Order #{{ order.orderNumber }}</h1>
+   <span v-if="order.isGroupOrder" class="inline-block text-[10px] font-bold tracking-widest text-emerald-600 uppercase bg-emerald-50 px-2 py-1 rounded border border-emerald-100">👥 GROUP ORDER</span>
  </div>
  </div>
- <div class="flex items-center gap-3 bg-white/5 p-2 rounded-2xl backdrop-blur-md border border-white/5 ">
+ <div class="flex items-center gap-3 bg-gray-50 p-2 rounded-2xl border border-gray-100 ">
  <StatusBadge :status="order.status" class="scale-110 " />
  </div>
  </div>
 
- <div class="space-y-4 relative z-10 bg-white/5 p-5 rounded-2xl border border-white/10 backdrop-blur-sm ">
+ <div class="space-y-4 relative z-10 bg-gray-50 p-5 rounded-2xl border border-gray-100 ">
  <div class="flex items-center justify-between">
- <span class="text-xs font-bold text-gray-400 tracking-wide uppercase">Delivery Progress</span>
+ <span class="text-xs font-bold text-gray-500 tracking-wide uppercase">Delivery Progress</span>
  <span class="text-xs font-black text-[#FF5C1A] bg-[#FF5C1A]/10 px-3 py-1 rounded-full border border-[#FF5C1A]/20">Step {{ currentStep + 1 }} of 4</span>
  </div>
  <div class="flex items-center gap-3">
- <div v-for="(step, i) in steps" :key="step" class="flex-1 h-2.5 rounded-full transition-all duration-1000 relative overflow-hidden " :class="currentStep >= i ? 'bg-gradient-to-r from-[#FF5C1A] to-orange-500 shadow-[0_0_10px_rgba(255,92,26,0.5)]' : 'bg-gray-800'">
+ <div v-for="(step, i) in steps" :key="step" class="flex-1 h-2.5 rounded-full transition-all duration-1000 relative overflow-hidden " :class="currentStep >= i ? 'bg-[#FF5C1A]' : 'bg-gray-200'">
  <div v-if="currentStep === i" class="absolute inset-0 bg-white/30 animate-pulse" />
  </div>
  </div>
@@ -120,20 +119,19 @@
   </div>
 
  <!-- Order Items / Custom Description -->
- <div class="bg-gray-900 p-4 md:p-4 rounded-2xl border border-gray-800 relative overflow-hidden group">
- <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
- <h3 class="text-sm font-bold text-gray-500 -wider mb-6 flex items-center gap-3 uppercase">
+ <div class="bg-white p-4 md:p-5 rounded-2xl border border-gray-100 relative overflow-hidden group shadow-sm">
+ <h3 class="text-sm font-bold text-gray-900 tracking-wider mb-6 flex items-center gap-3 uppercase">
  <div class="w-1.5 h-1.5 rounded-full bg-[#FF5C1A]" /> 
  {{ order.type === 'custom_errand' ? 'Request Details' : (order.packs?.length > 0 ? `Order Content (${order.packs.length} packs)` : `Order Content (${order.items?.length || 0} items)`) }}
  </h3>
  
  <div v-if="order.type === 'custom_errand'" class="space-y-4">
- <div class="p-4 bg-white/5 rounded-xl border border-white/5 text-xs text-gray-200 -relaxed font-bold">
+ <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 text-xs text-gray-700 leading-relaxed font-bold">
  {{ order.customDetails?.description }}
  </div>
- <div class="flex items-center justify-between p-4 bg-parentPrimary/10 rounded-xl border border-parentPrimary/20">
- <span class="text-sm font-medium text-parentPrimary uppercase -widest">Est. Item Cost</span>
- <span class="text-sm font-medium text-white">₦{{ order.customDetails?.estimatedItemCost?.toLocaleString() || 0 }}</span>
+ <div class="flex items-center justify-between p-4 bg-[#FF5C1A]/5 rounded-xl border border-[#FF5C1A]/10">
+ <span class="text-sm font-bold text-[#FF5C1A] uppercase tracking-widest">Est. Item Cost</span>
+ <span class="text-sm font-bold text-[#FF5C1A]">₦{{ order.customDetails?.estimatedItemCost?.toLocaleString() || 0 }}</span>
  </div>
  </div>
 
@@ -141,32 +139,32 @@
   <!-- Packs Rendering -->
   <template v-if="order.packs && order.packs.length > 0">
     <div v-for="pack in order.packs" :key="pack.name" class="mb-6">
-      <h4 class="text-[11px] font-bold text-emerald-400 uppercase tracking-widest mb-3 pl-1">{{ pack.name || 'Pack' }}</h4>
+      <h4 class="text-[11px] font-bold text-[#FF5C1A] uppercase tracking-widest mb-3 pl-1">{{ pack.name || 'Pack' }}</h4>
       <div class="space-y-3">
-        <div v-for="item in pack.items" :key="item.name" class="flex flex-col p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+        <div v-for="item in pack.items" :key="item.name" class="flex flex-col p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-[#FF5C1A]/30 transition-colors">
          <div class="flex items-start justify-between">
          <div>
-         <span class="text-sm font-bold text-gray-200 tracking-tight">{{ item.name }}</span>
-         <p v-if="item.customizations?.length" class="text-[10px] font-medium text-gray-400 mt-1">Base: ₦{{ item.price?.toLocaleString() || 0 }}</p>
+         <span class="text-sm font-bold text-gray-900 tracking-tight">{{ item.name }}</span>
+         <p v-if="item.customizations?.length" class="text-[10px] font-medium text-gray-500 mt-1">Base: ₦{{ item.price?.toLocaleString() || 0 }}</p>
          </div>
          <div class="flex flex-col items-end gap-1">
-         <span class="text-sm font-bold text-white px-2.5 py-1 bg-[#FF5C1A] rounded-md ">x{{ item.quantity || item.qty }}</span>
-         <span class="text-xs font-bold text-gray-300">₦{{ item.price?.toLocaleString() || 0 }}</span>
+         <span class="text-sm font-bold text-[#FF5C1A] px-2.5 py-1 bg-[#FF5C1A]/10 rounded-md border border-[#FF5C1A]/20">x{{ item.quantity || item.qty }}</span>
+         <span class="text-xs font-bold text-gray-700">₦{{ item.price?.toLocaleString() || 0 }}</span>
          </div>
          </div>
          
-         <div v-if="item.customizations?.length" class="mt-3 mb-2 pl-3 border-l-2 border-white/10 space-y-1.5">
-         <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-[11px] text-gray-400 flex justify-between font-medium">
+         <div v-if="item.customizations?.length" class="mt-3 mb-2 pl-3 border-l-2 border-[#FF5C1A]/20 space-y-1.5">
+         <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-[11px] text-gray-500 flex justify-between font-medium">
          <span class="truncate flex items-center gap-1">
-         <span class="text-white/30">+</span>
+         <span class="text-gray-300">+</span>
          {{ c.quantity > 1 ? c.quantity + 'x ' : '' }}{{ c.name }}
          </span>
-         <span v-if="c.price > 0" class="text-gray-500 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
+         <span v-if="c.price > 0" class="text-gray-700 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
          </p>
          </div>
          
-         <div class="flex justify-end mt-2 pt-2 border-t border-white/5">
-         <span class="text-xs font-bold text-[#FF5C1A]">Total: ₦{{ (item.subtotal || (item.price * (item.quantity || item.qty))).toLocaleString() }}</span>
+         <div class="flex justify-end mt-2 pt-2 border-t border-gray-200">
+         <span class="text-xs font-bold text-gray-900">Total: ₦{{ (item.subtotal || (item.price * (item.quantity || item.qty))).toLocaleString() }}</span>
          </div>
         </div>
       </div>
@@ -175,30 +173,30 @@
 
   <!-- Fallback Legacy Items Rendering -->
   <template v-else>
-   <div v-for="item in order.items" :key="item._id" class="flex flex-col p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+   <div v-for="item in order.items" :key="item._id" class="flex flex-col p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-[#FF5C1A]/30 transition-colors">
    <div class="flex items-start justify-between">
    <div>
-   <span class="text-sm font-bold text-gray-200 tracking-tight">{{ item.name }}</span>
-   <p v-if="item.customizations?.length" class="text-[10px] font-medium text-gray-400 mt-1">Base: ₦{{ item.price?.toLocaleString() || 0 }}</p>
+   <span class="text-sm font-bold text-gray-900 tracking-tight">{{ item.name }}</span>
+   <p v-if="item.customizations?.length" class="text-[10px] font-medium text-gray-500 mt-1">Base: ₦{{ item.price?.toLocaleString() || 0 }}</p>
    </div>
    <div class="flex flex-col items-end gap-1">
-   <span class="text-sm font-bold text-white px-2.5 py-1 bg-[#FF5C1A] rounded-md ">x{{ item.quantity || item.qty }}</span>
-   <span class="text-xs font-bold text-gray-300">₦{{ item.price?.toLocaleString() || 0 }}</span>
+   <span class="text-sm font-bold text-[#FF5C1A] px-2.5 py-1 bg-[#FF5C1A]/10 rounded-md border border-[#FF5C1A]/20">x{{ item.quantity || item.qty }}</span>
+   <span class="text-xs font-bold text-gray-700">₦{{ item.price?.toLocaleString() || 0 }}</span>
    </div>
    </div>
    
-   <div v-if="item.customizations?.length" class="mt-3 mb-2 pl-3 border-l-2 border-white/10 space-y-1.5">
-   <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-[11px] text-gray-400 flex justify-between font-medium">
+   <div v-if="item.customizations?.length" class="mt-3 mb-2 pl-3 border-l-2 border-[#FF5C1A]/20 space-y-1.5">
+   <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-[11px] text-gray-500 flex justify-between font-medium">
    <span class="truncate flex items-center gap-1">
-   <span class="text-white/30">+</span>
+   <span class="text-gray-300">+</span>
    {{ c.quantity > 1 ? c.quantity + 'x ' : '' }}{{ c.name }}
    </span>
-   <span v-if="c.price > 0" class="text-gray-500 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
+   <span v-if="c.price > 0" class="text-gray-700 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
    </p>
    </div>
    
-   <div class="flex justify-end mt-2 pt-2 border-t border-white/5">
-   <span class="text-xs font-bold text-[#FF5C1A]">Total: ₦{{ (item.subtotal || (item.price * (item.quantity || item.qty))).toLocaleString() }}</span>
+   <div class="flex justify-end mt-2 pt-2 border-t border-gray-200">
+   <span class="text-xs font-bold text-gray-900">Total: ₦{{ (item.subtotal || (item.price * (item.quantity || item.qty))).toLocaleString() }}</span>
    </div>
    </div>
   </template>
@@ -315,6 +313,33 @@
  class="bg-white text-gray-900 font-bold w-full p-3 rounded-xl border border-amber-200 focus:border-amber-500 transition-all focus:outline-none"
  />
  </div>
+ 
+ <div class="mt-2">
+ <label class="block text-[10px] font-bold text-amber-800 uppercase tracking-wider mb-1">Proof of Payment (Optional)</label>
+ <input type="file" ref="receiptInput" accept="image/*" class="hidden" @change="handleReceiptUpload" />
+ <input type="file" ref="receiptCameraInput" accept="image/*" capture="environment" class="hidden" @change="handleReceiptUpload" />
+ 
+ <div v-if="!receiptUrl && !uploadingReceipt" class="flex gap-2 w-full">
+   <button @click="triggerReceiptCamera" class="flex-1 py-3 bg-white text-amber-600 rounded-xl text-sm font-bold border border-amber-200 border-dashed hover:bg-amber-50 transition-all flex items-center justify-center gap-2">
+    <Camera class="w-4 h-4" /> Snap Photo
+   </button>
+   <button @click="triggerReceiptUpload" class="flex-1 py-3 bg-white text-amber-600 rounded-xl text-sm font-bold border border-amber-200 border-dashed hover:bg-amber-50 transition-all flex items-center justify-center gap-2">
+    <Upload class="w-4 h-4" /> Upload File
+   </button>
+ </div>
+ <div v-else-if="uploadingReceipt" class="w-full py-3 bg-amber-100 text-amber-600 rounded-xl text-sm font-bold border border-amber-200 flex items-center justify-center gap-2">
+  <Loader2 class="w-4 h-4 animate-spin" /> Uploading...
+ </div>
+ <div v-else class="w-full py-2 px-3 bg-white rounded-xl border border-amber-200 flex items-center justify-between">
+   <div class="flex items-center gap-2 overflow-hidden">
+     <img :src="receiptUrl" class="w-8 h-8 object-cover rounded-md border border-amber-100" />
+     <span class="text-xs text-amber-900 font-medium truncate">Receipt uploaded</span>
+   </div>
+   <button @click="receiptUrl = ''" class="p-1 text-amber-600 hover:text-amber-800 hover:bg-amber-100 rounded-md">
+     <X class="w-4 h-4" />
+   </button>
+ </div>
+ </div>
  <button 
  @click="submitReconciliation" 
  :disabled="!actualItemCost || actualItemCost < 0 || submittingReconciliation"
@@ -415,7 +440,7 @@ import StatusBadge from '@/components/ui/StatusBadge.vue';
 import OrderChat from '@/components/core/OrderChat.vue';
 import { useUser } from '@/composables/modules/auth/user';
 import { useCustomToast } from "@/composables/core/useCustomToast"
-import { Phone, MessageSquare, Loader2 } from 'lucide-vue-next';
+import { Phone, MessageSquare, Loader2, Camera, X, Upload } from 'lucide-vue-next';
 import { ref, computed, onMounted } from 'vue';
 
 const { user } = useUser();
@@ -470,12 +495,54 @@ const updatingStatus = ref(false);
 const actualItemCost = ref<number | null>(null);
 const submittingReconciliation = ref(false);
 
+const receiptUrl = ref('');
+const uploadingReceipt = ref(false);
+const receiptInput = ref<HTMLInputElement | null>(null);
+const receiptCameraInput = ref<HTMLInputElement | null>(null);
+
+const triggerReceiptUpload = () => {
+  receiptInput.value?.click();
+};
+
+const triggerReceiptCamera = () => {
+  receiptCameraInput.value?.click();
+};
+
+const handleReceiptUpload = async (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (!file) return;
+
+  uploadingReceipt.value = true;
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const resUpload = await api.post<any>('/upload?resourceType=image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    
+    if (!resUpload || !resUpload.url) throw new Error('Upload failed');
+    receiptUrl.value = resUpload.url;
+  } catch (e: any) {
+    showToast({
+      title: 'Upload Failed',
+      message: e.message || e.response?.data?.message || 'Could not upload receipt.',
+      toastType: 'error'
+    });
+  } finally {
+    uploadingReceipt.value = false;
+    if (receiptInput.value) receiptInput.value.value = '';
+  }
+};
+
 const submitReconciliation = async () => {
  if (!actualItemCost.value || actualItemCost.value < 0) return;
  submittingReconciliation.value = true;
  try {
  const res = await api.put<any>(`/orders/${route.params.id}/reconcile`, {
- actualItemCost: actualItemCost.value
+ actualItemCost: actualItemCost.value,
+ receiptImage: receiptUrl.value
  });
  
  if (res && res.type === 'ERROR') {

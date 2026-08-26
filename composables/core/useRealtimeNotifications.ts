@@ -98,13 +98,14 @@ export const useRealtimeNotifications = () => {
 
   const handleOrderAccepted = (payload: any) => {
     if (!payload) return
+    // Dispatch a command to InAppToast to clear the "New Order" toast
+    // for this order, without showing a redundant notification.
     pushToast({
-      id: `accepted_${Date.now()}`,
-      title: '✅ Order Accepted!',
-      body: `Your order #${payload.orderNumber} has been accepted by ${payload.errander?.firstName || 'a rider'}`,
-      type: 'ORDER_ACCEPTED',
+      id: `clear_${Date.now()}`,
+      title: '',
+      body: '',
+      type: 'CLEAR_ORDER_TOASTS',
       data: payload,
-      createdAt: new Date().toISOString(),
     })
   }
 

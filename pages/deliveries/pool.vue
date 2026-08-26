@@ -700,6 +700,13 @@ const formatTime = (date: string) => {
 // Real-time handling
 const handleNewOrder = (payload: any) => {
   const orderData = payload.data || payload
+  
+  // Guard against ghost orders (e.g. from misrouted ORDER_ACCEPTED payloads)
+  if (!orderData || !orderData.orderId || !orderData.orderNumber) {
+    console.warn('handleNewOrder: Dropping malformed payload', payload)
+    return
+  }
+
   const exists = availableOrders.value.some(o => o._id === orderData.orderId)
   if (!exists) {
     const newOrder = {
