@@ -550,12 +550,10 @@ const connectNegotiationSocket = (orderId: string) => {
     if (data.orderId) {
       if (data.riderId === user.value?._id) {
         // This rider won the bid
-        if (selectedOrder.value?._id === data.orderId) {
-          selectedOrder.value.status = 'awaiting_payment'
-          selectedOrder.value.deliveryFee = data.agreedDeliveryFee
-          pushToast('Offer Accepted!', 'The student accepted your offer. Waiting for payment...', 'SUCCESS')
-        }
-        // Keep in availableOrders momentarily until payment so the drawer stays open
+        pushToast('Offer Accepted!', 'The student accepted your offer. Navigating to delivery...', 'SUCCESS')
+        setTimeout(() => {
+          router.push(`/deliveries/${data.orderId}`)
+        }, 1000)
       } else {
         // Another rider won the bid, remove from available
         availableOrders.value = availableOrders.value.filter(o => o._id !== data.orderId)

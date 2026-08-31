@@ -204,18 +204,16 @@
  </div>
 
  <!-- Delivery Location (Interactive) -->
- <div class="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden relative group aspect-[2/1]">
- <div class="absolute inset-0 bg-[url('/img/map-pattern.png')] opacity-10 bg-repeat bg-center" />
- <div class="absolute inset-0 bg-gradient-to-t from-gray-50 via-transparent to-transparent opacity-80" />
- 
- <div class="absolute inset-0 flex flex-col items-center justify-center p-4 md:p-4 text-center">
- <div class="relative mb-4">
- <div class="absolute inset-0 bg-[#FF5C1A] rounded-full animate-ping opacity-20" />
- <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl relative z-10 border border-gray-50">📍</div>
- </div>
- <p class="text-sm font-bold text-gray-400 -wider mb-1">Live Location </p>
- <p class="text-sm text-gray-300 font-medium -wide max-w-[150px]">Coordinate is active and shared with the customer.</p>
- </div>
+ <div class="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden relative group h-[300px]">
+  <MapboxMap 
+    v-if="mapboxToken" 
+    :order="order" :mapbox-token="mapboxToken" 
+    :errander-location="currentLocation" 
+  />
+  <div v-else class="absolute inset-0 flex flex-col items-center justify-center p-4 md:p-4 text-center">
+    <Loader2 class="w-8 h-8 animate-spin text-gray-400 mb-2" />
+    <p class="text-sm font-bold text-gray-400">Loading map...</p>
+  </div>
  </div>
  </div>
 
@@ -255,6 +253,26 @@
  </div>
  </div>
 
+ <!-- P2P Payment Confirmation -->
+ <div v-if="order.status === 'awaiting_payment_confirmation'" class="bg-blue-50 border border-blue-200 rounded-2xl p-4 md:p-5 flex flex-col items-center text-center mt-6">
+   <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-3">
+     <Check class="w-6 h-6" />
+   </div>
+   <h3 class="text-blue-900 font-bold text-lg mb-1">Payment Sent by Student</h3>
+   <p class="text-blue-700 text-sm mb-4">The student has indicated they have transferred <strong>₦{{ order.total?.toLocaleString() }}</strong> to your bank account. Please check your banking app.</p>
+   
+   <div v-if="order.customDetails?.proofOfPayment" class="w-full mb-4 bg-white rounded-xl overflow-hidden border border-blue-100 p-2">
+     <p class="text-xs font-bold text-blue-900 mb-2 text-left">Proof of Payment:</p>
+     <img :src="order.customDetails.proofOfPayment" class="w-full h-auto rounded-lg" alt="Proof of payment" />
+   </div>
+   
+   <button @click="confirmP2PPayment" :disabled="confirmingPayment" class="w-full py-3 bg-blue-600 text-white rounded-xl text-sm font-bold shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all">
+     <Loader2 v-if="confirmingPayment" class="w-5 h-5 animate-spin" />
+     <span v-else>✅</span>
+     {{ confirmingPayment ? 'CONFIRMING...' : 'I Have Received The Money' }}
+   </button>
+ </div>
+
  <!-- Status Update Actions -->
  <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup' || order.status === 'picked_up'" class="space-y-4">
  <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup'" class="animate-bounce-subtle space-y-2">
@@ -283,72 +301,6 @@
  {{ updatingStatus ? 'UPDATING...' : 'Start Delivery' }}
  </button>
  <p class="text-xs text-gray-400 text-center font-medium">Update status once you depart.</p>
- </div>
- </div>
-
- <!-- Reconciliation Interface (For Custom Errands with Item Cost) -->
- <div v-if="order.type === 'custom_errand' && order.customDetails?.estimatedItemCost > 0 && order.reconciliationStatus !== 'approved'" class="bg-amber-50 rounded-2xl p-4 md:p-4 space-y-4 border border-amber-100">
- <div class="flex items-start gap-3">
- <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 flex-shrink-0">
- 💰
- </div>
- <div>
- <h3 class="text-amber-900 font-bold text-sm">Item Cost Reconciliation</h3>
- <p class="text-amber-700 text-xs mt-1 leading-relaxed">
- You were sent ₦{{ order.customDetails?.estimatedItemCost?.toLocaleString() }}. If the actual cost was different, submit it below. The customer must approve to refund any difference.
- </p>
- </div>
- </div>
- 
- <div v-if="order.reconciliationStatus === 'submitted'" class="bg-amber-100 text-amber-800 p-3 rounded-xl text-sm font-bold text-center border border-amber-200">
- Reconciliation submitted! Awaiting customer approval for ₦{{ order.actualItemCost?.toLocaleString() }} actual cost.
- </div>
- <div v-else class="space-y-3 pt-2 border-t border-amber-100">
- <div>
- <label class="block text-[10px] font-bold text-amber-800 uppercase tracking-wider mb-1">Actual Cost (₦)</label>
- <input
- v-model.number="actualItemCost"
- type="number"
- placeholder="Enter exact amount spent"
- class="bg-white text-gray-900 font-bold w-full p-3 rounded-xl border border-amber-200 focus:border-amber-500 transition-all focus:outline-none"
- />
- </div>
- 
- <div class="mt-2">
- <label class="block text-[10px] font-bold text-amber-800 uppercase tracking-wider mb-1">Proof of Payment (Optional)</label>
- <input type="file" ref="receiptInput" accept="image/*" class="hidden" @change="handleReceiptUpload" />
- <input type="file" ref="receiptCameraInput" accept="image/*" capture="environment" class="hidden" @change="handleReceiptUpload" />
- 
- <div v-if="!receiptUrl && !uploadingReceipt" class="flex gap-2 w-full">
-   <button @click="triggerReceiptCamera" class="flex-1 py-3 bg-white text-amber-600 rounded-xl text-sm font-bold border border-amber-200 border-dashed hover:bg-amber-50 transition-all flex items-center justify-center gap-2">
-    <Camera class="w-4 h-4" /> Snap Photo
-   </button>
-   <button @click="triggerReceiptUpload" class="flex-1 py-3 bg-white text-amber-600 rounded-xl text-sm font-bold border border-amber-200 border-dashed hover:bg-amber-50 transition-all flex items-center justify-center gap-2">
-    <Upload class="w-4 h-4" /> Upload File
-   </button>
- </div>
- <div v-else-if="uploadingReceipt" class="w-full py-3 bg-amber-100 text-amber-600 rounded-xl text-sm font-bold border border-amber-200 flex items-center justify-center gap-2">
-  <Loader2 class="w-4 h-4 animate-spin" /> Uploading...
- </div>
- <div v-else class="w-full py-2 px-3 bg-white rounded-xl border border-amber-200 flex items-center justify-between">
-   <div class="flex items-center gap-2 overflow-hidden">
-     <img :src="receiptUrl" class="w-8 h-8 object-cover rounded-md border border-amber-100" />
-     <span class="text-xs text-amber-900 font-medium truncate">Receipt uploaded</span>
-   </div>
-   <button @click="receiptUrl = ''" class="p-1 text-amber-600 hover:text-amber-800 hover:bg-amber-100 rounded-md">
-     <X class="w-4 h-4" />
-   </button>
- </div>
- </div>
- <button 
- @click="submitReconciliation" 
- :disabled="!actualItemCost || actualItemCost < 0 || submittingReconciliation"
- class="w-full py-3 bg-amber-600 text-white rounded-xl text-sm font-bold hover:bg-amber-700 disabled:opacity-50 flex items-center justify-center gap-2 transition-all"
- >
- <Loader2 v-if="submittingReconciliation" class="w-4 h-4 animate-spin" />
- <span v-else>✅</span> 
- {{ submittingReconciliation ? 'SUBMITTING...' : 'Submit Actual Cost' }}
- </button>
  </div>
  </div>
 
@@ -431,17 +383,57 @@
  />
  </div>
  </div>
+
+  <!-- P2P Payment Confirmation Modal -->
+  <UiModal
+    :is-open="isConfirmPaymentModalOpen"
+    title="Confirm Receipt"
+    description="Please verify you've received the money"
+    size="sm"
+    @close="isConfirmPaymentModalOpen = false"
+  >
+    <div class="flex flex-col items-center text-center py-4">
+      <div class="w-16 h-16 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mb-4">
+        <Check class="w-8 h-8 text-blue-600" />
+      </div>
+      <h4 class="text-lg font-bold text-gray-900 mb-2">Are you absolutely sure?</h4>
+      <p class="text-sm text-gray-500 leading-relaxed max-w-[260px]">
+        You are confirming that you have received exactly 
+        <strong class="text-gray-900">₦{{ order?.total?.toLocaleString() }}</strong> 
+        in your bank account. This action cannot be undone.
+      </p>
+    </div>
+
+    <template #footer>
+      <button 
+        @click="isConfirmPaymentModalOpen = false" 
+        class="px-5 py-3 w-full rounded-xl bg-gray-100 text-gray-500 font-bold text-sm hover:bg-gray-100 transition-colors"
+      >
+        Cancel
+      </button>
+      <button 
+        @click="executeConfirmP2PPayment" 
+        :disabled="confirmingPayment"
+        class="px-6 py-3 w-full rounded-xl bg-blue-600 text-center text-white font-bold text-sm hover:bg-blue-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+      >
+        <Loader2 v-if="confirmingPayment" class="w-4 h-4 animate-spin" />
+        <span>Yes, I got it</span>
+      </button>
+    </template>
+  </UiModal>
 </template>
 
 <script setup lang="ts">
 const route = useRoute();
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 import StatusBadge from '@/components/ui/StatusBadge.vue';
+import UiModal from '@/components/ui/UiModal.vue';
 import OrderChat from '@/components/core/OrderChat.vue';
+import MapboxMap from '@/components/ui/MapboxMap.vue';
 import { useUser } from '@/composables/modules/auth/user';
 import { useCustomToast } from "@/composables/core/useCustomToast"
 import { Phone, MessageSquare, Loader2, Camera, X, Upload } from 'lucide-vue-next';
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 const { user } = useUser();
 
@@ -474,6 +466,44 @@ const currentStep = computed(() => order.value ? steps.indexOf(order.value.statu
 const formatStatus = (s: string) => s?.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
 
 const { connect, emit, on } = useSocket('');
+const { connect: connectTracking, emit: emitTracking, disconnect: disconnectTracking } = useSocket('/tracking');
+
+const mapboxToken = ref(useRuntimeConfig().public.mapboxToken);
+const currentLocation = ref<[number, number] | undefined>(undefined);
+let watchId: number | null = null;
+
+const startLocationTracking = () => {
+  connectTracking();
+  if ('geolocation' in navigator) {
+    watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const { longitude, latitude } = position.coords;
+        currentLocation.value = [longitude, latitude];
+        
+        if (order.value?._id && user.value?._id) {
+          emitTracking('updateLocation', {
+            erranderId: user.value._id,
+            orderId: order.value._id,
+            coordinates: [longitude, latitude]
+          });
+        }
+      },
+      (error) => {
+        console.error('Error getting location:', error);
+      },
+      { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
+    );
+  } else {
+    console.error('Geolocation is not supported by this browser.');
+  }
+};
+
+onUnmounted(() => {
+  if (watchId !== null) {
+    navigator.geolocation.clearWatch(watchId);
+  }
+  disconnectTracking();
+});
 
 const isChatOpen = ref(false);
 const chatReceiverId = ref('');
@@ -628,6 +658,33 @@ const updateStatus = async (status: string) => {
  });
  }
  finally { updatingStatus.value = false; }
+};
+
+const confirmingPayment = ref(false);
+const isConfirmPaymentModalOpen = ref(false);
+
+const confirmP2PPayment = () => {
+  isConfirmPaymentModalOpen.value = true;
+};
+
+const executeConfirmP2PPayment = async () => {
+  if (!order.value) return;
+  
+  confirmingPayment.value = true;
+  try {
+    const res = await api.post<any>(`/orders/${route.params.id}/custom/p2p-confirm`);
+    if (res && res.type === 'ERROR') {
+      showToast({ title: 'Confirmation Failed', message: res.data?.message || 'Failed to confirm payment', toastType: 'error' });
+      return;
+    }
+    order.value = res.data;
+    showToast({ title: 'Payment Confirmed', message: 'You can now proceed with the errand.', toastType: 'success' });
+  } catch (error: any) {
+    showToast({ title: 'Error', message: error.response?.data?.message || 'Could not confirm payment', toastType: 'error' });
+  } finally {
+    confirmingPayment.value = false;
+    isConfirmPaymentModalOpen.value = false;
+  }
 };
 
 const completeOrder = async () => {

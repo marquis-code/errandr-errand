@@ -86,6 +86,14 @@ export const useRealtimeNotifications = () => {
 
   const handleNotification = (payload: any) => {
     if (!payload) return
+
+    // Aggressively push errander to details page if their bid was accepted
+    if (payload.type === 'ORDER_BID_ACCEPTED' && payload.data?.orderId) {
+      setTimeout(() => {
+        navigateTo(`/deliveries/${payload.data.orderId}`)
+      }, 500)
+    }
+
     pushToast({
       id: payload.id || `notif_${Date.now()}`,
       title: payload.title || 'Notification',
