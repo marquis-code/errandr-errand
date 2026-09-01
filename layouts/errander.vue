@@ -246,13 +246,14 @@
  <div class="flex-1 p-5 md:p-5">
  <slot />
  </div>
- 
  <!-- Footer -->
- <footer class="px-5 py-5 border-t border-gray-100 flex items-center justify-between">
- <p class="text-xs text-gray-400 font-medium">© {{ new Date().getFullYear() }} Errandr</p>
- <div class="flex items-center gap-5">
- <a href="#" class="text-xs text-gray-400 hover:text-[#FF5C1A] font-medium transition-colors">Terms</a>
- <a href="#" class="text-xs text-gray-400 hover:text-[#FF5C1A] font-medium transition-colors">Support</a>
+ <footer class="px-5 py-5 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4 mt-auto">
+ <p class="text-xs text-gray-400 font-medium">© {{ new Date().getFullYear() }} Errandr Rider</p>
+ <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-5">
+ <NuxtLink to="/terms" class="text-xs text-gray-400 hover:text-[#FF5C1A] font-medium transition-colors">Terms</NuxtLink>
+ <NuxtLink to="/privacy" class="text-xs text-gray-400 hover:text-[#FF5C1A] font-medium transition-colors">Privacy</NuxtLink>
+ <NuxtLink to="/refund" class="text-xs text-gray-400 hover:text-[#FF5C1A] font-medium transition-colors">Refunds</NuxtLink>
+ <NuxtLink to="/contact" class="text-xs text-gray-400 hover:text-[#FF5C1A] font-medium transition-colors">Contact</NuxtLink>
  </div>
  </footer>
  </main>
