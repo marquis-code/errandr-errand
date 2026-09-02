@@ -317,6 +317,29 @@
  </div>
  </div>
 
+ <!-- Request Hand-off Action -->
+ <div v-if="(order.status === 'picked_up' || order.status === 'in_transit') && !order.interception && isPrimaryErrander" class="mt-6 border-t border-gray-100 pt-6">
+   <button @click="isHandoffModalOpen = true" class="w-full py-3 bg-purple-50 text-purple-700 rounded-lg text-sm font-semibold hover:bg-purple-100 transform active:scale-95 transition-all flex items-center justify-center gap-2 border border-purple-200">
+     <span class="text-lg">🤝</span> 
+     Request Hand-off (Interception)
+   </button>
+   <p class="text-xs text-gray-400 text-center font-medium mt-2 leading-tight">Need someone else to complete the delivery? You will split the earnings (60:40).</p>
+ </div>
+ 
+ <div v-if="order.interception?.status === 'pending'" class="mt-6 bg-purple-50 border border-purple-200 rounded-2xl p-4 text-center">
+   <div class="text-3xl mb-2 animate-bounce">⏳</div>
+   <h3 class="text-purple-900 font-bold text-sm mb-1">Hand-off Requested</h3>
+   <p class="text-purple-700 text-xs mb-3">Waiting for another errander to accept the hand-off.</p>
+ </div>
+
+ <div v-if="order.interception?.status === 'accepted'" class="mt-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center">
+   <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mb-3 mx-auto">
+     <span class="text-xl">🤝</span>
+   </div>
+   <h3 class="text-emerald-900 font-bold text-sm mb-1">Hand-off Accepted!</h3>
+   <p class="text-emerald-700 text-xs mb-2">Another errander is on their way to the hand-off location.</p>
+ </div>
+
  <!-- Premium Verification Interface -->
  <div v-if="order.status === 'in_transit' || order.status === 'picked_up'" class="bg-white rounded-xl md:rounded-3xl p-4 md:p-5 space-y-4 md:space-y-6 relative overflow-hidden group border border-gray-100 shadow-sm">
  <div class="absolute -right-32 -top-32 w-64 h-64 bg-[#FF5C1A]/5 rounded-full blur-[80px] group-hover:scale-125 transition-transform duration-1000" />
@@ -434,6 +457,37 @@
       </button>
     </template>
   </UiModal>
+
+  <!-- Request Hand-off Modal -->
+  <UiModal
+    :is-open="isHandoffModalOpen"
+    title="Request Hand-off"
+    description="Set an interception point for another errander to pick up the item."
+    size="sm"
+    @close="isHandoffModalOpen = false"
+  >
+    <div class="space-y-4 py-4">
+      <div class="bg-purple-50 border border-purple-100 p-3 rounded-lg flex gap-3 text-sm text-purple-800">
+        <span class="text-xl">⚠️</span>
+        <p>You will receive <strong>60%</strong> of the delivery fee, and the second errander will receive <strong>40%</strong>.</p>
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-gray-700 mb-1">Interception Location</label>
+        <input v-model="handoffLocation" placeholder="E.g. Main Gate, Male Hostel B..." class="w-full bg-gray-50 text-sm py-3 px-4 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 outline-none" />
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-gray-700 mb-1">Additional Note (Optional)</label>
+        <textarea v-model="handoffNote" rows="2" placeholder="E.g. I am waiting near the security post" class="w-full bg-gray-50 text-sm py-3 px-4 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 outline-none"></textarea>
+      </div>
+    </div>
+    <template #footer>
+      <button @click="isHandoffModalOpen = false" class="px-5 py-3 w-full rounded-xl bg-gray-100 text-gray-500 font-bold text-sm hover:bg-gray-200 transition-colors">Cancel</button>
+      <button @click="submitHandoff" :disabled="!handoffLocation || requestingHandoff" class="px-6 py-3 w-full rounded-xl bg-purple-600 text-center text-white font-bold text-sm hover:bg-purple-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50">
+        <Loader2 v-if="requestingHandoff" class="w-4 h-4 animate-spin" />
+        <span>Request Interception</span>
+      </button>
+    </template>
+  </UiModal>
 </template>
 
 <script setup lang="ts">
@@ -459,6 +513,41 @@ const loadingOrder = ref(true);
 const orderError = ref('');
 const verificationCode = ref('');
 const completing = ref(false);
+
+const isHandoffModalOpen = ref(false);
+const requestingHandoff = ref(false);
+const handoffLocation = ref('');
+const handoffNote = ref('');
+
+const isPrimaryErrander = computed(() => {
+  if (!order.value || !user.value) return false;
+  const erranderId = order.value.errander?._id || order.value.errander;
+  return erranderId === user.value._id;
+});
+
+const submitHandoff = async () => {
+  if (!handoffLocation.value) return;
+  requestingHandoff.value = true;
+  try {
+    const res = await api.post<any>(`/orders/${route.params.id}/interception/request`, {
+      point: handoffLocation.value,
+      notes: handoffNote.value
+    });
+    
+    if (res && res.type === 'ERROR') {
+      showToast({ title: 'Request Failed', message: res.data?.message || 'Could not request hand-off', toastType: 'error' });
+      return;
+    }
+    
+    order.value = res.data;
+    isHandoffModalOpen.value = false;
+    showToast({ title: 'Hand-off Requested', message: 'Interception requested successfully. Waiting for another errander.', toastType: 'success' });
+  } catch (e: any) {
+    showToast({ title: 'Request Failed', message: e.response?.data?.message || 'Could not request hand-off', toastType: 'error' });
+  } finally {
+    requestingHandoff.value = false;
+  }
+};
 
 const getGroupedCustomizations = (customizations: any[]) => {
  if (!customizations) return [];
@@ -841,7 +930,9 @@ const startLocation = () => {
       'ORDER_BIDS_UPDATE', 
       'ORDER_AWAITING_PAYMENT_CONFIRMATION',
       'ORDER_ACCEPTED',
-      'ORDER_BID_ACCEPTED'
+      'ORDER_BID_ACCEPTED',
+      'ORDER_INTERCEPTION_ACCEPTED',
+      'ORDER_INTERCEPTION_REQUESTED'
     ];
     
     if (reloadTypes.includes(payload?.type)) {
