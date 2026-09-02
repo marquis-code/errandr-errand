@@ -287,7 +287,7 @@
  </div>
 
  <!-- Status Update Actions -->
- <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup' || order.status === 'picked_up'" class="space-y-4">
+ <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup' || order.status === 'picked_up' || order.status === 'interception_in_progress'" class="space-y-4">
  <div v-if="order.status === 'confirmed' || order.status === 'ready_for_pickup'" class="animate-bounce-subtle space-y-2">
  <button @click="updateStatus('picked_up')" :disabled="updatingStatus" class="w-full py-3 bg-[#FF5C1A] text-white rounded-lg text-sm font-semibold hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-2 group">
  <Loader2 v-if="updatingStatus" class="w-4 h-4 animate-spin" />
@@ -307,7 +307,7 @@
  </p>
  </div>
  
- <div v-if="order.status === 'picked_up'" class="space-y-3">
+ <div v-if="order.status === 'picked_up' || order.status === 'interception_in_progress'" class="space-y-3">
  <button @click="updateStatus('in_transit')" :disabled="updatingStatus" class="w-full py-3 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-2 group">
  <Loader2 v-if="updatingStatus" class="w-4 h-4 animate-spin" />
  <span v-else class="text-lg group-hover:scale-110 transition-transform">🚀</span> 
@@ -341,7 +341,7 @@
  </div>
 
  <!-- Premium Verification Interface -->
- <div v-if="order.status === 'in_transit' || order.status === 'picked_up'" class="bg-white rounded-xl md:rounded-3xl p-4 md:p-5 space-y-4 md:space-y-6 relative overflow-hidden group border border-gray-100 shadow-sm">
+ <div v-if="order.status === 'in_transit' || order.status === 'picked_up' || order.status === 'interception_in_progress'" class="bg-white rounded-xl md:rounded-3xl p-4 md:p-5 space-y-4 md:space-y-6 relative overflow-hidden group border border-gray-100 shadow-sm">
  <div class="absolute -right-32 -top-32 w-64 h-64 bg-[#FF5C1A]/5 rounded-full blur-[80px] group-hover:scale-125 transition-transform duration-1000" />
  
  <div class="text-center space-y-2 relative z-10">
@@ -539,7 +539,8 @@ const submitHandoff = async () => {
       return;
     }
     
-    order.value = res.data;
+    // Reload fully populated order instead of using raw response
+    await loadOrder();
     isHandoffModalOpen.value = false;
     showToast({ title: 'Hand-off Requested', message: 'Interception requested successfully. Waiting for another errander.', toastType: 'success' });
   } catch (e: any) {
