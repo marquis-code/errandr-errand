@@ -563,12 +563,24 @@ const connectNegotiationSocket = (orderId: string) => {
   disconnectNegotiationSocket()
   const baseUrl = runtimeConfig.public.wsBase || runtimeConfig.public.apiBase || 'http://localhost:3005'
   const wsUrl = baseUrl.replace('/v1', '').replace('/api', '')
+  console.log('[NegotiationSocket] Connecting to', `${wsUrl}/negotiation`)
   negotiationSocket = io(`${wsUrl}/negotiation`, {
     withCredentials: true,
-    transports: ['websocket'],
+    transports: ['polling', 'websocket'],
+    reconnection: true,
+    reconnectionAttempts: 10,
+    reconnectionDelay: 1000,
+    timeout: 10000,
   })
   negotiationSocket.on('connect', () => {
+    console.log('[NegotiationSocket] Connected, joining room for', orderId)
     negotiationSocket?.emit('joinNegotiation', { orderId, role: 'rider' })
+  })
+  negotiationSocket.on('connect_error', (err: any) => {
+    console.error('[NegotiationSocket] Connection error:', err.message)
+  })
+  negotiationSocket.on('disconnect', (reason: string) => {
+    console.warn('[NegotiationSocket] Disconnected:', reason)
   })
   negotiationSocket.on('viewerCountUpdate', (data: { count: number }) => {
     negotiationViewerCount.value = data.count
@@ -756,26 +768,40 @@ const placeBid = async (id: string) => {
     const order = selectedOrder.value;
     
     if (order?.status === 'negotiating') {
-      if (!negotiationSocket) {
-        pushToast('Bid Error', 'Not connected to negotiation server.', 'ERROR');
+      if (!negotiationSocket || !negotiationSocket.connected) {
+        pushToast('Bid Error', 'Not connected to negotiation server. Please close and reopen this order.', 'ERROR');
         biddingId.value = null;
         return;
       }
-      // Use WebSocket for NEGOTIATING (outside campus) orders
-      negotiationSocket.emit('submitBid', {
-        orderId: id,
-        riderId: user.value?._id,
-        bidAmount: bidAmount.value,
-      }, (response: any) => {
+      
+      // Use emitWithAck with timeout - works with NestJS @SubscribeMessage
+      try {
+        const response = await negotiationSocket.timeout(8000).emitWithAck('submitBid', {
+          orderId: id,
+          riderId: user.value?._id,
+          bidAmount: bidAmount.value,
+        });
+        
+        console.log('[placeBid] Response:', response);
+        
         if (response?.success) {
           pushToast('🚀 Bid Sent!', `Your delivery bid of ₦${bidAmount.value?.toLocaleString()} has been sent to the student.`, 'SUCCESS');
           localPlacedBid.value = response.bid;
         } else {
           pushToast('Bid Error', response?.error || 'Failed to submit bid.', 'ERROR');
         }
-        biddingId.value = null;
-      });
-      return; // Don't fall through to finally
+      } catch (socketErr: any) {
+        console.error('[placeBid] Socket error:', socketErr);
+        // If emitWithAck times out or fails, the bid may still have been sent
+        // Check if we got a newBid event in the meantime
+        if (socketErr?.message?.includes('timeout')) {
+          pushToast('Bid Timeout', 'The server took too long to respond. Your bid may have been sent — please check.', 'ERROR');
+        } else {
+          pushToast('Bid Error', 'Failed to send bid. Please try again.', 'ERROR');
+        }
+      }
+      biddingId.value = null;
+      return;
     }
     
     // REST API for custom errand counter-offers
