@@ -391,11 +391,13 @@
  <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto text-3xl border border-emerald-50 text-emerald-600 transform rotate-6 animate-pulse">💰</div>
  <div>
  <h3 class="text-white font-medium text-2xl -tight -none mb-3">Delivery Completed</h3>
- <p class="text-white/90 font-medium text-xl -tight -none">+ ₦{{ (order.erranderPayout || order.deliveryFee || 0)?.toLocaleString() }} Earned</p>
+ <p v-if="order.type !== 'custom_errand'" class="text-white/90 font-medium text-xl -tight -none">+ ₦{{ (order.erranderPayout || order.deliveryFee || 0)?.toLocaleString() }} Earned</p>
+ <p v-else class="text-white/90 font-medium text-xl -tight -none">Custom Errand Delivered ✅</p>
  </div>
  
  <div class="max-w-xs mx-auto">
- <p class="text-emerald-100 text-xs font-medium mb-6">Funds have been added to your wallet.</p>
+ <p v-if="order.type !== 'custom_errand'" class="text-emerald-100 text-xs font-medium mb-6">Funds have been added to your wallet.</p>
+ <p v-else class="text-emerald-100 text-xs font-medium mb-6">The student paid you directly for this errand. No wallet credit applied.</p>
  
  <NuxtLink to="/deliveries" class="block w-full py-3 bg-white text-emerald-600 rounded-lg font-bold text-sm hover:bg-emerald-50 active:scale-95 transition-all">
  Return to Deliveries
