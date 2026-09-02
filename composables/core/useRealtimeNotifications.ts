@@ -5,9 +5,41 @@ import { useUser } from '@/composables/modules/auth/user'
 
 const LISTENERS_KEY = 'realtime_notification_listeners_v2'
 
-const playNotificationSound = () => {
+const playSound = (path: string) => {
   try {
-    const audio = new Audio('/sounds/notification.wav')
+    const audio = new Audio(path)
+    audio.volume = 1.0;
+    const playPromise = audio.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.warn('Audio file playback failed, falling back to synthetic beep:', error);
+        playSyntheticBeep();
+      });
+    }
+  } catch (error) {
+    playSyntheticBeep();
+  }
+}
+
+const playNotificationSound = () => playSound('/sounds/new_notification.m4a')
+const playOrderAcceptedSound = () => playSound('/sounds/order_accepted.m4a')
+const playOrderStatusUpdateSound = () => playSound('/sounds/order_status_update.m4a')
+const playCounterOfferSound = () => playSound('/sounds/counter_offer.m4a')
+
+if (typeof document !== 'undefined') {
+  const unlockAudio = () => {
+    const audio = new Audio('/sounds/new_notification.m4a')
+    audio.volume = 0;
+    audio.play().catch(() => {});
+    document.removeEventListener('click', unlockAudio);
+  };
+  document.addEventListener('click', unlockAudio);
+}
+
+const playNewOrderSound = () => {
+  try {
+    const audio = new Audio('/sounds/order_sound.m4a')
     audio.volume = 1.0;
     const playPromise = audio.play();
     
@@ -66,7 +98,17 @@ export const useRealtimeNotifications = () => {
 
 
   const pushToast = (notification: any) => {
-    playNotificationSound()
+    if (notification.type === 'NEW_ORDER_AVAILABLE') {
+      playNewOrderSound()
+    } else if (notification.type === 'ORDER_BIDS_UPDATE' || notification.type === 'BID_COUNTERED') {
+      playCounterOfferSound()
+    } else if (notification.type === 'ORDER_ACCEPTED' || notification.type === 'ORDER_BID_ACCEPTED') {
+      playOrderAcceptedSound()
+    } else if (notification.type === 'ORDER_STATUS_UPDATE') {
+      playOrderStatusUpdateSound()
+    } else {
+      playNotificationSound()
+    }
     toastQueue.value.push(notification)
     // Also add to persistent notifications store
     addNotification(notification)

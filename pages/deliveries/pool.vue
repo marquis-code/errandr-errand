@@ -344,7 +344,30 @@
                   <span>{{ biddingId === selectedOrder._id ? 'Sending...' : '🚀 Send Bid' }}</span>
                 </button>
               </div>
-              <p v-if="hasPlacedBid(selectedOrder)" class="text-xs font-bold text-green-600 mt-1 bg-green-50 p-2.5 rounded-lg text-center border border-green-100">
+              <div v-if="hasPlacedBid(selectedOrder) && getBidStatus() === 'counter_offer' && getBidLastRole() === 'student'" class="mt-2 bg-amber-50 p-3 rounded-lg border border-amber-200">
+                <p class="text-xs font-bold text-amber-800 mb-2">Student Counter-Offered: ₦{{ getMyBid(selectedOrder)?.toLocaleString() }}</p>
+                <div class="flex gap-2">
+                  <button 
+                    @click="acceptCounter(selectedOrder._id)"
+                    :disabled="acceptingId === selectedOrder._id"
+                    class="flex-1 bg-parentPrimary text-white text-xs font-bold py-2 rounded-lg hover:bg-parentPrimary/90 transition-all flex items-center justify-center gap-1"
+                  >
+                    <Loader2 v-if="acceptingId === selectedOrder._id" class="w-3 h-3 animate-spin" />
+                    Accept
+                  </button>
+                  <div class="relative flex-[2] flex gap-1">
+                    <input v-model="formattedBidAmount" type="text" placeholder="New Price" class="w-full bg-white border border-amber-200 rounded-lg px-2 py-1 outline-none focus:border-amber-500 text-sm font-bold" />
+                    <button 
+                      @click="placeBid(selectedOrder._id)"
+                      :disabled="!bidAmount || biddingId === selectedOrder._id"
+                      class="bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-lg hover:bg-amber-600 transition-colors"
+                    >
+                      Counter
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <p v-else-if="hasPlacedBid(selectedOrder)" class="text-xs font-bold text-green-600 mt-1 bg-green-50 p-2.5 rounded-lg text-center border border-green-100">
                 ✅ You offered ₦{{ getMyBid(selectedOrder)?.toLocaleString() }} — waiting for student's response
               </p>
             </div>
@@ -564,6 +587,51 @@ const connectNegotiationSocket = (orderId: string) => {
       }
     }
   })
+
+  negotiationSocket.on('orderAcceptedDirectly', (data: any) => {
+    if (data.orderId) {
+      if (data.winningUserId === user.value?._id) {
+        pushToast('Offer Accepted!', 'The bid was accepted. Navigating to delivery...', 'SUCCESS')
+        setTimeout(() => {
+          router.push(`/deliveries/${data.orderId}`)
+        }, 1000)
+      } else {
+        availableOrders.value = availableOrders.value.filter(o => o._id !== data.orderId)
+        if (selectedOrder.value?._id === data.orderId) {
+          pushToast('Negotiation Closed', 'This order was given to another rider.', 'GENERAL')
+          isDrawerOpen.value = false
+        }
+      }
+    }
+  })
+
+  negotiationSocket.on('bidCountered', (bid: any) => {
+    const orderId = bid.order?._id || bid.order;
+    const riderId = bid.rider?._id || bid.rider;
+    if (orderId?.toString() === selectedOrder.value?._id?.toString() && riderId?.toString() === user.value?._id?.toString()) {
+      if (bid.lastNegotiatorRole === 'student') {
+        pushToast('Offer Countered!', `The student proposed ₦${bid.bidAmount.toLocaleString()}`, 'GENERAL')
+        
+        // Ensure localPlacedBid object holds the full bid object to extract the bidId
+        localPlacedBid.value = bid
+        
+        // Also update formatted amount to reflect the student's counter
+        formattedBidAmount.value = bid.bidAmount.toString()
+        bidAmount.value = bid.bidAmount
+      }
+    }
+  })
+
+  negotiationSocket.on('bidRejected', (bid: any) => {
+    const orderId = bid.order?._id || bid.order;
+    const riderId = bid.rider?._id || bid.rider;
+    if (orderId?.toString() === selectedOrder.value?._id?.toString() && riderId?.toString() === user.value?._id?.toString()) {
+      pushToast('Offer Declined', 'The student has declined your offer.', 'ERROR')
+      localPlacedBid.value = null
+      bidAmount.value = null
+      formattedBidAmount.value = ''
+    }
+  })
 }
 
 const disconnectNegotiationSocket = () => {
@@ -577,7 +645,23 @@ const disconnectNegotiationSocket = () => {
   }
 }
 
-const viewDetails = (order: any) => {
+const fetchExistingBid = async (orderId: string) => {
+  try {
+    const res = await api.get(`/orders/${orderId}/custom/bid/me`)
+    if (res && res.data) {
+      localPlacedBid.value = res.data
+      if (res.data.bidAmount) {
+        bidAmount.value = res.data.bidAmount
+      } else if (res.data.amount) { // fallback for legacy embedded bid
+        bidAmount.value = res.data.amount
+      }
+    }
+  } catch (e) {
+    console.error('Failed to fetch existing bid:', e)
+  }
+}
+
+const viewDetails = async (order: any) => {
   selectedOrder.value = order
   localPlacedBid.value = null
   isDrawerOpen.value = true
@@ -587,6 +671,12 @@ const viewDetails = (order: any) => {
   if (order._id) {
     api.post(`/orders/${order._id}/view`).catch(e => console.error('Failed to record view:', e))
   }
+  
+  // Fetch any existing bid we might have for this order
+  if (order._id) {
+    await fetchExistingBid(order._id)
+  }
+
   // Connect to negotiation socket for NEGOTIATING orders
   if (order.status === 'negotiating' && order._id) {
     connectNegotiationSocket(order._id)
@@ -652,7 +742,7 @@ const placeBid = async (id: string) => {
       }, (response: any) => {
         if (response?.success) {
           pushToast('🚀 Bid Sent!', `Your delivery bid of ₦${bidAmount.value?.toLocaleString()} has been sent to the student.`, 'SUCCESS');
-          localPlacedBid.value = bidAmount.value;
+          localPlacedBid.value = response.bid;
         } else {
           pushToast('Bid Error', response?.error || 'Failed to submit bid.', 'ERROR');
         }
@@ -679,8 +769,49 @@ const placeBid = async (id: string) => {
   }
 }
 
+const getBidStatus = () => {
+  if (typeof localPlacedBid.value === 'object' && localPlacedBid.value !== null) {
+    return (localPlacedBid.value as any).status;
+  }
+  return null;
+}
+
+const getBidLastRole = () => {
+  if (typeof localPlacedBid.value === 'object' && localPlacedBid.value !== null) {
+    return (localPlacedBid.value as any).lastNegotiatorRole;
+  }
+  return null;
+}
+
+const acceptCounter = async (id: string) => {
+  acceptingId.value = id;
+  try {
+    const bidId = typeof localPlacedBid.value === 'object' ? (localPlacedBid.value as any)._id : null;
+    if (!bidId) throw new Error('No bid found to accept');
+
+    const res = await api.put(`/orders/${id}/custom/bid/${bidId}/accept`);
+    if (res && (res as any).type !== 'ERROR') {
+      pushToast('🚀 Counter Accepted!', 'Loading your delivery instructions...', 'SUCCESS');
+      setTimeout(() => {
+        router.push(`/deliveries/${id}`);
+      }, 1000);
+    } else {
+      pushToast('Claim Error', (res as any)?.data?.message || 'Failed to accept counter.', 'ERROR');
+    }
+  } catch (e: any) {
+    console.error('Accept error:', e);
+    const errorMsg = e.response?.data?.message || 'Failed to accept counter.';
+    pushToast('Claim Failed', errorMsg, 'ERROR');
+  } finally {
+    acceptingId.value = null;
+  }
+}
+
 const getMyBid = (order: any) => {
-  if (localPlacedBid.value !== null) return localPlacedBid.value;
+  if (localPlacedBid.value !== null) {
+    if (typeof localPlacedBid.value === 'object') return (localPlacedBid.value as any).bidAmount;
+    return localPlacedBid.value;
+  }
   return bidAmount.value; 
 }
 
@@ -751,18 +882,28 @@ const handleOrderAccepted = (payload: any) => {
   }
 }
 
+const handleNewNotification = (payload: any) => {
+  if (payload?.type === 'ORDER_BIDS_UPDATE' || payload?.type === 'BID_COUNTERED') {
+    if (payload.data?.orderId && selectedOrder.value?._id === payload.data.orderId) {
+      fetchExistingBid(payload.data.orderId)
+    }
+  }
+}
+
 let currentSocket: any = null
 
 watch(() => socket.value, (newSocket) => {
   if (currentSocket) {
     currentSocket.off('notification:new-order', handleNewOrder)
     currentSocket.off('notification:order-accepted', handleOrderAccepted)
+    currentSocket.off('notification:new', handleNewNotification)
   }
   
   if (newSocket) {
     currentSocket = newSocket
     newSocket.on('notification:new-order', handleNewOrder)
     newSocket.on('notification:order-accepted', handleOrderAccepted)
+    newSocket.on('notification:new', handleNewNotification)
   }
 }, { immediate: true })
 
@@ -775,6 +916,7 @@ onUnmounted(() => {
   if (currentSocket) {
     currentSocket.off('notification:new-order', handleNewOrder)
     currentSocket.off('notification:order-accepted', handleOrderAccepted)
+    currentSocket.off('notification:new', handleNewNotification)
   }
   disconnectNegotiationSocket()
 })

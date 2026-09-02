@@ -253,8 +253,21 @@
  </div>
  </div>
 
- <!-- P2P Payment Confirmation -->
- <div v-if="order.status === 'awaiting_payment_confirmation'" class="bg-blue-50 border border-blue-200 rounded-2xl p-4 md:p-5 flex flex-col items-center text-center mt-6">
+  <!-- Awaiting Payment -->
+  <div v-if="order.status === 'awaiting_payment'" class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 md:p-5 flex flex-col items-center text-center mt-6">
+    <h3 class="text-xl font-black text-emerald-900 tracking-tight mb-2">Offer Accepted!</h3>
+    <p class="text-sm font-medium text-emerald-700 leading-relaxed">The student has accepted your offer of ₦{{ order.deliveryFee?.toLocaleString() }}. The system is now waiting for them to make a secure payment.</p>
+    
+    <div class="w-full flex items-center justify-center p-3 bg-white/50 rounded-xl border border-emerald-100/50 mt-4">
+      <div class="flex items-center gap-2">
+        <Loader2 class="w-4 h-4 text-emerald-500 animate-spin" />
+        <span class="text-xs font-bold text-emerald-800">Waiting for payment...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- P2P Payment Confirmation -->
+  <div v-if="order.status === 'awaiting_payment_confirmation'" class="bg-blue-50 border border-blue-200 rounded-2xl p-4 md:p-5 flex flex-col items-center text-center mt-6">
    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-3">
      <Check class="w-6 h-6" />
    </div>
@@ -816,10 +829,25 @@ const startLocation = () => {
   connect();
   emit('trackOrder', { orderId: route.params.id });
   startLocation();
-  
   on('notification:order-status-update', (payload: any) => {
     if (payload.orderId === route.params.id || payload.data?.orderId === route.params.id) {
       loadOrder();
+    }
+  });
+  
+  on('notification:new', (payload: any) => {
+    const reloadTypes = [
+      'ORDER_STATUS_UPDATE', 
+      'ORDER_BIDS_UPDATE', 
+      'ORDER_AWAITING_PAYMENT_CONFIRMATION',
+      'ORDER_ACCEPTED',
+      'ORDER_BID_ACCEPTED'
+    ];
+    
+    if (reloadTypes.includes(payload?.type)) {
+      if (payload.data?.orderId === route.params.id) {
+        loadOrder();
+      }
     }
   });
   
