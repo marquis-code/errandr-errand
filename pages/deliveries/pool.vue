@@ -362,7 +362,7 @@
               </div>
             </div>
 
-            <div class="mt-3 pt-3 border-t border-gray-200 flex justify-between items-center text-xs">
+            <div v-if="selectedOrder.status !== 'interception_pending' && selectedOrder.customDetails?.estimatedItemCost > 0" class="mt-3 pt-3 border-t border-gray-200 flex justify-between items-center text-xs">
               <span class="font-medium text-gray-500">Estimated Item Cost</span>
               <span class="font-bold text-gray-900">₦{{ (selectedOrder.customDetails?.estimatedItemCost || 0).toLocaleString() }}</span>
             </div>
@@ -392,7 +392,7 @@
         </div>
 
         <!-- Item Cost Bank Transfer Notice -->
-        <div v-if="selectedOrder.type === 'custom_errand' && selectedOrder.customDetails?.estimatedItemCost > 0" class="p-4 bg-blue-50 border border-blue-200 rounded-2xl space-y-2">
+        <div v-if="selectedOrder.status !== 'interception_pending' && selectedOrder.type === 'custom_errand' && selectedOrder.customDetails?.estimatedItemCost > 0" class="p-4 bg-blue-50 border border-blue-200 rounded-2xl space-y-2">
           <div class="flex items-center gap-2">
             <Banknote class="w-4 h-4 text-blue-600" />
             <h4 class="text-xs font-bold text-blue-800 uppercase tracking-wide">Money for Items</h4>
