@@ -861,9 +861,23 @@ const placeBid = async (id: string) => {
     
     if (order?.status === 'negotiating') {
       if (!negotiationSocket || !negotiationSocket.connected) {
-        pushToast('Bid Error', 'Not connected to negotiation server. Please close and reopen this order.', 'ERROR');
-        biddingId.value = null;
-        return;
+        if (!negotiationSocket) {
+          connectNegotiationSocket(id);
+        } else {
+          negotiationSocket.connect();
+        }
+        
+        let retries = 0;
+        while (!negotiationSocket?.connected && retries < 20) {
+          await new Promise(r => setTimeout(r, 250));
+          retries++;
+        }
+
+        if (!negotiationSocket?.connected) {
+          pushToast('Bid Error', 'Network unstable. Could not reach negotiation server. Please check your connection.', 'ERROR');
+          biddingId.value = null;
+          return;
+        }
       }
       
       // Use emitWithAck with timeout - works with NestJS @SubscribeMessage
