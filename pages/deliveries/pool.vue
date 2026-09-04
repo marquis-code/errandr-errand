@@ -523,8 +523,8 @@
     </SideDrawer>
 
     <!-- Full Screen Loading Modal for Accepting Order or Bidding -->
-    <Teleport to="body">
-      <div v-if="acceptingId || biddingId" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-gray-900/95 backdrop-blur-sm text-white transition-opacity">
+    <Teleport to="body" v-if="acceptingId || biddingId">
+      <div class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-gray-900/95 backdrop-blur-sm text-white transition-opacity">
         <div class="w-16 h-16 border-4 border-white/20 border-t-[#FF5C1A] rounded-full animate-spin mb-6"></div>
         <h2 class="text-2xl font-bold tracking-tight mb-2">{{ biddingId ? 'Sending Bid...' : 'Accepting Order...' }}</h2>
         <p class="text-white/60 font-medium text-sm">{{ biddingId ? 'Please wait while we send your offer to the student.' : 'Please wait while we secure this errand for you.' }}</p>
@@ -990,6 +990,8 @@ const handleNewOrder = (payload: any) => {
   const orderData = payload.data || payload
   
   // Guard against ghost orders (e.g. from misrouted ORDER_ACCEPTED payloads)
+  if (orderData?.type === 'ORDER_ACCEPTED') return
+  
   if (!orderData || !orderData.orderId || !orderData.orderNumber) {
     console.warn('handleNewOrder: Dropping malformed payload', payload)
     return

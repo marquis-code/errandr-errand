@@ -115,7 +115,7 @@ export const useRealtimeNotifications = () => {
   }
 
   const handleNewOrder = (payload: any) => {
-    if (!payload) return
+    if (!payload || payload.type === 'ORDER_ACCEPTED') return
     pushToast({
       id: payload.id || `order_${Date.now()}`,
       title: payload.title || '🚀 New Order Available!',
