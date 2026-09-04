@@ -108,7 +108,7 @@
           </a>
         </div>
         <button 
-          @click.stop.prevent="openChat(order.customer?._id || order.customer, order.customer?.firstName + ' ' + order.customer?.lastName + ' (Customer)')" 
+          @click.stop.prevent="openChat(order.customer?._id || order.customer, (order.customer?.firstName ? `${order.customer.firstName} ${order.customer.lastName}` : 'Student') + ' (Customer)')" 
           class="w-full px-3 py-1.5 bg-[#FF5C1A]/5 text-[#FF5C1A] rounded-lg text-[11px] font-bold hover:bg-[#FF5C1A]/10 transition-all transform active:scale-95 border border-[#FF5C1A]/20 flex items-center justify-center gap-1.5"
         >
           <MessageSquare class="w-3 h-3" /> In-App Message Customer
@@ -247,7 +247,7 @@
      WhatsApp
    </a>
  </div>
- <button @click.stop.prevent="openChat(order.customer?._id || order.customer, order.customer?.firstName + ' ' + order.customer?.lastName, order.customer?.avatar)" class="w-full py-3.5 bg-blue-50 text-blue-700 rounded-xl text-sm font-bold hover:bg-blue-600 hover:text-white hover: hover:shadow-blue-500/20 transition-all transform active:scale-95 border border-blue-200 flex items-center justify-center gap-2">
+ <button @click.stop.prevent="openChat(order.customer?._id || order.customer, order.customer?.firstName ? `${order.customer.firstName} ${order.customer.lastName}` : 'Student', order.customer?.avatar)" class="w-full py-3.5 bg-blue-50 text-blue-700 rounded-xl text-sm font-bold hover:bg-blue-600 hover:text-white hover: hover:shadow-blue-500/20 transition-all transform active:scale-95 border border-blue-200 flex items-center justify-center gap-2">
  <MessageSquare class="w-4 h-4" /> In-App Message
  </button>
  </div>
