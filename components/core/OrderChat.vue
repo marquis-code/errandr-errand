@@ -5,9 +5,9 @@
  <div @click="$emit('close')" class="absolute inset-0 bg-black/20 backdrop-blur-[2px] transition-opacity" />
  
  <!-- Chat Panel -->
- <div class="relative w-full max-w-md bg-[#E5DDD5] h-full shadow-sm border border-gray-100 flex flex-col animate-slide-left overflow-hidden">
- <!-- WhatsApp Green Header -->
- <div class="px-4 py-3 bg-[#075E54] text-white flex items-center gap-3 sticky top-0 z-20 shadow-sm border border-gray-100">
+ <div class="relative w-full max-w-md bg-gray-50 h-full shadow-sm border border-gray-100 flex flex-col animate-slide-left overflow-hidden">
+ <!-- Header -->
+ <div class="px-4 py-3 bg-[#FF5C1A] text-white flex items-center gap-3 sticky top-0 z-20 shadow-sm border border-[#FF5C1A]/10">
  <button @click="$emit('close')" class="p-1 hover:bg-white/10 rounded-full transition-colors mr-1">
  <ArrowLeft class="w-5 h-5 text-white" />
  </button>
@@ -28,8 +28,8 @@
  </div>
  </div>
 
- <!-- Messages Area with WhatsApp-like background -->
- <div ref="messageContainer" class="flex-1 overflow-y-auto px-4 py-4 space-y-2 scroll-smooth bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat">
+ <!-- Messages Area -->
+ <div ref="messageContainer" class="flex-1 overflow-y-auto px-4 py-4 space-y-2 scroll-smooth bg-gray-50">
  
  <!-- Date Marker -->
  <div class="flex justify-center mb-6 sticky top-2 z-10">
@@ -39,7 +39,7 @@
  </div>
 
  <div v-if="loading" class="flex flex-col items-center justify-center h-40 space-y-4">
- <div class="w-8 h-8 border-2 border-[#25D366]/20 border-t-[#25D366] rounded-full animate-spin" />
+ <div class="w-8 h-8 border-2 border-[#FF5C1A]/20 border-t-[#FF5C1A] rounded-full animate-spin" />
  </div>
  
  <div v-else-if="messages.length === 0" class="flex flex-col items-center justify-center p-10 text-center space-y-3 mt-10">
@@ -57,16 +57,16 @@
  <div :class="[
  'relative max-w-[85%] px-3 py-1.5 rounded-lg text-[14.5px] shadow-sm mb-1 group transition-all',
  isMe(msg) 
- ? 'bg-[#DCF8C6] text-[#054740] rounded-tr-none ml-10' 
- : 'bg-white text-[#111B21] rounded-tl-none mr-10'
+ ? 'bg-[#FF5C1A] text-white rounded-tr-none ml-10' 
+ : 'bg-white text-gray-900 rounded-tl-none mr-10'
  ]">
  <!-- Speech Bubble Tail -->
  <div v-if="shouldShowTail(msg, idx)" 
  :class="[
  'absolute top-0 w-3 h-4',
  isMe(msg) 
- ? 'right-[-8px] text-[#DCF8C6]' 
- : 'left-[-8px] text-white'
+ ? 'right-[-8px] text-[#FF5C1A]' 
+ : 'left-[-8px] text-white -scale-x-100'
  ]">
  <svg viewBox="0 0 8 13" width="8" height="13" class="fill-current">
  <path v-if="isMe(msg)" d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z" />
@@ -75,8 +75,8 @@
  </div>
 
  <!-- Sender name for groups/receivers -->
- <p v-if="!isMe(msg) && shouldShowSender(msg, idx)" class="text-[12px] font-bold text-[#34B7F1] mb-0.5">
- {{ msg.sender?.firstName || 'User' }}
+ <p v-if="!isMe(msg) && shouldShowSender(msg, idx)" class="text-[12px] font-bold text-[#FF5C1A] mb-0.5">
+ {{ getSenderId(msg) === receiverId ? receiverName : 'System' }}
  </p>
 
  <!-- Media Content -->
@@ -84,8 +84,8 @@
  <img :src="msg.attachment" class="rounded-lg max-w-full h-auto cursor-pointer hover:opacity-90 transition-opacity" @click="msg.attachment && openImage(msg.attachment)" />
  </div>
  <div v-if="msg.messageType === 'voice'" class="mb-1 min-w-[200px] flex items-center gap-3 py-2">
- <div class="w-10 h-10 rounded-full bg-[#00A884]/10 flex items-center justify-center shrink-0">
- <Mic class="w-5 h-5 text-[#00A884]" />
+ <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+ <Mic class="w-5 h-5" :class="isMe(msg) ? 'text-white' : 'text-[#FF5C1A]'" />
  </div>
  <audio :src="msg.attachment" controls class="h-8 w-full custom-audio" />
  </div>
@@ -96,10 +96,10 @@
  <span class="text-[10px] text-gray-400 font-medium">
  {{ formatTime(msg.createdAt) }}
  </span>
- <!-- WhatsApp Ticks -->
+ <!-- Status Ticks -->
  <div v-if="isMe(msg)" class="flex items-center">
- <Check v-if="!msg._id" class="w-3 h-3 text-gray-400" />
- <CheckCheck v-else class="w-3.5 h-3.5 text-[#34B7F1]" />
+ <Check v-if="!msg._id" class="w-3.5 h-3.5" :class="isMe(msg) ? 'text-white' : 'text-gray-400'" />
+ <CheckCheck v-else class="w-3.5 h-3.5" :class="isMe(msg) ? 'text-white' : 'text-[#FF5C1A]'" />
  </div>
  </div>
  </div>
@@ -107,27 +107,27 @@
  </div>
  
  <div v-if="isTyping" class="flex items-center ml-2 transition-all">
- <div class="bg-white px-3 py-2 rounded-lg shadow-sm text-[12px] text-[#075E54] font-bold italic animate-pulse">
+ <div class="bg-white px-3 py-2 rounded-lg shadow-sm text-[12px] text-[#FF5C1A] font-bold italic animate-pulse">
  {{ receiverName || 'User' }} is typing...
  </div>
  </div>
 
  <!-- Media Preview if uploading -->
  <div v-if="uploadingMedia" class="flex flex-col items-center justify-center p-4 bg-white/50 backdrop-blur-sm rounded-2xl mx-10 animate-pulse border border-emerald-100">
- <div class="w-8 h-8 border-2 border-[#00A884]/20 border-t-[#00A884] rounded-full animate-spin mb-2" />
+ <div class="w-8 h-8 border-2 border-[#FF5C1A]/20 border-t-[#FF5C1A] rounded-full animate-spin mb-2" />
  <p class="text-[10px] font-bold text-emerald-600 tracking-widest">Sending media...</p>
  </div>
  </div>
 
- <!-- WhatsApp Input Bar -->
- <div class="px-2 py-3 bg-[#F0F2F5] flex flex-col gap-2">
+ <!-- Input Bar -->
+ <div class="px-2 py-3 bg-white flex flex-col gap-2 border-t border-gray-100">
  <!-- Voice Recording UI -->
- <div v-if="isRecording" class="flex items-center gap-3 px-4 py-2 bg-emerald-50 rounded-xl animate-pulse">
+ <div v-if="isRecording" class="flex items-center gap-3 px-4 py-2 bg-[#FFF0EA] rounded-xl animate-pulse">
  <div class="flex items-center gap-2 flex-1">
  <div class="w-2 h-2 rounded-full bg-red-500 animate-ping" />
- <span class="text-sm font-bold text-emerald-700">{{ recordingDuration }}s</span>
- <div class="flex-1 h-1 bg-emerald-200 rounded-full overflow-hidden">
- <div class="h-full bg-emerald-500 animate-progress" />
+ <span class="text-sm font-bold text-[#FF5C1A]">{{ recordingDuration }}s</span>
+ <div class="flex-1 h-1 bg-[#FFD1BF] rounded-full overflow-hidden">
+ <div class="h-full bg-[#FF5C1A] animate-progress" />
  </div>
  </div>
  <button @click="cancelRecording" class="text-xs font-bold text-red-500 tracking-widest">Cancel</button>
@@ -157,7 +157,7 @@
  @click="isRecording ? stopRecording() : (newMsgText.trim() ? handleSend() : startRecording())"
  :class="[
  'w-12 h-12 text-white rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all shadow-sm border border-gray-100 shrink-0',
- isRecording ? 'bg-red-500' : 'bg-[#00A884]'
+ isRecording ? 'bg-red-500' : 'bg-[#FF5C1A]'
  ]"
  >
  <Send v-if="newMsgText.trim() && !isRecording" class="w-5 h-5 ml-0.5" />

@@ -35,7 +35,99 @@
     </div>
 
     <div v-else class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-      <div class="overflow-x-auto">
+      <!-- Mobile Card Layout (visible on small screens only) -->
+      <div class="md:hidden divide-y divide-gray-100">
+        <div 
+          v-for="order in availableOrders" 
+          :key="'m-'+order._id"
+          @click="viewDetails(order)"
+          class="p-4 hover:bg-gray-50/50 transition-all cursor-pointer active:bg-gray-100/50"
+        >
+          <!-- Card Header: Icon + Title + Badges -->
+          <div class="flex items-start gap-3 mb-3">
+            <div class="w-10 h-10 rounded-xl bg-gray-950 flex items-center justify-center text-lg overflow-hidden flex-shrink-0">
+              <img v-if="order.type !== 'custom_errand' && order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
+              <span v-else class="text-white text-[9px] font-bold">CUS</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-sm font-semibold text-gray-900 truncate">
+                {{ order.type === 'custom_errand' ? 'Custom Errand' : (order.vendor?.storeName || 'Store Order') }}
+              </h3>
+              <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                <span class="text-[8px] font-medium tracking-widest text-[#FF5C1A] uppercase bg-[#FF5C1A]/5 px-1.5 py-0.5 rounded">#{{ order.orderNumber?.slice(-8) }}</span>
+                <span v-if="order.isGroupOrder" class="text-[8px] font-bold tracking-widest text-emerald-700 uppercase bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">👥 GROUP</span>
+                <span v-if="order.customerGender" class="text-[8px] font-bold tracking-widest text-indigo-700 uppercase bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100">
+                  {{ order.customerGender === 'Male' ? '🙋🏽‍♂️' : (order.customerGender === 'Female' ? '🙋🏽‍♀️' : '👤') }}
+                </span>
+                <span v-if="order.status === 'negotiating'" class="text-[8px] font-bold tracking-widest text-amber-700 uppercase bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 animate-pulse">🔥 NEGOTIATING</span>
+                <span v-if="order.status === 'interception_pending'" class="text-[8px] font-bold tracking-widest text-purple-700 uppercase bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200 animate-pulse">🤝 HAND-OFF</span>
+                <span v-if="order.locationType === 'outside_campus'" class="text-[8px] font-bold tracking-widest text-blue-700 uppercase bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">📍 Off-Campus</span>
+                <span v-if="order.locationType === 'campus_environs'" class="text-[8px] font-bold tracking-widest text-indigo-700 uppercase bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">📍 Environs</span>
+                <span class="text-[8px] font-bold text-gray-400 flex items-center gap-0.5">
+                  <Clock class="w-2.5 h-2.5" /> {{ formatTime(order.createdAt) }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Body: Description / Items -->
+          <div class="p-2.5 bg-gray-50/70 rounded-lg border border-gray-100/50 mb-3">
+            <p v-if="order.type === 'custom_errand' && order.customDetails?.description" class="text-xs text-gray-600 line-clamp-2 mb-1.5 whitespace-pre-line">
+              {{ order.customDetails.description }}
+            </p>
+            <p v-if="order.status === 'interception_pending'" class="text-xs text-purple-700 font-bold bg-purple-50 p-2 rounded-lg border border-purple-200 mb-1.5">
+              📍 Pick up from: {{ order.interception?.point }}
+            </p>
+            <div v-if="order.type === 'custom_errand' && order.customDetails?.estimatedItemCost > 0" class="flex items-center gap-1.5 text-[10px] font-medium text-gray-500 mb-1">
+              <Banknote class="w-3 h-3 text-emerald-500" /> Item Cost: <strong class="text-gray-700">₦{{ order.customDetails.estimatedItemCost.toLocaleString() }}</strong>
+            </div>
+            <div v-if="order.type !== 'custom_errand' && order.items?.length > 0" class="text-[10px] font-medium text-gray-500 line-clamp-1">
+              📦 {{ order.items.length }} Item{{ order.items.length > 1 ? 's' : '' }}: <span class="text-gray-400">{{ order.items.map((i: any) => i.name).join(', ') }}</span>
+            </div>
+          </div>
+
+          <!-- Voice Note -->
+          <div v-if="order.type === 'custom_errand' && order.customDetails?.attachedVoiceNote" class="mb-3" @click.stop>
+            <audio :src="order.customDetails.attachedVoiceNote" controls class="h-8 w-full max-w-[250px] shadow-sm rounded-full" preload="metadata" />
+          </div>
+
+          <!-- Card Footer: Earnings + Actions -->
+          <div class="flex items-center justify-between gap-3">
+            <!-- Earnings -->
+            <div v-if="order.status === 'negotiating'" class="flex-shrink-0">
+              <p class="text-[10px] font-medium text-amber-600 mb-0.5">Student proposed</p>
+              <p v-if="(order.proposedDeliveryFee || order.deliveryFee) > 0" class="text-base font-bold text-amber-700 leading-tight">₦{{ (order.proposedDeliveryFee || order.deliveryFee).toLocaleString() }}</p>
+              <p v-else class="text-sm font-bold text-amber-700 leading-tight">Make an Offer</p>
+            </div>
+            <div v-else class="flex-shrink-0">
+              <p class="text-[10px] font-medium text-gray-400 mb-0.5">You Earn</p>
+              <p class="text-base font-bold text-emerald-600 leading-tight">₦{{ order.status === 'interception_pending' ? ((order.erranderPayout || order.erranderShare || order.deliveryFee || 150) * 0.4).toLocaleString() : (order.erranderPayout || order.erranderShare || order.deliveryFee || 150).toLocaleString() }}</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <button 
+                v-if="order.status === 'negotiating'"
+                @click.stop="viewDetails(order)"
+                class="px-3 py-2 bg-amber-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-amber-600 transition-all"
+              >
+                Place Bid
+              </button>
+              <button 
+                @click.stop="order.status === 'interception_pending' ? acceptInterception(order._id) : acceptOrder(order._id)"
+                :disabled="acceptingId === order._id"
+                class="px-3 py-2 bg-gray-900 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-parentPrimary transition-all disabled:opacity-50"
+              >
+                <span v-if="acceptingId === order._id" class="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block"></span>
+                <span v-else>Accept</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Table Layout (hidden on small screens) -->
+      <div class="hidden md:block overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-gray-50/50 border-b border-gray-100">
@@ -61,7 +153,7 @@
                   </div>
                   <div>
                     <h3 class="text-sm font-medium text-gray-900 mb-1 line-clamp-1">
-                      {{ order.type === 'custom_errand' ? 'Special Request' : (order.vendor?.storeName || 'Store Order') }}
+                      {{ order.type === 'custom_errand' ? 'Custom Errand' : (order.vendor?.storeName || 'Store Order') }}
                     </h3>
                     <div class="flex items-center gap-2 mb-1.5 flex-wrap">
                       <span class="text-[9px] font-medium tracking-widest text-[#FF5C1A] uppercase bg-[#FF5C1A]/5 px-2 py-0.5 rounded">#{{ order.orderNumber?.slice(-8) }}</span>
@@ -174,7 +266,7 @@
           </div>
           <div>
             <h2 class="text-xl font-medium text-gray-900 leading-tight">
-              {{ selectedOrder.type === 'custom_errand' ? 'Special Request' : selectedOrder.vendor?.storeName }}
+              {{ selectedOrder.type === 'custom_errand' ? 'Custom Errand' : selectedOrder.vendor?.storeName }}
             </h2>
             <p class="text-xs font-bold text-gray-400 tracking-widest uppercase">#{{ selectedOrder.orderNumber }}</p>
           </div>

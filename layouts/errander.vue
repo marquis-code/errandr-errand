@@ -4,12 +4,14 @@
  <aside class="hidden lg:flex flex-col bg-white border-r border-gray-100 min-h-screen fixed left-0 top-0 z-50 transition-all duration-300" :class="isSidebarMinimized ? 'w-20' : 'w-64'">
  <!-- Logo -->
  <div class="p-4 pb-8 flex items-center gap-3 relative" :class="isSidebarMinimized ? 'justify-center px-0' : ''">
- <div class="w-10 h-10 bg-gradient-to-br from-[#FF5C1A] to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm border border-gray-100 shadow-[#FF5C1A]/20 shrink-0">
+  <img src="@/assets/img/logo-light.png" class="h-10 w-auto" />
+ <!-- <div class="w-10 h-10 bg-gradient-to-br from-[#FF5C1A] to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm border border-gray-100 shadow-[#FF5C1A]/20 shrink-0">
  E
- </div>
+ </div> -->
  <div v-if="!isSidebarMinimized" class="flex flex-col">
- <span class="text-lg font-bold text-gray-900 tracking-tight leading-none">Errandr</span>
- <span class="text-[10px] font-semibold text-[#FF5C1A] tracking-wide leading-none mt-0.5">Rider Portal</span>
+  <img src="@/assets/img/logo-light.png" class="h-10 w-auto" />
+ <!-- <span class="text-lg font-bold text-gray-900 tracking-tight leading-none">Errandr</span>
+ <span class="text-[10px] font-semibold text-[#FF5C1A] tracking-wide leading-none mt-0.5">Rider Portal</span> -->
  </div>
 
  <!-- Toggle Button -->
@@ -72,10 +74,12 @@
  <!-- Mobile Header -->
  <header class="lg:hidden bg-white border-b border-gray-100 sticky top-0 z-40 px-5 py-3.5 flex items-center justify-between">
  <div class="flex items-center gap-2.5">
- <div class="w-9 h-9 bg-gradient-to-br from-[#FF5C1A] to-indigo-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-sm border border-gray-100 shadow-[#FF5C1A]/10">
+  <!-- <img src="@/assets/img/logo-light.png" class="h-10 w-auto" /> -->
+ <!-- <div class="w-9 h-9 bg-gradient-to-br from-[#FF5C1A] to-indigo-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-sm border border-gray-100 shadow-[#FF5C1A]/10">
  E
- </div>
- <span class="text-lg font-bold text-gray-900 tracking-tight">Errandr</span>
+ </div> -->
+ <img src="@/assets/img/logo-light.png" class="h-10 w-auto" />
+ <!-- <span class="text-lg font-bold text-gray-900 tracking-tight">Errandr</span> -->
  </div>
  <div class="flex items-center gap-2">
  <NuxtLink to="/notifications" class="relative w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:text-gray-600 transition-all">
@@ -103,8 +107,9 @@
  <aside v-if="showMobileMenu" class="lg:hidden w-72 bg-white min-h-screen fixed left-0 top-0 z-50 shadow-sm border border-gray-100 flex flex-col">
  <div class="p-5 border-b border-gray-100 flex items-center justify-between">
  <div class="flex items-center gap-2.5">
- <div class="w-9 h-9 bg-[#FF5C1A] rounded-lg flex items-center justify-center text-white font-bold text-sm">E</div>
- <span class="text-lg font-bold text-gray-900 tracking-tight">Errandr</span>
+  <img src="@/assets/img/logo-light.png" class="h-10 w-auto" />
+ <!-- <div class="w-9 h-9 bg-[#FF5C1A] rounded-lg flex items-center justify-center text-white font-bold text-sm">E</div>
+ <span class="text-lg font-bold text-gray-900 tracking-tight">Errandr</span> -->
  </div>
  <button @click="showMobileMenu = false" class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400"><X class="w-5 h-5" /></button>
  </div>
@@ -243,11 +248,11 @@
  </div>
 
  <!-- Page Content -->
- <div class="flex-1 p-5 md:p-5">
+ <div class="flex-1 p-2.5 md:p-5">
  <slot />
  </div>
  <!-- Footer -->
- <footer class="px-5 py-5 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4 mt-auto">
+ <!-- <footer class="px-5 py-5 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4 mt-auto">
  <p class="text-xs text-gray-400 font-medium">© {{ new Date().getFullYear() }} Errandr Rider</p>
  <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-5">
  <NuxtLink to="/terms" class="text-xs text-gray-400 hover:text-[#FF5C1A] font-medium transition-colors">Terms</NuxtLink>
@@ -255,7 +260,7 @@
  <NuxtLink to="/refund" class="text-xs text-gray-400 hover:text-[#FF5C1A] font-medium transition-colors">Refunds</NuxtLink>
  <NuxtLink to="/contact" class="text-xs text-gray-400 hover:text-[#FF5C1A] font-medium transition-colors">Contact</NuxtLink>
  </div>
- </footer>
+ </footer> -->
  </main>
 
  <!-- Logout Confirmation Modal -->

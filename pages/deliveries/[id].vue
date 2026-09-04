@@ -57,11 +57,11 @@
  <div class="flex items-start gap-3 md:gap-6 relative">
  <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center text-sm border border-amber-100/20 flex-shrink-0 group-hover:scale-105 transition-transform">🏪</div>
  <div class="min-w-0 pt-0.5 w-full">
- <p class="text-[10px] font-bold text-amber-600 tracking-wider mb-1 uppercase">Pickup Location</p>
+ <p class="text-[10px] font-bold text-amber-600 tracking-wider mb-1 uppercase">{{ (order.interception?.status === 'accepted' && !isPrimaryErrander) ? 'Hand-off Location' : 'Pickup Location' }}</p>
  <p class="text-sm font-bold text-gray-900 leading-tight mb-1 truncate">
- {{ order.type === 'custom_errand' ? (order.customDetails?.pickupLocation || 'Custom Pickup') : order.vendor?.storeName }}
+ {{ (order.interception?.status === 'accepted' && !isPrimaryErrander) ? order.interception.point : (order.type === 'custom_errand' ? (order.customDetails?.pickupLocation || 'Custom Pickup') : order.vendor?.storeName) }}
  </p>
- <p class="text-xs font-medium text-gray-500 mb-2">{{ order.type === 'custom_errand' ? 'Special Request Pickup' : (order.vendor?.address || 'Vendor Address') }}</p>
+ <p class="text-xs font-medium text-gray-500 mb-2">{{ (order.interception?.status === 'accepted' && !isPrimaryErrander) ? 'Meet the previous errander here' : (order.type === 'custom_errand' ? 'Special Request Pickup' : (order.vendor?.address || 'Vendor Address')) }}</p>
  
  <div v-if="order.type !== 'custom_errand' && order.vendor" class="flex flex-col gap-2 mt-2 w-full sm:w-auto">
    <div v-if="order.vendor?.phone" class="flex gap-2">
@@ -76,7 +76,7 @@
      </a>
    </div>
    <button 
-   @click="openChat(String(order.vendor?.owner || order.vendor?._id || ''), order.vendor?.storeName + ' (Store)', order.vendor?.logo || order.vendor?.storeLogo)" 
+   @click.stop.prevent="openChat(order.vendor?._id || order.vendor?.owner || order.vendor, order.vendor?.storeName + ' (Store)', order.vendor?.logo || order.vendor?.storeLogo)" 
    class="w-full px-3 py-1.5 bg-amber-50 text-amber-600 rounded-lg text-[11px] font-bold hover:bg-amber-100 transition-all transform active:scale-95 border border-amber-100 flex items-center justify-center gap-1.5"
    >
    <MessageSquare class="w-3 h-3" /> In-App Message Store
@@ -108,7 +108,7 @@
           </a>
         </div>
         <button 
-          @click="openChat(String(order.customer?._id || ''), order.customer?.firstName + ' ' + order.customer?.lastName + ' (Customer)')" 
+          @click.stop.prevent="openChat(order.customer?._id || order.customer, order.customer?.firstName + ' ' + order.customer?.lastName + ' (Customer)')" 
           class="w-full px-3 py-1.5 bg-[#FF5C1A]/5 text-[#FF5C1A] rounded-lg text-[11px] font-bold hover:bg-[#FF5C1A]/10 transition-all transform active:scale-95 border border-[#FF5C1A]/20 flex items-center justify-center gap-1.5"
         >
           <MessageSquare class="w-3 h-3" /> In-App Message Customer
@@ -247,7 +247,7 @@
      WhatsApp
    </a>
  </div>
- <button @click="openChat(String(order.customer?._id || ''), order.customer?.firstName + ' ' + order.customer?.lastName, order.customer?.avatar)" class="w-full py-3.5 bg-blue-50 text-blue-700 rounded-xl text-sm font-bold hover:bg-blue-600 hover:text-white hover: hover:shadow-blue-500/20 transition-all transform active:scale-95 border border-blue-200 flex items-center justify-center gap-2">
+ <button @click.stop.prevent="openChat(order.customer?._id || order.customer, order.customer?.firstName + ' ' + order.customer?.lastName, order.customer?.avatar)" class="w-full py-3.5 bg-blue-50 text-blue-700 rounded-xl text-sm font-bold hover:bg-blue-600 hover:text-white hover: hover:shadow-blue-500/20 transition-all transform active:scale-95 border border-blue-200 flex items-center justify-center gap-2">
  <MessageSquare class="w-4 h-4" /> In-App Message
  </button>
  </div>
@@ -307,7 +307,7 @@
  </p>
  </div>
  
- <div v-if="order.status === 'picked_up' || order.status === 'interception_in_progress'" class="space-y-3">
+ <div v-if="(order.status === 'picked_up' || order.status === 'interception_in_progress') && isActiveErrander" class="space-y-3">
  <button @click="updateStatus('in_transit')" :disabled="updatingStatus" class="w-full py-3 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-95 transition-all flex items-center justify-center gap-2 group">
  <Loader2 v-if="updatingStatus" class="w-4 h-4 animate-spin" />
  <span v-else class="text-lg group-hover:scale-110 transition-transform">🚀</span> 
@@ -326,13 +326,13 @@
    <p class="text-xs text-gray-400 text-center font-medium mt-2 leading-tight">Need someone else to complete the delivery? You will split the earnings (60:40).</p>
  </div>
  
- <div v-if="order.interception?.status === 'pending'" class="mt-6 bg-purple-50 border border-purple-200 rounded-2xl p-4 text-center">
+ <div v-if="order.interception?.status === 'pending' && isPrimaryErrander" class="mt-6 bg-purple-50 border border-purple-200 rounded-2xl p-4 text-center">
    <div class="text-3xl mb-2 animate-bounce">⏳</div>
    <h3 class="text-purple-900 font-bold text-sm mb-1">Hand-off Requested</h3>
    <p class="text-purple-700 text-xs mb-3">Waiting for another errander to accept the hand-off.</p>
  </div>
 
- <div v-if="order.interception?.status === 'accepted'" class="mt-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center">
+ <div v-if="order.interception?.status === 'accepted' && isPrimaryErrander" class="mt-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center">
    <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mb-3 mx-auto">
      <span class="text-xl">🤝</span>
    </div>
@@ -341,7 +341,7 @@
  </div>
 
  <!-- Premium Verification Interface -->
- <div v-if="order.status === 'in_transit' || order.status === 'picked_up' || order.status === 'interception_in_progress'" class="bg-white rounded-xl md:rounded-3xl p-4 md:p-5 space-y-4 md:space-y-6 relative overflow-hidden group border border-gray-100 shadow-sm">
+ <div v-if="(order.status === 'in_transit' || order.status === 'picked_up' || order.status === 'interception_in_progress') && isActiveErrander" class="bg-white rounded-xl md:rounded-3xl p-4 md:p-5 space-y-4 md:space-y-6 relative overflow-hidden group border border-gray-100 shadow-sm">
  <div class="absolute -right-32 -top-32 w-64 h-64 bg-[#FF5C1A]/5 rounded-full blur-[80px] group-hover:scale-125 transition-transform duration-1000" />
  
  <div class="text-center space-y-2 relative z-10">
@@ -349,15 +349,22 @@
  <p class="text-gray-500 text-xs font-bold tracking-[0.1em] uppercase">Request the 4-digit code from the user</p>
  </div>
  
- <div class="flex justify-center relative z-10 px-4">
- <input
- v-model="verificationCode"
- type="text"
- maxlength="4"
- placeholder="••••"
- class="bg-gray-50 text-gray-900 text-3xl font-black text-center tracking-[1em] pl-[1em] w-full py-4 rounded-2xl border border-gray-200 focus:border-[#FF5C1A] focus:bg-white focus:ring-4 focus:ring-[#FF5C1A]/10 transition-all focus:outline-none placeholder:text-gray-300"
- />
- </div>
+ <div class="flex justify-center gap-3 relative z-10 px-4">
+    <input
+      v-for="(digit, index) in 4"
+      :key="index"
+      :ref="(el) => { if (el) pinInputs[index] = el }"
+      v-model="pinArray[index]"
+      @input="onPinInput(index, $event)"
+      @keydown="onPinKeydown(index, $event)"
+      @paste="onPinPaste"
+      type="text"
+      inputmode="text"
+      maxlength="1"
+      placeholder="•"
+      class="w-16 h-20 text-center text-4xl font-black text-gray-900 bg-gray-50 border border-gray-200 rounded-2xl focus:border-[#FF5C1A] focus:ring-4 focus:ring-[#FF5C1A]/10 focus:bg-white focus:outline-none transition-all placeholder:text-gray-300 uppercase shadow-inner"
+    />
+  </div>
  
  <button 
  @click="completeOrder" 
@@ -494,14 +501,14 @@
 
 <script setup lang="ts">
 const route = useRoute();
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { GATEWAY_ENDPOINT_WITH_AUTH as api, GATEWAY_ENDPOINT_WITH_AUTH_FORM_DATA } from '@/api_factory/axios.config';
 import StatusBadge from '@/components/ui/StatusBadge.vue';
 import UiModal from '@/components/ui/UiModal.vue';
 import OrderChat from '@/components/core/OrderChat.vue';
 import MapboxMap from '@/components/ui/MapboxMap.vue';
 import { useUser } from '@/composables/modules/auth/user';
 import { useCustomToast } from "@/composables/core/useCustomToast"
-import { Phone, MessageSquare, Loader2, Camera, X, Upload } from 'lucide-vue-next';
+import { Phone, MessageSquare, Loader2, Camera, X, Upload, Check } from 'lucide-vue-next';
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 const { user } = useUser();
@@ -516,6 +523,44 @@ const orderError = ref('');
 const verificationCode = ref('');
 const completing = ref(false);
 
+const pinArray = ref(['', '', '', '']);
+const pinInputs = ref<any[]>([]);
+
+watch(pinArray, (newVal) => {
+  verificationCode.value = newVal.join('');
+}, { deep: true });
+
+const onPinInput = (index: number, event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const val = input.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  pinArray.value[index] = val;
+  input.value = val;
+  
+  if (val && index < 3) {
+    pinInputs.value[index + 1]?.focus();
+  }
+};
+
+const onPinKeydown = (index: number, event: KeyboardEvent) => {
+  if (event.key === 'Backspace' && !pinArray.value[index] && index > 0) {
+    pinInputs.value[index - 1]?.focus();
+  }
+};
+
+const onPinPaste = (event: ClipboardEvent) => {
+  event.preventDefault();
+  const pasteData = event.clipboardData?.getData('text');
+  if (pasteData) {
+    const cleanData = pasteData.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 4);
+    for (let i = 0; i < 4; i++) {
+      pinArray.value[i] = cleanData[i] || '';
+    }
+    if (cleanData.length > 0) {
+      pinInputs.value[Math.min(cleanData.length - 1, 3)]?.focus();
+    }
+  }
+};
+
 const isHandoffModalOpen = ref(false);
 const requestingHandoff = ref(false);
 const handoffLocation = ref('');
@@ -525,6 +570,15 @@ const isPrimaryErrander = computed(() => {
   if (!order.value || !user.value) return false;
   const erranderId = order.value.errander?._id || order.value.errander;
   return erranderId === user.value._id;
+});
+
+const isActiveErrander = computed(() => {
+  if (!order.value || !user.value) return false;
+  if (order.value.interception?.status === 'accepted' || order.value.interception?.status === 'completed') {
+    const secondErranderId = order.value.interception?.secondErrander?._id || order.value.interception?.secondErrander;
+    return secondErranderId === user.value._id;
+  }
+  return isPrimaryErrander.value;
 });
 
 const submitHandoff = async () => {
@@ -567,7 +621,12 @@ const getGroupedCustomizations = (customizations: any[]) => {
 };
 
 const steps = ['confirmed', 'picked_up', 'in_transit', 'delivered'];
-const currentStep = computed(() => order.value ? steps.indexOf(order.value.status) : -1);
+const currentStep = computed(() => {
+  if (!order.value) return -1;
+  const status = order.value.status;
+  if (status === 'interception_pending' || status === 'interception_in_progress') return 1; // Treat as 'picked_up' in UI
+  return steps.indexOf(status);
+});
 const formatStatus = (s: string) => s?.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
 
 const { connect, emit, on } = useSocket('');
@@ -615,9 +674,12 @@ const chatReceiverId = ref('');
 const chatReceiverName = ref('');
 const chatReceiverAvatar = ref('');
 
-const openChat = (receiverId: string | undefined, name: string, avatar?: string) => {
- if (!receiverId) return;
- chatReceiverId.value = receiverId;
+const openChat = (receiverId: any, name: string, avatar?: string) => {
+ const resolvedId = String(receiverId || '');
+ if (!resolvedId || resolvedId === 'undefined' || resolvedId === 'null') {
+    return;
+ }
+ chatReceiverId.value = resolvedId;
  chatReceiverName.value = name;
  chatReceiverAvatar.value = avatar || '';
  isChatOpen.value = true;
@@ -653,12 +715,10 @@ const handleReceiptUpload = async (event: Event) => {
     const formData = new FormData();
     formData.append('file', file);
     
-    const resUpload = await api.post<any>('/upload?resourceType=image', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
+    const resUpload = await GATEWAY_ENDPOINT_WITH_AUTH_FORM_DATA.post<any>('/upload/image', formData);
     
-    if (!resUpload || !resUpload.url) throw new Error('Upload failed');
-    receiptUrl.value = resUpload.url;
+    if (!resUpload || !resUpload.data?.url) throw new Error('Upload failed');
+    receiptUrl.value = resUpload.data.url;
   } catch (e: any) {
     showToast({
       title: 'Upload Failed',
@@ -838,14 +898,12 @@ const handleContactlessDropoff = async (event: Event) => {
  const formData = new FormData();
  formData.append('file', file);
  
- const resUpload = await api.post<any>('/upload?resourceType=image', formData, {
- headers: { 'Content-Type': 'multipart/form-data' }
- });
+ const resUpload = await GATEWAY_ENDPOINT_WITH_AUTH_FORM_DATA.post<any>('/upload/image', formData);
  
- if (!resUpload || !resUpload.url) throw new Error('Upload failed');
+ if (!resUpload || !resUpload.data?.url) throw new Error('Upload failed');
 
  const res = await api.post<any>(`/orders/${route.params.id}/complete-contactless`, { 
- imageUrl: resUpload.url 
+ imageUrl: resUpload.data.url 
  });
  
  if (res && res.type === 'ERROR') {
@@ -895,34 +953,46 @@ const startLocation = () => {
  }
 };
 
-  const loadOrder = async () => {
-    loadingOrder.value = true;
+  const loadOrder = async (background = false) => {
+    if (!background) loadingOrder.value = true;
     orderError.value = '';
     try {
       const res = await api.get<any>(`/orders/${route.params.id}`);
       if (res && res.type === 'ERROR') {
         orderError.value = res.data?.message || res.statusText || 'Failed to load order. Please check your network and try again.';
-        order.value = null;
+        if (!background) order.value = null;
       } else {
         order.value = res.data;
       }
     } catch (e: any) {
       console.error(e);
       orderError.value = e.message || 'An unexpected error occurred.';
-      order.value = null;
+      if (!background) order.value = null;
     } finally {
-      loadingOrder.value = false;
+      if (!background) loadingOrder.value = false;
     }
   };
+
+let statusPollingInterval: any = null;
 
  onMounted(async () => {
   await loadOrder();
 
+  // Robust fallback: Poll the order status every 5 seconds to ensure we don't get stuck on critical statuses
+  statusPollingInterval = setInterval(() => {
+    if (order.value?.status && ['awaiting_payment', 'awaiting_payment_confirmation', 'interception_pending', 'in_progress', 'ready_for_pickup'].includes(order.value.status)) {
+      loadOrder(true); // background fetch, no spinner
+    }
+  }, 5000);
+
   connect();
   emit('trackOrder', { orderId: route.params.id });
   startLocation();
+  
+  const matchesOrder = (id: any) => id && String(id) === String(route.params.id);
+  
   on('notification:order-status-update', (payload: any) => {
-    if (payload.orderId === route.params.id || payload.data?.orderId === route.params.id) {
+    if (matchesOrder(payload.orderId) || matchesOrder(payload.data?.orderId)) {
       loadOrder();
     }
   });
@@ -939,17 +1009,21 @@ const startLocation = () => {
     ];
     
     if (reloadTypes.includes(payload?.type)) {
-      if (payload.data?.orderId === route.params.id) {
+      if (matchesOrder(payload.data?.orderId) || matchesOrder(payload.orderId)) {
         loadOrder();
       }
     }
   });
   
   on('notification:order-accepted', (payload: any) => {
-    if (payload.orderId === route.params.id || payload.data?.orderId === route.params.id) {
+    if (matchesOrder(payload.orderId) || matchesOrder(payload.data?.orderId)) {
       loadOrder();
     }
   });
+});
+
+onUnmounted(() => {
+  if (statusPollingInterval) clearInterval(statusPollingInterval);
 });
 
 useHead({ title: computed(() => `Delivery #${order.value?.orderNumber || ''} - Errandr`) });

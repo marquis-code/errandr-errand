@@ -1,9 +1,9 @@
 <template>
-  <div class="space-y-8 animate-fade-in max-w-7xl mx-auto pb-16 from-slate-50/80 via-white to-white bg-white/70 backdrop-blur-md rounded-2xl border border-white/20 overflow-hidden">
+  <div class="space-y-8 animate-fade-in max-w-7xl mx-auto pb-16 from-slate-50/80 via-white to-white  backdrop-blur-md rounded-2xl border border-white/20 overflow-hidden">
     <!-- Welcome Header -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Welcome back, {{ user?.firstName || 'Rider' }} 👋</h1>
+        <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Welcome back, {{ user?.firstName || 'Rider' }} 👋</h1>
         <p class="text-gray-500 text-sm mt-1">Here's a summary of your delivery activity.</p>
       </div>
     </div>
@@ -47,7 +47,7 @@
           <div v-if="loadingOrders" class="p-5">
             <div class="h-20 bg-gray-50 rounded-xl animate-pulse"></div>
           </div>
-          <div v-else-if="activeOrders.length > 0" class="divide-y divide-gray-50">
+          <div v-else-if="activeOrders.length > 0" class="divide-y space-y-3.5 p-3 divide-gray-50">
             <div v-for="order in activeOrders" :key="order._id" class="p-4 bg-white/70 backdrop-blur-md rounded-2xl border border-white/20 shadow-sm hover:shadow-sm border border-gray-100 transition-all transform hover:-translate-y-0.5">
               <div class="flex flex-col md:flex-row gap-6 items-start">
                 <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-2xl flex-shrink-0">
@@ -157,7 +157,7 @@
             <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">📦</div>
             <p class="text-sm text-gray-400">No deliveries yet. Your recent orders will appear here.</p>
           </div>
-          <div v-else class="divide-y divide-gray-50">
+          <div v-else class="divide-y space-y-3 p-3 divide-gray-50">
             <NuxtLink 
               v-for="order in recentOrders" 
               :key="order._id" 

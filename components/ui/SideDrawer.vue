@@ -1,38 +1,40 @@
 <template>
-  <Transition name="drawer">
-    <div v-if="isOpen" class="fixed inset-0 z-[100] flex justify-end" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
-      <!-- Backdrop -->
-      <Transition name="fade">
-        <div 
-          v-if="isOpen" 
-          class="fixed inset-0 bg-gray-900/20 backdrop-blur-sm transition-opacity" 
-          @click="$emit('close')"
-          aria-hidden="true"
-        ></div>
-      </Transition>
-
-      <!-- Drawer panel -->
-      <div class="relative w-full max-w-md h-full bg-white shadow-sm border border-gray-100 flex flex-col pointer-events-auto transform transition-transform duration-500 ease-in-out">
-        
-        <!-- Header area for Close Button -->
-        <div class="absolute top-0 right-0 pt-6 pr-6 flex items-center z-10">
-          <button 
-            type="button" 
-            class="rounded-full flex items-center justify-center w-10 h-10 bg-gray-50 text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all" 
+  <Teleport to="body">
+    <Transition name="drawer">
+      <div v-if="isOpen" class="fixed inset-0 z-[100] flex justify-end" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <Transition name="fade">
+          <div 
+            v-if="isOpen" 
+            class="fixed inset-0 bg-gray-900/20 backdrop-blur-sm transition-opacity" 
             @click="$emit('close')"
-          >
-            <span class="sr-only">Close panel</span>
-            <X class="w-5 h-5" />
-          </button>
-        </div>
+            aria-hidden="true"
+          ></div>
+        </Transition>
 
-        <!-- Scrollable Content slot -->
-        <div class="flex-1 overflow-y-auto hide-scrollbar p-5 pt-12">
-          <slot></slot>
+        <!-- Drawer panel -->
+        <div class="relative w-full max-w-md h-full bg-white shadow-sm border border-gray-100 flex flex-col pointer-events-auto transform transition-transform duration-500 ease-in-out" style="padding-top: env(safe-area-inset-top, 0px)">
+          
+          <!-- Header area for Close Button -->
+          <div class="absolute right-0 flex items-center z-10" style="top: calc(env(safe-area-inset-top, 0px) + 1.5rem); padding-right: 1.5rem;">
+            <button 
+              type="button" 
+              class="rounded-full flex items-center justify-center w-10 h-10 bg-gray-50 text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all" 
+              @click="$emit('close')"
+            >
+              <span class="sr-only">Close panel</span>
+              <X class="w-5 h-5" />
+            </button>
+          </div>
+
+          <!-- Scrollable Content slot -->
+          <div class="flex-1 overflow-y-auto hide-scrollbar p-5 pt-12">
+            <slot></slot>
+          </div>
         </div>
       </div>
-    </div>
-  </Transition>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
