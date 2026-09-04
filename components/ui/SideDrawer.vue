@@ -3,14 +3,11 @@
     <Transition name="drawer">
       <div v-if="isOpen" class="fixed inset-0 z-[100] flex justify-end" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
         <!-- Backdrop -->
-        <Transition name="fade">
-          <div 
-            v-if="isOpen" 
-            class="fixed inset-0 bg-gray-900/20 backdrop-blur-sm transition-opacity" 
-            @click="$emit('close')"
-            aria-hidden="true"
-          ></div>
-        </Transition>
+        <div 
+          class="fixed inset-0 bg-gray-900/20 backdrop-blur-sm transition-opacity duration-300" 
+          @click="$emit('close')"
+          aria-hidden="true"
+        ></div>
 
         <!-- Drawer panel -->
         <div class="relative w-full max-w-md h-full bg-white shadow-sm border border-gray-100 flex flex-col pointer-events-auto transform transition-transform duration-500 ease-in-out" style="padding-top: env(safe-area-inset-top, 0px)">
