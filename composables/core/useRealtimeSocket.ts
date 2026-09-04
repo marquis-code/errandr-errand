@@ -44,7 +44,7 @@ export const useRealtimeSocket = () => {
 
     socket.value = io(`${baseUrl}/realtime`, {
       path: '/socket.io/',
-      transports: ['polling', 'websocket'], // Fallback to polling if websocket fails
+      transports: ['polling'], // Force polling since Vercel/serverless environments drop WebSocket upgrades
       reconnectionAttempts: 5,
       timeout: 10000,
       auth: authPayload,

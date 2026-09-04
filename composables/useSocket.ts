@@ -24,7 +24,7 @@ export const useSocket = (namespace: string) => {
       query: {
         userId: connectionId,
       },
-      transports: ['polling', 'websocket'],
+      transports: ['polling'],
       reconnection: true,
       reconnectionAttempts: Infinity,
       reconnectionDelay: 1000,

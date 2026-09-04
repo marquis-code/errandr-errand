@@ -658,7 +658,7 @@ const connectNegotiationSocket = (orderId: string) => {
   console.log('[NegotiationSocket] Connecting to', `${wsUrl}/negotiation`)
   negotiationSocket = io(`${wsUrl}/negotiation`, {
     withCredentials: true,
-    transports: ['polling', 'websocket'],
+    transports: ['polling'],
     reconnection: true,
     reconnectionAttempts: 10,
     reconnectionDelay: 1000,
