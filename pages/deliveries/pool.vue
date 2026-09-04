@@ -654,7 +654,7 @@ const loadBatchStatus = async () => {
 const connectNegotiationSocket = (orderId: string) => {
   disconnectNegotiationSocket()
   const baseUrl = runtimeConfig.public.wsBase || runtimeConfig.public.apiBase || 'http://localhost:3005'
-  const wsUrl = baseUrl.replace('/v1', '').replace('/api', '')
+  const wsUrl = baseUrl.replace(/\/v1\/?$/, '').replace(/\/api\/?$/, '')
   console.log('[NegotiationSocket] Connecting to', `${wsUrl}/negotiation`)
   negotiationSocket = io(`${wsUrl}/negotiation`, {
     withCredentials: true,
