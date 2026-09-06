@@ -19,6 +19,8 @@ const deliveryLocation = ref<{ type: string; coordinates: number[] } | null>(nul
 
 const cartInitialized = ref(false);
 
+import { useConfirmModal } from '@/composables/core/useConfirmModal';
+
 export const useCart = () => {
   const initCart = () => {
     if (cartInitialized.value || !import.meta.client) return;
@@ -40,10 +42,12 @@ export const useCart = () => {
     }
   };
 
-  const addItem = (item: Omit<CartItem, 'subtotal'>) => {
+  const addItem = async (item: Omit<CartItem, 'subtotal'>) => {
     // Check if item from same vendor
     if (items.value.length > 0 && items.value[0].vendorId !== item.vendorId) {
-      if (!confirm('Start a new order? This will clear your current cart from another vendor.')) return;
+      const { confirm } = useConfirmModal();
+      const isConfirmed = await confirm({ title: 'Start New Order?', message: 'This will clear your current cart from another vendor.', variant: 'warning', confirmText: 'Clear Cart & Start' });
+      if (!isConfirmed) return;
       items.value = []; 
     }
 
