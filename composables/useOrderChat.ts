@@ -84,14 +84,22 @@ export const useOrderChat = (
     };
     messages.value.push(tempMsg as any);
 
-    emit('sendMessage', {
+    const payload: any = {
       orderId,
       senderId: cleanSenderId,
-      receiverId: cleanReceiverId,
       message: text,
       messageType: type,
       attachment
-    });
+    };
+
+    if (cleanReceiverId === 'admin_support_channel') {
+      payload.roomType = 'support';
+      // Do not include receiverId so backend doesn't crash parsing it as ObjectId
+    } else {
+      payload.receiverId = cleanReceiverId;
+    }
+
+    emit('sendMessage', payload);
   };
 
   const sendTyping = (userId: string) => {
