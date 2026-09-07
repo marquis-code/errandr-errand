@@ -194,18 +194,21 @@ const selectedOrder = ref<any>(null);
 const filters = [
  { key: 'all', label: 'All' },
  { key: 'active', label: 'Active' },
+ { key: 'intercepted', label: 'Intercepted' },
  { key: 'delivered', label: 'Completed' },
 ];
 
 const filteredOrders = computed(() => {
  let list = orders.value;
- if (activeFilter.value !== 'all') {
- if (activeFilter.value === 'active') {
- list = list.filter(o => !['delivered', 'cancelled'].includes(o.status));
- } else {
- list = list.filter(o => o.status === activeFilter.value);
- }
- }
+  if (activeFilter.value !== 'all') {
+  if (activeFilter.value === 'active') {
+  list = list.filter(o => !['delivered', 'cancelled', 'interception_pending', 'interception_in_progress'].includes(o.status));
+  } else if (activeFilter.value === 'intercepted') {
+  list = list.filter(o => ['interception_pending', 'interception_in_progress'].includes(o.status));
+  } else {
+  list = list.filter(o => o.status === activeFilter.value);
+  }
+  }
  
  if (searchQuery.value) {
  const q = searchQuery.value.toLowerCase();
@@ -225,6 +228,8 @@ const statusEmoji = (s: string) => ({
  ready_for_pickup: '📦',
  picked_up: '🏃',
  in_transit: '🚀',
+ interception_pending: '🔄',
+ interception_in_progress: '🏃‍♂️',
  delivered: '🎉',
  cancelled: '❌'
 }[s] || '📋');
@@ -233,6 +238,7 @@ const getStatusClasses = (s: string) => {
  if (['delivered', 'confirmed'].includes(s)) return 'bg-emerald-50 text-emerald-700 border border-emerald-100';
  if (['in_transit', 'picked_up'].includes(s)) return 'bg-blue-50 text-blue-700 border border-blue-100';
  if (['pending', 'preparing', 'ready_for_pickup'].includes(s)) return 'bg-amber-50 text-amber-700 border border-amber-100';
+ if (['interception_pending', 'interception_in_progress'].includes(s)) return 'bg-purple-50 text-purple-700 border border-purple-100';
  if (s === 'cancelled') return 'bg-rose-50 text-rose-700 border border-rose-100';
  return 'bg-gray-50 text-gray-500 border border-gray-100';
 }
