@@ -97,8 +97,8 @@
  >
  <td class="py-3.5 px-5">
  <div class="flex items-center gap-3">
- <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-sm flex-shrink-0">
- {{ statusEmoji(order.status) }}
+ <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center flex-shrink-0 text-gray-500">
+ <StatusIcon :status="order.status" />
  </div>
  <div>
  <p class="font-semibold text-sm text-gray-900">#{{ order.orderNumber }}</p>
@@ -141,8 +141,8 @@
  <SideDrawer :isOpen="!!selectedOrder" @close="selectedOrder = null">
  <template v-if="selectedOrder">
  <div class="flex flex-col items-center justify-center py-4 border-b border-gray-100">
- <div class="w-14 h-14 bg-white rounded-[1.25rem] border border-gray-50 flex items-center justify-center text-2xl mb-3">
- {{ statusEmoji(selectedOrder.status) }}
+ <div class="w-14 h-14 bg-white rounded-[1.25rem] border border-gray-50 flex items-center justify-center mb-3 text-gray-500">
+ <StatusIcon :status="selectedOrder.status" size="w-6 h-6" />
  </div>
  <h3 class="text-lg font-medium text-gray-900 tracking-tighter">Delivery #{{ selectedOrder.orderNumber }}</h3>
  <span :class="getStatusClasses(selectedOrder.status)" class="mt-2 text-[10px] font-bold px-3 py-1 rounded-xl capitalize border">
@@ -205,6 +205,7 @@
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 import { Search, ChevronRight, Bike } from 'lucide-vue-next';
 import EmptyState from '@/components/ui/EmptyState.vue';
+import StatusIcon from '@/components/ui/StatusIcon.vue';
 import SideDrawer from '@/components/ui/SideDrawer.vue';
 import { ref, computed, onMounted } from 'vue';
 

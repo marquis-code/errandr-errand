@@ -104,7 +104,7 @@
               </p>
 
               <div class="ad-chips">
-                <span class="ad-chip">{{ statusEmoji(order.status) }} {{ statusLabel(order.status) }}</span>
+                <span class="ad-chip"><StatusIcon :status="order.status" class="w-3.5 h-3.5" /> {{ statusLabel(order.status) }}</span>
                 <span v-if="getOrderEarnings(order) > 0" class="ad-chip money">₦{{ getOrderEarnings(order).toLocaleString() }}</span>
               </div>
 
@@ -202,8 +202,8 @@
               :to="`/deliveries/${order._id}`"
               class="px-4 py-4   rounded-xl  hover:border border-gray-25 transition-all flex items-center gap-4 group cursor-pointer"
             >
-              <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 bg-gray-50 group-hover:scale-105 transition-transform">
-                {{ statusEmoji(order.status) }}
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-gray-50 text-gray-500 group-hover:scale-105 transition-transform">
+                <StatusIcon :status="order.status" size="w-5 h-5" />
               </div>
               <div class="flex-1 min-w-0">
                 <h4 class="font-semibold text-sm text-gray-900 truncate flex items-center gap-2">
@@ -311,10 +311,10 @@ const applyDutyChange = async () => {
 }
 
 const stats = computed(() => [
-  { label: 'Deliveries Done', value: earningsData.value.totalDeliveries || orders.value.filter(o => o.status === 'delivered').length || '0', emoji: '🏁', bgClass: 'bg-emerald-50' },
-  { label: 'Total Earned', value: `₦${(earningsData.value.totalEarnings || 0).toLocaleString()}`, emoji: '💰', bgClass: 'bg-amber-50' },
-  { label: 'Avg. Rating', value: (earningsData.value.rating || errandrProfile.value?.rating || 0).toFixed(1), emoji: '⭐', bgClass: 'bg-purple-50' },
-  { label: 'Active Orders', value: orders.value.filter(o => ['pending', 'confirmed', 'preparing', 'ready_for_pickup', 'picked_up', 'in_transit', 'negotiating', 'awaiting_payment'].includes(o.status)).length || '0', emoji: '📦', bgClass: 'bg-blue-50' },
+  { label: 'Deliveries Done', value: earningsData.value.totalDeliveries || orders.value.filter(o => o.status === 'delivered').length || '0' },
+  { label: 'Total Earned', value: `₦${(earningsData.value.totalEarnings || 0).toLocaleString()}` },
+  { label: 'Avg. Rating', value: (earningsData.value.rating || errandrProfile.value?.rating || 0).toFixed(1) },
+  { label: 'Active Orders', value: orders.value.filter(o => ['pending', 'confirmed', 'preparing', 'ready_for_pickup', 'picked_up', 'in_transit', 'negotiating', 'awaiting_payment'].includes(o.status)).length || '0' },
 ])
 
 const STALE_AFTER_HOURS = 24
@@ -355,151 +355,7 @@ const statusLabel = (s: string) =>
     in_transit: 'On the way',
     negotiating: 'Negotiating',
     awaiting_payment: 'Awaiting payment',
-  } as Record<string, string>)[s] || String(s || '').replace(/_/g, ' ');
-
-const statusEmoji = (s: string) => ({
-  pending: '⏳',
-  confirmed: '✅',
-  preparing: '👨‍🍳',
-  ready_for_pickup: '📦',
-  picked_up: '🏃',
-  in_transit: '🚀',
-  delivered: '🎉',
-  cancelled: '❌',
-  negotiating: '💬',
-  awaiting_payment: '💳'
-}[s] || '📋')
-
-const getStatusClasses = (s: string) => {
-  if (['delivered', 'confirmed'].includes(s)) return 'bg-emerald-50 text-emerald-700';
-  if (['in_transit', 'picked_up'].includes(s)) return 'bg-blue-50 text-blue-700';
-  if (['pending', 'preparing', 'ready_for_pickup'].includes(s)) return 'bg-amber-50 text-amber-700';
-  if (['negotiating', 'awaiting_payment'].includes(s)) return 'bg-indigo-50 text-indigo-700';
-  if (s === 'cancelled') return 'bg-rose-50 text-rose-700';
-  return 'bg-gray-50 text-gray-500';
-}
-
-const getOrderTypeLabel = (order: any) => {
-  if (!order) return 'Order'
-  if (order.type === 'custom_errand') {
-    if (order.customDetails?.description?.includes('[Barter Tx ID:')) {
-      return 'Barter Delivery'
-    }
-    return 'Custom Errand'
-  }
-  return 'Marketplace'
-}
-
-const getOrderTypeColor = (order: any) => {
-  if (!order) return 'bg-gray-50 text-gray-700 border-gray-200'
-  if (order.type === 'custom_errand') {
-    if (order.customDetails?.description?.includes('[Barter Tx ID:')) {
-      return 'bg-purple-50 text-purple-700 border-purple-200'
-    }
-    return 'bg-amber-50 text-amber-700 border-amber-200'
-  }
-  return 'bg-blue-50 text-blue-700 border-blue-200'
-}
-
-const formatDate = (date: string) => {
-  if (!date) return ''
-  const d = new Date(date)
-  const now = new Date()
-  const diffMs = now.getTime() - d.getTime()
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-  if (diffHours < 1) return 'Just now'
-  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`
-  if (diffDays === 1) return 'Yesterday'
-  return d.toLocaleDateString()
-}
-
-const loadDashboard = async () => {
-  // Load orders
-  loadingOrders.value = true
-  try {
-    const res = await api.get<any[]>('/orders/errander')
-    if (res && (res as any).type !== 'ERROR' && Array.isArray(res.data)) {
-      orders.value = res.data
-    } else {
-      orders.value = []
-    }
-  } catch (e) {
-    console.error('Failed to load orders:', e)
-    orders.value = []
-  }
-  
-  try {
-    const resAvailable = await api.get<any[]>('/orders/available')
-    if (resAvailable && (resAvailable as any).type !== 'ERROR' && Array.isArray(resAvailable.data)) {
-      availableOrders.value = resAvailable.data
-    }
-  } catch (e) {
-    console.error('Failed to load available orders:', e)
-  } finally {
-    loadingOrders.value = false
-  }
-
-  // Load errandr profile and earnings
-  loadingStats.value = true
-  try {
-    const [profileRes, earningsRes] = await Promise.all([
-      erranders_api.getProfile().catch(() => null),
-      erranders_api.getEarnings().catch(() => null),
-    ])
-    if (profileRes && (profileRes as any).type !== 'ERROR' && profileRes.data) {
-      errandrProfile.value = profileRes.data
-    }
-    if (earningsRes && (earningsRes as any).type !== 'ERROR' && earningsRes.data) {
-      earningsData.value = earningsRes.data
-    }
-  } catch (e) {
-    console.error('Failed to load stats:', e)
-  } finally {
-    loadingStats.value = false
-  }
-
-  // Load batch status
-  try {
-    const res = await api.get('/orders/batch/status')
-    if (res && res.data) {
-      batchStatus.value = res.data
-    }
-  } catch (e) {
-    console.error('Failed to load batch status:', e)
-  }
-}
-
-const handleNewOrder = (payload: any) => {
-  const orderData = payload?.data || payload
-  if (!orderData || orderData.type === 'ORDER_ACCEPTED') return
-  const id = orderData.orderId || orderData._id
-  if (!id) return
-
-  const exists = availableOrders.value.some(o => o._id === id)
-  if (!exists) {
-    availableOrders.value.unshift({
-      _id: id,
-      orderNumber: orderData.orderNumber,
-      vendor: {
-        storeName: orderData.vendorName,
-        logo: orderData.vendorLogo,
-        address: orderData.vendorAddress
-      },
-      deliveryAddress: orderData.deliveryAddress,
-      total: orderData.total,
-      deliveryFee: orderData.deliveryFee,
-      erranderPayout: orderData.erranderPayout,
-      erranderShare: orderData.erranderShare,
-      status: orderData.status,
-      type: orderData.type,
-      locationType: orderData.locationType,
-      proposedDeliveryFee: orderData.proposedDeliveryFee,
-      createdAt: orderData.createdAt || new Date().toISOString(),
-      customDetails: orderData.customDetails,
-    })
-  }
-}
+  } as Record<string, string>)[s] || String(s || '').replace(/_/g, ' ')
 
 const handleOrderAccepted = (payload: any) => {
   const orderId = payload?.data?.orderId || payload?.orderId || payload?.data?._id || payload?._id
