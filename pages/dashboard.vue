@@ -430,6 +430,45 @@ const statusLabel = (s: string) =>
     awaiting_payment: 'Awaiting payment',
   } as Record<string, string>)[s] || String(s || '').replace(/_/g, ' ')
 
+const handleNewOrder = (payload: any) => {
+  const orderData = payload?.data || payload
+  if (!orderData || orderData.type === 'ORDER_ACCEPTED') return
+  const id = orderData.orderId || orderData._id
+  if (!id) return
+
+  if (!availableOrders.value.some((o) => o._id === id)) {
+    availableOrders.value.unshift({
+      _id: id,
+      orderNumber: orderData.orderNumber,
+      vendor: {
+        storeName: orderData.vendorName,
+        logo: orderData.vendorLogo,
+        address: orderData.vendorAddress,
+      },
+      deliveryAddress: orderData.deliveryAddress,
+      total: orderData.total,
+      deliveryFee: orderData.deliveryFee,
+      erranderPayout: orderData.erranderPayout,
+      erranderShare: orderData.erranderShare,
+      status: orderData.status,
+      type: orderData.type,
+      locationType: orderData.locationType,
+      proposedDeliveryFee: orderData.proposedDeliveryFee,
+      createdAt: orderData.createdAt || new Date().toISOString(),
+      customDetails: orderData.customDetails,
+    })
+  }
+}
+
+const getStatusClasses = (s: string) => {
+  if (['delivered', 'confirmed'].includes(s)) return 'bg-emerald-50 text-emerald-700'
+  if (['in_transit', 'picked_up'].includes(s)) return 'bg-blue-50 text-blue-700'
+  if (['pending', 'preparing', 'ready_for_pickup'].includes(s)) return 'bg-amber-50 text-amber-700'
+  if (['negotiating', 'awaiting_payment'].includes(s)) return 'bg-indigo-50 text-indigo-700'
+  if (s === 'cancelled') return 'bg-rose-50 text-rose-700'
+  return 'bg-gray-50 text-gray-500'
+}
+
 const handleOrderAccepted = (payload: any) => {
   const orderId = payload?.data?.orderId || payload?.orderId || payload?.data?._id || payload?._id
   if (!orderId) return
