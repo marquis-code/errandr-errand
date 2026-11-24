@@ -310,6 +310,49 @@ const applyDutyChange = async () => {
   }
 }
 
+const loadDashboard = async () => {
+  loadingOrders.value = true
+  try {
+    const res = await api.get<any[]>('/orders/errander')
+    orders.value = res && (res as any).type !== 'ERROR' && Array.isArray(res.data) ? res.data : []
+  } catch (e) {
+    console.error('Failed to load orders:', e)
+    orders.value = []
+  }
+
+  try {
+    const resAvailable = await api.get<any[]>('/orders/available')
+    if (resAvailable && (resAvailable as any).type !== 'ERROR' && Array.isArray(resAvailable.data)) {
+      availableOrders.value = resAvailable.data
+    }
+  } catch (e) {
+    console.error('Failed to load available orders:', e)
+  } finally {
+    loadingOrders.value = false
+  }
+
+  loadingStats.value = true
+  try {
+    const [profileRes, earningsRes] = await Promise.all([
+      erranders_api.getProfile().catch(() => null),
+      erranders_api.getEarnings().catch(() => null),
+    ])
+    if (profileRes && (profileRes as any).type !== 'ERROR' && profileRes.data) errandrProfile.value = profileRes.data
+    if (earningsRes && (earningsRes as any).type !== 'ERROR' && earningsRes.data) earningsData.value = earningsRes.data
+  } catch (e) {
+    console.error('Failed to load stats:', e)
+  } finally {
+    loadingStats.value = false
+  }
+
+  try {
+    const res = await api.get('/orders/batch/status')
+    if (res && res.data) batchStatus.value = res.data
+  } catch (e) {
+    console.error('Failed to load batch status:', e)
+  }
+}
+
 const stats = computed(() => [
   { label: 'Deliveries Done', value: earningsData.value.totalDeliveries || orders.value.filter(o => o.status === 'delivered').length || '0' },
   { label: 'Total Earned', value: `₦${(earningsData.value.totalEarnings || 0).toLocaleString()}` },
