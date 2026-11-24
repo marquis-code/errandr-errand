@@ -8,59 +8,34 @@
         <h1 class="text-xl font-bold text-gray-900">Earnings & Payouts</h1>
         <p class="text-gray-500 text-sm">Track your delivery earnings and manage withdrawals.</p>
       </div>
-      <div class="earn-actions">
-        <button @click="showStatementModal = true" class="px-4 py-2 bg-white text-gray-700 rounded-lg font-medium text-sm border border-gray-25 hover:bg-gray-50 transition-colors flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-          Generate Statement
-        </button>
-        <button v-if="balance > 0" @click="showWithdrawDrawer = true" :disabled="balance < minimumPayout" class="px-4 py-2 bg-gray-900 text-white rounded-lg font-medium text-sm hover:bg-gray-800 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-          Request Payout
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-        </button>
-      </div>
     </div>
-    <p v-if="balance > 0 && balance < minimumPayout" class="text-sm text-rose-500 font-medium">Minimum withdrawal: ₦{{ minimumPayout.toLocaleString() }}</p>
-
     <!-- Skeleton -->
-    <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div v-for="i in 2" :key="i" class="bg-gray-50 rounded-lg p-6 animate-pulse h-32" />
-    </div>
+    <div v-if="loading" class="pay-hero-skeleton animate-pulse" />
 
-    <div v-else class="space-y-6 animate-fade-in">
-      <!-- Balance Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        
-        <!-- Available Balance -->
-        <div class="p-5 rounded-lg bg-white border border-gray-25">
-          <div class="flex items-center justify-between mb-3">
-            <p class="text-sm font-medium text-gray-500 uppercase tracking-wide">Available for Payout</p>
-            <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-              <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            </div>
-          </div>
-          <p class="earn-balance">
-            <span class="earn-currency">₦</span>{{ balance?.toLocaleString() || '0' }}
-          </p>
-          <div class="mt-3 inline-flex items-center gap-1.5 px-2 py-1 rounded bg-emerald-50">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <p class="text-[10px] font-semibold text-emerald-600 uppercase">Verified</p>
-          </div>
-        </div>
+    <template v-else>
+      <!-- The balance and the one thing to do with it, in one place -->
+      <section class="pay-hero">
+        <p class="pay-label">Available to withdraw</p>
+        <p class="pay-amount"><span class="pay-currency">₦</span>{{ balance?.toLocaleString() || '0' }}</p>
 
-        <!-- Lifetime Earnings -->
-        <div class="p-5 rounded-lg bg-white border border-gray-25">
-          <div class="flex items-center justify-between mb-3">
-            <p class="text-sm font-medium text-gray-500 uppercase tracking-wide">Lifetime Earnings</p>
-            <div class="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center">
-              <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-            </div>
-          </div>
-          <p class="text-2xl font-bold text-gray-900">
-            <span class="text-sm text-gray-400">₦</span>{{ wallet?.totalEarned?.toLocaleString() || '0' }}
-          </p>
-          <p class="text-sm text-gray-400 mt-2">Total from all completed errands</p>
-        </div>
-      </div>
+        <p v-if="wallet?.totalEarned" class="pay-lifetime">
+          ₦{{ wallet.totalEarned.toLocaleString() }} earned in total
+        </p>
+
+        <button
+          type="button"
+          class="pay-cta"
+          :disabled="balance < minimumPayout"
+          @click="showWithdrawDrawer = true"
+        >
+          {{ balance >= minimumPayout ? 'Request payout' : `₦${(minimumPayout - balance).toLocaleString()} more to withdraw` }}
+        </button>
+
+        <button type="button" class="pay-secondary" @click="showStatementModal = true">
+          Generate a statement
+        </button>
+      </section>
+    </template>
 
       <!-- Payout Settings -->
       <section class="bg-white p-5 rounded-lg border border-gray-25">
@@ -226,7 +201,6 @@
           </div>
         </div>
       </section>
-    </div>
 
   <!-- Statement Modal -->
   <Teleport to="body">
@@ -742,5 +716,78 @@ useHead({ title: 'Earnings - Errandr Dashboard' });
   color: #ff5c1a;
   font-size: 12.5px;
   font-weight: 750;
+}
+
+/* The payout hero: one card answers "what can I take out, and how". */
+.pay-hero {
+  padding: 20px;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #1b1613 0%, #14110d 60%);
+  color: #fff;
+}
+
+.pay-hero-skeleton {
+  height: 190px;
+  border-radius: 20px;
+  background: #f1f2f4;
+}
+
+.pay-label {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8f877c;
+}
+
+.pay-amount {
+  margin: 6px 0 0;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.pay-currency {
+  font-size: 20px;
+  font-weight: 700;
+  color: #b9b0a4;
+  margin-right: 2px;
+}
+
+.pay-lifetime {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #b9b0a4;
+}
+
+.pay-cta {
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px;
+  border: 0;
+  border-radius: 13px;
+  background: #ff5c1a;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.pay-cta:disabled {
+  background: rgba(255, 255, 255, 0.14);
+  color: #d8d2c8;
+}
+
+.pay-secondary {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border: 0;
+  border-radius: 13px;
+  background: transparent;
+  color: #b9b0a4;
+  font-size: 13.5px;
+  font-weight: 700;
 }
 </style>
