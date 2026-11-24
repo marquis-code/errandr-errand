@@ -310,6 +310,36 @@ const applyDutyChange = async () => {
   }
 }
 
+const getOrderTypeLabel = (order: any) => {
+  if (!order) return 'Order'
+  if (order.type === 'custom_errand') {
+    return order.customDetails?.description?.includes('[Barter Tx ID:') ? 'Barter delivery' : 'Custom errand'
+  }
+  return 'Store order'
+}
+
+const getOrderTypeColor = (order: any) => {
+  if (!order) return 'bg-gray-50 text-gray-700 border-gray-200'
+  if (order.type === 'custom_errand') {
+    return order.customDetails?.description?.includes('[Barter Tx ID:')
+      ? 'bg-purple-50 text-purple-700 border-purple-200'
+      : 'bg-amber-50 text-amber-700 border-amber-200'
+  }
+  return 'bg-emerald-50 text-emerald-700 border-emerald-200'
+}
+
+const formatDate = (date: string) => {
+  if (!date) return ''
+  const d = new Date(date)
+  const diffMs = Date.now() - d.getTime()
+  const hours = Math.floor(diffMs / 3_600_000)
+  const days = Math.floor(diffMs / 86_400_000)
+  if (hours < 1) return 'Just now'
+  if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`
+  if (days === 1) return 'Yesterday'
+  return d.toLocaleDateString()
+}
+
 const loadDashboard = async () => {
   loadingOrders.value = true
   try {
