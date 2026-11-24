@@ -105,10 +105,9 @@
               </div>
 
               <div class="date-row">
-                <UiDatePicker v-model="filterDateFrom" placeholder="From" />
-                <UiDatePicker v-model="filterDateTo" placeholder="To" />
+                <UiDatePicker v-model="filterRange" :range="true" placeholder="Any date" class="range-picker" />
                 <button
-                  v-if="filterType !== 'all' || filterDateFrom || filterDateTo"
+                  v-if="filterType !== 'all' || filterRange?.length"
                   type="button"
                   class="clear-chip"
                   @click="clearFilters"
@@ -334,8 +333,9 @@ const isInstant = ref(false);
 
 // Filters
 const filterType = ref('all');
-const filterDateFrom = ref('');
-const filterDateTo = ref('');
+
+/** A range, from one control: two fields asked the rider to make the same decision twice. */
+const filterRange = ref<Date[] | null>(null);
 
 // Statement
 const statementFrom = ref('');
@@ -359,14 +359,14 @@ const filteredTransactions = computed(() => {
     result = result.filter(tx => tx.type === filterType.value);
   }
   
-  if (filterDateFrom.value) {
-    const from = new Date(filterDateFrom.value);
+  const [start, end] = Array.isArray(filterRange.value) ? filterRange.value : [];
+  if (start) {
+    const from = new Date(start);
     from.setHours(0, 0, 0, 0);
     result = result.filter(tx => new Date(tx.createdAt) >= from);
   }
-  
-  if (filterDateTo.value) {
-    const to = new Date(filterDateTo.value);
+  if (end) {
+    const to = new Date(end);
     to.setHours(23, 59, 59, 999);
     result = result.filter(tx => new Date(tx.createdAt) <= to);
   }
@@ -376,8 +376,7 @@ const filteredTransactions = computed(() => {
 
 const clearFilters = () => {
   filterType.value = 'all';
-  filterDateFrom.value = '';
-  filterDateTo.value = '';
+  filterRange.value = null;
 };
 
 const banks = ref<any[]>([]);
@@ -789,5 +788,17 @@ useHead({ title: 'Earnings - Errandr Dashboard' });
   color: #b9b0a4;
   font-size: 13.5px;
   font-weight: 700;
+}
+
+/* One range control, sized like the chips beside it. */
+.date-row :deep(.range-picker) {
+  flex: 1;
+}
+
+.date-row :deep(.range-picker input) {
+  height: 40px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 650;
 }
 </style>
