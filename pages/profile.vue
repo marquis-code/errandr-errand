@@ -1,5 +1,6 @@
 <template>
  <div class="space-y-6 animate-fade-in max-w-7xl mx-auto pb-16">
+    <PageBack class="mb-3 lg:hidden" />
  <!-- Header -->
  <div>
  <h1 class="text-2xl font-bold text-gray-900 tracking-tight mb-1">My Profile</h1>
@@ -177,6 +178,7 @@
 </template>
 
 <script setup lang="ts">
+import PageBack from '@/components/ui/PageBack.vue'
 import { ref, computed, onMounted, reactive } from 'vue'
 import { ChevronRight, MapPin } from 'lucide-vue-next'
 import { useUser } from '@/composables/modules/auth/user'

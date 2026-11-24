@@ -1,5 +1,6 @@
 <template>
   <div class="space-y-6 animate-fade-in max-w-7xl mx-auto pb-12 mt-4">
+    <PageBack class="mb-3 lg:hidden" />
     
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -297,6 +298,7 @@
 </template>
 
 <script setup lang="ts">
+import PageBack from '@/components/ui/PageBack.vue'
 import { ref, onMounted, computed } from 'vue';
 import { useWallet } from '@/composables/modules/wallets';
 import { wallets_api } from '@/api_factory/modules/wallets';

@@ -1,5 +1,6 @@
 <template>
   <div class="space-y-6 animate-fade-in max-w-7xl mx-auto pb-16">
+    <PageBack class="mb-3 lg:hidden" />
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div>
@@ -92,6 +93,7 @@
 </template>
 
 <script setup lang="ts">
+import PageBack from '@/components/ui/PageBack.vue'
 import { onMounted } from 'vue'
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'

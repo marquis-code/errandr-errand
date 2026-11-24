@@ -41,6 +41,27 @@
       </div>
     </section>
 
+    <!-- Going off duty is a decision, so it is asked once -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="confirmOffDuty" class="duty-scrim" @click.self="confirmOffDuty = false">
+          <div class="duty-modal" role="dialog" aria-modal="true" aria-labelledby="off-duty-title">
+            <h2 id="off-duty-title" class="duty-modal-title">Go off duty?</h2>
+            <p class="duty-modal-body">
+              You will stop receiving new jobs, and any errand that arrives while you are off will go to another rider.
+            </p>
+
+            <div class="duty-modal-actions">
+              <button type="button" class="modal-quiet" @click="confirmOffDuty = false">Stay on</button>
+              <button type="button" class="modal-danger" :disabled="togglingDuty" @click="applyDutyChange">
+                {{ togglingDuty ? 'Going off…' : 'Go off duty' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
     <!-- What the numbers are, quietly, under the card -->
     <div class="quick-stats">
       <div v-for="stat in stats.slice(1)" :key="stat.label" class="quick-stat">
@@ -303,8 +324,22 @@ const tierLabel = computed(() => {
 
 const togglingDuty = ref(false)
 
+const confirmOffDuty = ref(false)
+
 const toggleDuty = async () => {
   if (togglingDuty.value) return
+
+  // Going off duty stops jobs arriving; that deserves a question, coming back on does not.
+  if (isOnDuty.value) {
+    confirmOffDuty.value = true
+    return
+  }
+
+  await applyDutyChange()
+}
+
+const applyDutyChange = async () => {
+  confirmOffDuty.value = false
   togglingDuty.value = true
   try {
     await erranders_api.toggleOnline()
@@ -849,5 +884,83 @@ onUnmounted(() => {
   font-size: 12px;
   font-weight: 800;
   text-decoration: none;
+}
+
+/* Confirmation: our own dialog, on the same dark surface as the card it came from. */
+.duty-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(3px);
+}
+
+.duty-modal {
+  width: 100%;
+  max-width: 380px;
+  padding: 22px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+}
+
+.duty-modal-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #14110d;
+}
+
+.duty-modal-body {
+  margin: 8px 0 0;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: #6b7280;
+}
+
+.duty-modal-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.modal-quiet,
+.modal-danger {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14.5px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.modal-quiet {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #14110d;
+}
+
+.modal-danger {
+  border: 0;
+  background: #dc2626;
+  color: #fff;
+}
+
+.modal-danger:disabled {
+  opacity: 0.6;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.16s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
