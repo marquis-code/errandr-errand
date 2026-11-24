@@ -95,7 +95,7 @@
               </div>
 
               <div class="date-row">
-                <UiDatePicker v-model="filterRange" :range="true" placeholder="Any date" class="range-picker" />
+                <RangeDatePicker v-model="filterRange" class="range-picker" />
                 <button
                   v-if="filterType !== 'all' || filterRange?.length"
                   type="button"
@@ -302,6 +302,7 @@
 
 <script setup lang="ts">
 import PageBack from '@/components/ui/PageBack.vue'
+import RangeDatePicker from '@/components/ui/RangeDatePicker.vue'
 import { ref, onMounted, computed } from 'vue';
 import { useWallet } from '@/composables/modules/wallets';
 import { wallets_api } from '@/api_factory/modules/wallets';
