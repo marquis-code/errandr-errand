@@ -73,10 +73,10 @@
  
  <div v-if="order.type !== 'custom_errand' && order.vendor" class="flex flex-col gap-2 mt-2 w-full sm:w-auto">
    <div v-if="order.vendor?.phone" class="flex gap-2">
-     <a :href="`tel:${order.vendor.phone}`" class="flex-1 px-3 py-1.5 bg-amber-50 text-amber-600 rounded-lg text-[11px] font-bold hover:bg-amber-100 transition-all transform active:scale-95 border border-amber-100 flex items-center justify-center gap-1.5">
+     <a :href="`tel:${order.vendor.phone}`" class="contact-btn primary flex-1">
        Call Store
      </a>
-     <a :href="getWhatsAppLink(order.vendor.phone, 'vendor')" target="_blank" class="flex-1 px-3 py-1.5 bg-[#25D366]/10 text-[#25D366] rounded-lg text-[11px] font-bold hover:bg-[#25D366]/20 transition-all transform active:scale-95 border border-[#25D366]/30 flex items-center justify-center gap-1.5">
+     <a :href="getWhatsAppLink(order.vendor.phone, 'vendor')" target="_blank" class="contact-btn flex-1">
        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.82 9.82 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.82 11.82 0 0 0-3.48-8.413z" />
        </svg>
@@ -85,13 +85,13 @@
    </div>
    <button 
    @click.stop.prevent="openChat(order.vendor?._id || order.vendor?.owner || order.vendor, order.vendor?.storeName + ' (Store)', order.vendor?.logo || order.vendor?.storeLogo)" 
-   class="w-full px-3 py-1.5 bg-amber-50 text-amber-600 rounded-lg text-[11px] font-bold hover:bg-amber-100 transition-all transform active:scale-95 border border-amber-100 flex items-center justify-center gap-1.5"
+   class="contact-btn w-full"
    >
    <MessageSquare class="w-3 h-3" /> In-App Message Store
    </button>
    <button 
    @click.stop.prevent="pingParticipant(order._id, 'vendor')"
-   class="w-full mt-2 px-3 py-1.5 bg-yellow-50 text-yellow-600 rounded-lg text-[11px] font-bold hover:bg-yellow-100 transition-all transform active:scale-95 border border-yellow-100 flex items-center justify-center gap-1.5"
+   class="contact-link w-full"
    >
    <Bell class="w-3 h-3" /> Ping Store
    </button>
@@ -111,10 +111,10 @@
       <!-- Student Contact Options -->
       <div class="flex flex-col gap-2 mt-2">
         <div v-if="order.customer?.phone" class="flex gap-2">
-          <a :href="`tel:${order.customer.phone}`" class="flex-1 px-3 py-1.5 bg-[#FF5C1A]/10 text-[#FF5C1A] rounded-lg text-[11px] font-bold hover:bg-[#FF5C1A]/20 transition-all transform active:scale-95 border border-[#FF5C1A]/30 flex items-center justify-center gap-1.5">
+          <a :href="`tel:${order.customer.phone}`" class="contact-btn primary flex-1">
             Call Customer
           </a>
-          <a :href="getWhatsAppLink(order.customer.phone, 'student')" target="_blank" class="flex-1 px-3 py-1.5 bg-[#25D366]/10 text-[#25D366] rounded-lg text-[11px] font-bold hover:bg-[#25D366]/20 transition-all transform active:scale-95 border border-[#25D366]/30 flex items-center justify-center gap-1.5">
+          <a :href="getWhatsAppLink(order.customer.phone, 'student')" target="_blank" class="contact-btn flex-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.82 9.82 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.82 11.82 0 0 0-3.48-8.413z" />
             </svg>
@@ -123,13 +123,13 @@
         </div>
         <button 
           @click.stop.prevent="openChat(order.customer?._id || order.customer, (order.customer?.firstName ? `${order.customer.firstName} ${order.customer.lastName}` : 'Student') + ' (Customer)')" 
-          class="w-full px-3 py-1.5 bg-[#FF5C1A]/5 text-[#FF5C1A] rounded-lg text-[11px] font-bold hover:bg-[#FF5C1A]/10 transition-all transform active:scale-95 border border-[#FF5C1A]/20 flex items-center justify-center gap-1.5"
+          class="contact-btn w-full"
         >
           <MessageSquare class="w-3 h-3" /> In-App Message Customer
         </button>
         <button 
         @click.stop.prevent="pingParticipant(order._id, 'customer')"
-        class="w-full mt-2 px-3 py-1.5 bg-yellow-50 text-yellow-600 rounded-lg text-[11px] font-bold hover:bg-yellow-100 transition-all transform active:scale-95 border border-yellow-100 flex items-center justify-center gap-1.5"
+        class="contact-link w-full"
         >
         <Bell class="w-3 h-3" /> Ping Customer
         </button>
@@ -315,15 +315,15 @@
  <!-- Sidebar: Actions & Customer -->
  <div class="lg:col-span-2 space-y-4 md:space-y-6"> 
  <!-- Customer Details Card -->
- <div class="bg-gradient-to-b from-gray-50 to-white p-4 md:p-5 rounded-xl md:rounded-lg border border-gray-50 flex flex-col items-center text-center group hover:-translate-y-1 hover: transition-all duration-500 relative overflow-hidden">
- <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-blue-500"></div>
+ <div class="bg-white p-4 md:p-5 rounded-2xl border border-[#eef0f3] flex flex-col items-center text-center relative overflow-hidden">
+ <div class="absolute top-0 left-0 w-full h-1 bg-[#ff5c1a]"></div>
  
  <div class="w-20 h-20 bg-gray-900 rounded-lg flex items-center justify-center text-white text-2xl font-black mb-4 group-hover:rotate-6 transition-transform border-4 border-white relative overflow-hidden">
  <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
  {{ order.customer?.firstName?.[0] }}{{ order.customer?.lastName?.[0] }}
  </div>
  
- <p class="text-[9px] font-black text-teal-600 uppercase tracking-[0.2em] mb-2 bg-teal-50 px-3 py-1 rounded-full border border-teal-100 ">Primary Contact</p>
+ <p class="contact-tag">Primary contact</p>
  <h4 class="text-lg font-black text-gray-900 mb-2 truncate w-full tracking-tight">{{ order.customer?.firstName }} {{ order.customer?.lastName }}</h4>
  <div v-if="order.customer?.gender" class="text-sm font-bold text-gray-500 mb-6 bg-gray-100 px-3 py-1 rounded-full border border-gray-25 inline-flex items-center">
    {{ order.customer.gender === 'Male' ? '🙋🏽‍♂️ MALE' : (order.customer.gender === 'Female' ? '🙋🏽‍♀️ FEMALE' : '👤 ' + order.customer.gender.toUpperCase()) }}
@@ -2164,5 +2164,52 @@ useHead({ title: computed(() => `Delivery #${order.value?.orderNumber || ''} - E
 
 .track-step-label.done {
   color: #fff;
+}
+
+/* Contact actions: one shape, one weight, the brand accent only where it means "do this now". */
+.contact-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 12px;
+  border: 1px solid #eef0f3;
+  border-radius: 11px;
+  background: #fff;
+  color: #14110d;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.contact-btn.primary {
+  background: #14110d;
+  border-color: #14110d;
+  color: #fff;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 9px;
+  border: 0;
+  background: transparent;
+  color: #9aa1ac;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.contact-tag {
+  margin: 0 0 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fff1e8;
+  color: #b45309;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 </style>
