@@ -206,7 +206,10 @@
                 <p class="text-sm text-gray-400">{{ formatDate(order.createdAt) }}</p>
               </div>
               <div class="text-right flex-shrink-0">
-                <p class="font-bold text-sm text-emerald-600">+₦{{ getOrderEarnings(order).toLocaleString() }}</p>
+                <!-- A cancelled job earned nothing; showing its payout in green said otherwise. -->
+                <p class="font-bold text-sm" :class="order.status === 'cancelled' ? 'text-gray-300 line-through' : 'text-emerald-600'">
+                  {{ order.status === 'cancelled' ? '₦' + getOrderEarnings(order).toLocaleString() : '+₦' + getOrderEarnings(order).toLocaleString() }}
+                </p>
                 <span :class="getStatusClasses(order.status)" class="text-[10px] font-semibold px-2 py-0.5 rounded capitalize inline-block mt-0.5">
                   {{ order.status?.replace(/_/g, ' ') }}
                 </span>

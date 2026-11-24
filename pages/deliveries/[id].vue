@@ -663,19 +663,17 @@
 
  <div v-if="(order.interception?.status === 'accepted' || order.interception?.status === 'completed') && isPrimaryErrander" class="mt-6">
     <!-- If order is delivered, show completion card for primary errander -->
-    <div v-if="order.status === 'delivered'" class="bg-emerald-500 rounded-lg p-4 md:p-5 text-center space-y-4 md:space-y-6 relative overflow-hidden group border border-white/10">
-      <div class="absolute inset-0 bg-gradient-to-br from-emerald-400 to-emerald-600 opacity-90" />
-      <div class="absolute -right-16 -bottom-16 w-38 h-38 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
+    <div v-if="order.status === 'delivered'" class="done-card text-center space-y-4">
       <div class="relative z-10 space-y-4 md:space-y-6">
-        <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto text-3xl border border-emerald-50 text-emerald-600 transform rotate-6 animate-pulse">💰</div>
+        <div class="done-mark"><Check class="w-7 h-7" /></div>
         <div>
-          <h3 class="text-white font-medium text-2xl mb-3">Delivery Completed</h3>
-          <p class="text-white/90 font-medium text-xl">+ ₦{{ myEarnings?.toLocaleString() }} Earned</p>
-          <p class="text-emerald-200 text-sm font-bold mt-1">(Your 60% share — Hand-off split)</p>
+          <h3 class="done-title">Delivered</h3>
+          <p class="done-amount">+₦{{ myEarnings?.toLocaleString() }}</p>
+          <p class="done-note">Your 60% share of a hand-off delivery</p>
         </div>
         <div class="max-w-xs mx-auto">
-          <p class="text-emerald-100 text-sm font-medium mb-6">Funds have been added to your wallet.</p>
-          <NuxtLink to="/deliveries" class="block w-full py-3 bg-white text-emerald-600 rounded-lg font-bold text-sm hover:bg-emerald-50 active:scale-95 transition-all">Return to Deliveries</NuxtLink>
+          <p class="done-note">Added to your wallet.</p>
+          <NuxtLink to="/deliveries" class="done-link">Return to Deliveries</NuxtLink>
         </div>
       </div>
     </div>
@@ -692,14 +690,12 @@
 
 
  <!-- Delivery Completed State -->
- <div v-if="order.status === 'delivered' && !isPrimaryErrander || (order.status === 'delivered' && isPrimaryErrander && !isInterceptionOrder)" class="bg-emerald-500 rounded-lg p-4 md:p-5 text-center space-y-4 md:space-y-6 relative overflow-hidden group border border-white/10">
- <div class="absolute inset-0 bg-gradient-to-br from-emerald-400 to-emerald-600 opacity-90" />
- <div class="absolute -right-16 -bottom-16 w-38 h-38 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
+ <div v-if="order.status === 'delivered' && !isPrimaryErrander || (order.status === 'delivered' && isPrimaryErrander && !isInterceptionOrder)" class="done-card text-center space-y-4">
  
  <div class="relative z-10 space-y-4 md:space-y-6">
- <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto text-3xl border border-emerald-50 text-emerald-600 transform rotate-6 animate-pulse">💰</div>
+ <div class="done-mark"><Check class="w-7 h-7" /></div>
  <div>
- <h3 class="text-white font-medium text-2xl mb-3">Delivery Completed</h3>
+ <h3 class="done-title">Delivered</h3>
  <p v-if="order.type !== 'custom_errand'" class="text-white/90 font-medium text-xl">+ ₦{{ myEarnings?.toLocaleString() }} Earned</p>
  <p v-if="isInterceptionOrder && order.type !== 'custom_errand'" class="text-emerald-200 text-sm font-bold mt-1">(Your {{ isActiveErrander ? '40%' : '60%' }} share — Hand-off split)</p>
  <p v-if="order.type === 'custom_errand'" class="text-white/90 font-medium text-xl">Custom Errand Delivered ✅</p>
@@ -709,7 +705,7 @@
  <p v-if="order.type !== 'custom_errand'" class="text-emerald-100 text-sm font-medium mb-6">Funds have been added to your wallet.</p>
  <p v-else class="text-emerald-100 text-sm font-medium mb-6">The student paid you directly for this errand. No wallet credit applied.</p>
  
- <NuxtLink to="/deliveries" class="block w-full py-3 bg-white text-emerald-600 rounded-lg font-bold text-sm hover:bg-emerald-50 active:scale-95 transition-all">
+ <NuxtLink to="/deliveries" class="done-link">
  Return to Deliveries
  </NuxtLink>
  </div>
@@ -2372,5 +2368,60 @@ useHead({ title: computed(() => `Delivery #${order.value?.orderNumber || ''} - E
   color: #9aa1ac;
   font-size: 13px;
   font-weight: 650;
+}
+
+/* Completion: the brand card, once, instead of two emerald gradients. */
+.done-card {
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #1b1613 0%, #14110d 60%);
+  color: #fff;
+}
+
+.done-mark {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: #ff5c1a;
+  color: #fff;
+}
+
+.done-title {
+  margin: 12px 0 0;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.done-amount {
+  margin: 6px 0 0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #ffb37a;
+}
+
+.done-note {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #b9b0a4;
+}
+
+.done-link {
+  display: block;
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #fff;
+  color: #14110d;
+  font-size: 14.5px;
+  font-weight: 750;
+  text-decoration: none;
+  text-align: center;
 }
 </style>
