@@ -40,13 +40,14 @@
  </div>
 
  <!-- Empty State -->
- <div v-else-if="filteredOrders.length === 0" class="bg-white rounded-lg border border-gray-50 py-20 text-center">
- <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">📦</div>
- <h3 class="text-base font-bold text-gray-900 mb-1">{{ activeFilter === 'all' ? 'No deliveries yet' : `No ${activeFilter} deliveries` }}</h3>
- <p class="text-sm text-gray-400 mb-6">{{ activeFilter === 'all' ? 'Accept orders from the marketplace to get started!' : 'Check back later for updates.' }}</p>
- <NuxtLink v-if="activeFilter === 'all'" to="/" class="inline-block px-4 md:px-4 py-2.5 bg-[#FF5C1A] text-white rounded-xl font-semibold text-sm shadow-[#FF5C1A]/20 hover:brightness-110 transition-all">
- Browse Marketplace
- </NuxtLink>
+ <div v-else-if="filteredOrders.length === 0" class="deliveries-empty">
+   <EmptyState
+     :icon="Bike"
+     :title="activeFilter === 'all' ? 'No deliveries yet' : `Nothing ${activeFilter}`"
+     :body="activeFilter === 'all' ? 'Accept an errand from the pool and it will appear here with its status.' : 'Try another filter, or clear this one.'"
+     :action="activeFilter === 'all' ? 'Browse the pool' : ''"
+     :to="activeFilter === 'all' ? '/deliveries/pool' : ''"
+   />
  </div>
 
  <!-- My deliveries: cards on a phone, the table on a desk -->
@@ -202,7 +203,8 @@
 
 <script setup lang="ts">
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
-import { Search, ChevronRight } from 'lucide-vue-next';
+import { Search, ChevronRight, Bike } from 'lucide-vue-next';
+import EmptyState from '@/components/ui/EmptyState.vue';
 import SideDrawer from '@/components/ui/SideDrawer.vue';
 import { ref, computed, onMounted } from 'vue';
 
@@ -436,5 +438,11 @@ useHead({ title: 'My Deliveries - Errandr' });
   font-size: 16px;
   font-weight: 800;
   color: #0f6b3d;
+}
+
+.deliveries-empty {
+  border-radius: 16px;
+  border: 1px solid #eef0f3;
+  background: #fff;
 }
 </style>

@@ -115,13 +115,14 @@
             </article>
           </div>
           
-          <div v-else class="py-16 text-center px-4">
-            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">🚲</div>
-            <h4 class="text-base font-bold text-gray-900 mb-1">No active deliveries</h4>
-            <p class="text-sm text-gray-400 mb-6">You don't have any deliveries in progress right now.</p>
-            <NuxtLink to="/deliveries" class="inline-block px-4 py-3 bg-[#FF5C1A] text-white rounded-xl font-semibold text-sm border border-gray-25 shadow-[#FF5C1A]/20 hover:brightness-110 transition-all">
-              View Available Errands
-            </NuxtLink>
+          <div v-else>
+            <EmptyState
+              :icon="Bike"
+              title="Nothing in hand"
+              body="Claim an errand from the pool and it appears here with its route and payout."
+              action="Browse the pool"
+              to="/deliveries/pool"
+            />
           </div>
         </div>
 
@@ -138,9 +139,12 @@
           <div v-if="loadingOrders" class="p-4 space-y-3">
             <div v-for="i in 2" :key="i" class="h-14 bg-gray-50 rounded-xl animate-pulse"></div>
           </div>
-          <div v-else-if="availableOrders.length === 0" class="py-12 text-center px-4">
-            <div class="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">🚲</div>
-            <p class="text-sm text-gray-400">No new errands available right now. Check back soon!</p>
+          <div v-else-if="availableOrders.length === 0">
+            <EmptyState
+              :icon="Layers"
+              title="Pool is quiet"
+              body="New errands appear here the moment a student posts one. Nothing to do until then."
+            />
           </div>
           <div v-else class="divide-y divide-gray-50">
             <NuxtLink 
@@ -184,9 +188,12 @@
           <div v-if="loadingOrders" class="p-4 space-y-3">
             <div v-for="i in 4" :key="i" class="h-14 bg-gray-50 rounded-xl animate-pulse"></div>
           </div>
-          <div v-else-if="recentOrders.length === 0" class="py-12 text-center">
-            <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">📦</div>
-            <p class="text-sm text-gray-400">No deliveries yet. Your recent orders will appear here.</p>
+          <div v-else-if="recentOrders.length === 0">
+            <EmptyState
+              :icon="PackageCheck"
+              title="Nothing finished yet"
+              body="Completed and cancelled errands show up here so you can check what you earned."
+            />
           </div>
           <div v-else class="divide-y space-y-3 p-3 divide-gray-50">
             <NuxtLink 

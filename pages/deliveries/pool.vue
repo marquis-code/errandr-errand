@@ -37,10 +37,14 @@
       </div>
     </div>
 
-    <div v-else-if="availableOrders.length === 0" class="bg-white rounded-lg border border-gray-50 py-32 text-center">
-      <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 scale-110">🚲</div>
-      <h3 class="text-xl font-medium text-gray-900 mb-2">The pool is currently empty</h3>
-      <p class="text-sm text-gray-400 max-w-xs mx-auto mb-8 font-medium">All orders have been claimed. New orders will appear here automatically.</p>
+    <div v-else-if="availableOrders.length === 0" class="pool-empty">
+      <EmptyState
+        :icon="Layers"
+        title="Every errand is taken"
+        body="This fills up as students post. Leave the page open and new errands appear without a refresh."
+        action="Refresh"
+        @action="loadAvailableOrders"
+      />
     </div>
 
     <div v-else class="bg-white rounded-lg border border-gray-50 overflow-hidden">
@@ -579,6 +583,8 @@
 </template>
 
 <script setup lang="ts">
+import EmptyState from '@/components/ui/EmptyState.vue'
+import { Layers } from 'lucide-vue-next'
 import { ref, watch, onMounted, onUnmounted, computed } from 'vue'
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
 import { useRealtimeSocket } from '@/composables/core/useRealtimeSocket'
@@ -1527,5 +1533,11 @@ useHead({
   border: 1px solid #eef0f3;
   background: #faf9f7;
   color: #4b5563;
+}
+
+.pool-empty {
+  border-radius: 16px;
+  border: 1px solid #eef0f3;
+  background: #fff;
 }
 </style>

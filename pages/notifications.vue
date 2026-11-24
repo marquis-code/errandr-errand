@@ -21,10 +21,12 @@
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="notifications.length === 0" class="text-center py-20">
-      <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-4xl mx-auto mb-4">🔔</div>
-      <h3 class="text-lg font-bold text-gray-900 mb-1">No notifications yet</h3>
-      <p class="text-sm text-gray-400">When orders come in or statuses change, you'll see them here.</p>
+    <div v-else-if="notifications.length === 0" class="notif-empty">
+      <EmptyState
+        :icon="BellOff"
+        title="Nothing to report"
+        body="New errands, accepted bids and delivery updates land here. You will also get a push if notifications are on."
+      />
     </div>
 
     <!-- Notification List -->
@@ -93,6 +95,8 @@
 
 <script setup lang="ts">
 import PageBack from '@/components/ui/PageBack.vue'
+import EmptyState from '@/components/ui/EmptyState.vue'
+import { BellOff } from 'lucide-vue-next'
 import { onMounted } from 'vue'
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'

@@ -110,13 +110,12 @@
         </div>
         
         <div>
-          <div v-if="filteredTransactions.length === 0" class="py-16 flex flex-col items-center justify-center text-center px-4">
-            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-              <span class="text-2xl opacity-50">🍃</span>
-            </div>
-            <h4 class="text-sm font-bold text-gray-900 mb-1">{{ transactions.length === 0 ? 'No earnings yet' : 'No matching transactions' }}</h4>
-            <p class="text-gray-400 text-sm max-w-sm">{{ transactions.length === 0 ? 'Complete your first delivery to see your history.' : 'Try adjusting the filters above.' }}</p>
-          </div>
+          <EmptyState
+            v-if="filteredTransactions.length === 0"
+            :icon="transactions.length === 0 ? Wallet : SearchX"
+            :title="transactions.length === 0 ? 'No earnings yet' : 'Nothing in that range'"
+            :body="transactions.length === 0 ? 'Complete a delivery and the credit shows up here within a minute, with a receipt you can download.' : 'Try a wider date range, or switch the type filter back to All.'"
+          />
           
           <!-- A ledger reads as a list on a phone: four columns cannot survive 390px. -->
           <div v-else>
@@ -303,6 +302,8 @@
 <script setup lang="ts">
 import PageBack from '@/components/ui/PageBack.vue'
 import RangeDatePicker from '@/components/ui/RangeDatePicker.vue'
+import EmptyState from '@/components/ui/EmptyState.vue'
+import { Wallet, SearchX } from 'lucide-vue-next'
 import { ref, onMounted, computed } from 'vue';
 import { useWallet } from '@/composables/modules/wallets';
 import { wallets_api } from '@/api_factory/modules/wallets';
