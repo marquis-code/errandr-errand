@@ -1,12 +1,11 @@
 <template>
-  <div class="space-y-6 animate-fade-in max-w-7xl mx-auto pb-12 mt-4">
-    <PageBack class="mb-3 lg:hidden" />
-    
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+  <div class="earn-page">
+    <!-- Back and title on one line: the empty band above them was the header padding stacked with the page padding. -->
+    <div class="earn-head">
+      <PageBack class="lg:hidden" />
       <div>
-        <h1 class="text-xl font-bold text-gray-900">Earnings & Payouts</h1>
-        <p class="text-gray-500 text-sm">Track your delivery earnings and manage withdrawals.</p>
+        <h1 class="earn-title">Earnings</h1>
+        <p class="earn-sub">Withdraw what you have earned, and see where it came from.</p>
       </div>
     </div>
     <!-- Skeleton -->
@@ -37,46 +36,37 @@
       </section>
     </template>
 
-      <!-- Payout Settings -->
-      <section class="bg-white p-5 rounded-lg border border-gray-25">
-        <div class="flex items-center gap-3 mb-5">
-          <div class="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center">
-            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-          </div>
-          <div>
-            <h3 class="text-sm font-bold text-gray-900">Payout Settings</h3>
-            <p class="text-sm text-gray-500">Configure your payout frequency and bank account.</p>
-          </div>
+      <!-- Payout settings: how the money leaves, in one card -->
+      <section class="settings-card">
+        <div class="settings-head">
+          <h2 class="settings-title">Payout settings</h2>
+          <p class="settings-sub">Where and how often your earnings are paid out.</p>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Frequency -->
-          <div class="space-y-3">
-            <label class="text-sm font-medium text-gray-500">Settlement Frequency</label>
-            <div class="flex gap-1 p-1 bg-gray-50 border border-gray-25 rounded-lg">
-              <button v-for="p in ['manual', 'daily', 'weekly', 'monthly']" :key="p"
-                @click="handleUpdateFrequency(p)"
-                class="flex-1 py-2 rounded-md text-sm font-semibold transition-all capitalize"
-                :class="wallet?.payoutPreference === p ? 'bg-white text-gray-900 border border-gray-25' : 'text-gray-500 hover:text-gray-700'"
-              >
-                {{ p }}
-              </button>
-            </div>
-            <p class="text-[11px] text-gray-400 leading-relaxed">Daily settlements may incur processing fees. Weekly and monthly are free.</p>
-          </div>
 
-          <!-- Bank Account -->
-          <div class="space-y-3">
-            <label class="text-sm font-medium text-gray-500">Bank Account</label>
-            <div class="p-4 rounded-lg bg-gray-50 border border-gray-25">
-              <p class="text-sm text-gray-500">{{ wallet?.bankDetails?.bankName || 'No Bank Linked' }}</p>
-              <p class="text-base font-semibold text-gray-900 font-mono mt-1">{{ wallet?.bankDetails?.accountNumber || '•••• •••• ••••' }}</p>
-              <p class="text-sm font-medium text-gray-600 mt-1">{{ wallet?.bankDetails?.accountName || 'Not configured' }}</p>
-            </div>
-            <button @click="showBankDrawer = true" class="w-full py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg text-sm font-semibold border border-gray-25 transition-colors">
-              Update Bank Details
-            </button>
+        <p class="settings-label">Settlement frequency</p>
+        <div class="freq-row">
+          <button
+            v-for="p in ['manual', 'daily', 'weekly', 'monthly']"
+            :key="p"
+            type="button"
+            class="freq"
+            :class="{ on: wallet?.payoutPreference === p }"
+            @click="handleUpdateFrequency(p)"
+          >
+            {{ p }}
+          </button>
+        </div>
+        <p class="settings-note">Daily settlements may carry a processing fee. Weekly and monthly are free.</p>
+
+        <div class="bank-row">
+          <div class="bank-info">
+            <p class="bank-name">{{ wallet?.bankDetails?.bankName || 'No bank linked' }}</p>
+            <p class="bank-number">{{ wallet?.bankDetails?.accountNumber || '•••• •••• ••••' }}</p>
+            <p class="bank-owner">{{ wallet?.bankDetails?.accountName || 'Not set up yet' }}</p>
           </div>
+          <button type="button" class="bank-edit" @click="showBankDrawer = true">
+            {{ wallet?.bankDetails?.accountNumber ? 'Change' : 'Add bank' }}
+          </button>
         </div>
       </section>
 
@@ -800,5 +790,147 @@ useHead({ title: 'Earnings - Errandr Dashboard' });
   border-radius: 10px;
   font-size: 13px;
   font-weight: 650;
+}
+
+.earn-page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 28px;
+}
+
+.earn-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.earn-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #14110d;
+}
+
+.earn-sub {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: #9aa1ac;
+}
+
+.settings-card {
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid #eef0f3;
+  background: #fff;
+}
+
+.settings-head {
+  margin-bottom: 14px;
+}
+
+.settings-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #14110d;
+}
+
+.settings-sub {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: #9aa1ac;
+}
+
+.settings-label {
+  margin: 0 0 8px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9aa1ac;
+}
+
+.freq-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: #f4f5f7;
+}
+
+.freq {
+  padding: 9px 4px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #6b7280;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-transform: capitalize;
+}
+
+.freq.on {
+  background: #fff;
+  color: #14110d;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.settings-note {
+  margin: 8px 0 0;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: #9aa1ac;
+}
+
+.bank-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #f4f5f7;
+}
+
+.bank-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.bank-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 750;
+  color: #14110d;
+}
+
+.bank-number {
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-weight: 650;
+  color: #6b7280;
+  letter-spacing: 0.04em;
+}
+
+.bank-owner {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #9aa1ac;
+}
+
+.bank-edit {
+  flex: none;
+  padding: 9px 14px;
+  border: 1px solid #eef0f3;
+  border-radius: 10px;
+  background: #fff;
+  color: #14110d;
+  font-size: 12.5px;
+  font-weight: 750;
 }
 </style>
