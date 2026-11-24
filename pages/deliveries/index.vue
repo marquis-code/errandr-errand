@@ -291,20 +291,6 @@ const relativeTime = (value: string) => {
   return new Date(value).toLocaleDateString();
 };
 
-const statusEmoji = (s: string) => ({
- pending: '⏳',
- confirmed: '✅',
- preparing: '👨‍🍳',
- ready_for_pickup: '📦',
- picked_up: '🏃',
- in_transit: '🚀',
- interception_pending: '🔄',
- interception_in_progress: '🏃‍♂️',
- delivered: '🎉',
- cancelled: '❌',
- negotiating: '💬',
- awaiting_payment: '💳'
-}[s] || '📋');
 
 const getStatusClasses = (s: string) => {
  if (['delivered', 'confirmed'].includes(s)) return 'bg-emerald-50 text-emerald-700 border border-emerald-100';
