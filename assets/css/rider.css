@@ -54,3 +54,38 @@
     padding-bottom: 8px;
   }
 }
+
+/* One page header for every deep screen: back, title and subtitle on the same rhythm. */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.page-header-text {
+  min-width: 0;
+  flex: 1;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: var(--r-ink);
+}
+
+.page-sub {
+  margin: 3px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--r-mute);
+}
+
+@media (max-width: 640px) {
+  .page-title {
+    font-size: 20px;
+  }
+}

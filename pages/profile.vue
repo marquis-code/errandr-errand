@@ -1,11 +1,12 @@
 <template>
- <div class="space-y-6 animate-fade-in max-w-7xl mx-auto pb-16">
-    <PageBack class="mb-3 lg:hidden" />
- <!-- Header -->
- <div>
- <h1 class="text-2xl font-bold text-gray-900 tracking-tight mb-1">My Profile</h1>
- <p class="text-gray-500 text-sm">Manage your personal information and account settings.</p>
- </div>
+ <div class="profile-page">
+   <div class="page-header">
+     <PageBack class="lg:hidden" />
+     <div class="page-header-text">
+       <h1 class="page-title">My profile</h1>
+       <p class="page-sub">Your details and account settings.</p>
+     </div>
+   </div>
 
  <div v-if="loading" class="space-y-4">
  <div v-for="i in 3" :key="i" class="h-24 bg-white rounded-lg border border-gray-50 animate-pulse"></div>
@@ -336,5 +337,14 @@ useHead({ title: 'Profile - Errandr' })
 @keyframes fadeIn {
  from { opacity: 0; transform: translateY(12px); }
  to { opacity: 1; transform: translateY(0); }
+}
+
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 28px;
 }
 </style>

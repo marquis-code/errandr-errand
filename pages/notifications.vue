@@ -1,16 +1,15 @@
 <template>
-  <div class="space-y-6 animate-fade-in max-w-7xl mx-auto pb-16">
-    <PageBack class="mb-3 lg:hidden" />
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900 tracking-tight mb-1">Notifications</h1>
-        <p class="text-gray-500 text-sm">Stay updated on your orders and deliveries.</p>
+  <div class="notif-page">
+    <div class="page-header">
+      <PageBack class="lg:hidden" />
+      <div class="page-header-text">
+        <h1 class="page-title">Notifications</h1>
+        <p class="page-sub">Updates on your orders and deliveries.</p>
       </div>
       <button
         v-if="notifications.length > 0 && unreadCount > 0"
         @click="markAllAsRead"
-        class="text-sm font-semibold text-[#FF5C1A] hover:underline"
+        class="notif-read-all"
       >
         Mark all as read
       </button>
@@ -198,5 +197,25 @@ onMounted(() => {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.notif-page {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 28px;
+}
+
+.notif-read-all {
+  flex: none;
+  padding: 8px 12px;
+  border: 1px solid #eef0f3;
+  border-radius: 10px;
+  background: #fff;
+  color: #ff5c1a;
+  font-size: 12.5px;
+  font-weight: 750;
 }
 </style>

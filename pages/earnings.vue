@@ -1,11 +1,11 @@
 <template>
   <div class="earn-page">
     <!-- Back and title on one line: the empty band above them was the header padding stacked with the page padding. -->
-    <div class="earn-head">
+    <div class="page-header">
       <PageBack class="lg:hidden" />
-      <div>
-        <h1 class="earn-title">Earnings</h1>
-        <p class="earn-sub">Withdraw what you have earned, and see where it came from.</p>
+      <div class="page-header-text">
+        <h1 class="page-title">Earnings</h1>
+        <p class="page-sub">Withdraw what you have earned, and see where it came from.</p>
       </div>
     </div>
     <!-- Skeleton -->
