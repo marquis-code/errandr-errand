@@ -139,15 +139,14 @@
   </div>
 
  <!-- Order Items / Custom Description -->
- <div class="bg-white p-4 md:p-5 rounded-lg border border-gray-50 relative overflow-hidden group ">
- <h3 class="text-sm font-bold text-gray-900 tracking-wider mb-6 flex items-center gap-3 uppercase">
- <div class="w-1.5 h-1.5 rounded-full bg-[#FF5C1A]" /> 
- {{ order.type === 'custom_errand' ? 'Request Details' : (order.packs?.length > 0 ? `Order Content (${order.packs.length} packs)` : `Order Content (${order.items?.length || 0} items)`) }}
+ <section class="panel-card">
+ <h3 class="panel-title">
+ {{ order.type === 'custom_errand' ? 'Request details' : (order.packs?.length > 0 ? `What to collect · ${order.packs.length} packs` : `What to collect · ${order.items?.length || 0} items`) }}
  </h3>
  
  
   <div v-if="order.type === 'custom_errand'" class="space-y-4">
-    <div class="p-4 bg-gray-50 rounded-xl border border-gray-50 text-sm text-gray-700 leading-relaxed font-bold">
+    <div class="request-text">
       {{ order.customDetails?.description }}
     </div>
     
@@ -159,9 +158,9 @@
       </div>
     </div>
     
-    <div class="flex items-center justify-between p-4 bg-[#FF5C1A]/5 rounded-xl border border-[#FF5C1A]/10">
-      <span class="text-sm font-bold text-[#FF5C1A] uppercase ">Est. Item Cost</span>
-      <span class="text-sm font-bold text-[#FF5C1A]">₦{{ order.customDetails?.estimatedItemCost?.toLocaleString() || 0 }}</span>
+    <div class="cost-row">
+      <span class="cost-label">Estimated item cost</span>
+      <span class="cost-value">₦{{ order.customDetails?.estimatedItemCost?.toLocaleString() || 0 }}</span>
     </div>
     
     <div v-if="['confirmed', 'preparing', 'ready_for_pickup', 'picked_up'].includes(order.status)" class="flex gap-2">
@@ -185,16 +184,16 @@
   <!-- Packs Rendering -->
   <template v-if="order.packs && order.packs.length > 0">
     <div v-for="pack in order.packs" :key="pack.name" class="mb-6">
-      <h4 class="text-[11px] font-bold text-[#FF5C1A] uppercase  mb-3 pl-1">{{ pack.name || 'Pack' }}</h4>
+      <h4 class="pack-name">{{ pack.name || 'Pack' }}</h4>
       <div class="space-y-3">
-        <div v-for="item in pack.items" :key="item.name" class="flex flex-col p-4 bg-gray-50 rounded-xl border border-gray-50 hover:border-[#FF5C1A]/30 transition-colors">
+        <div v-for="item in pack.items" :key="item.name" class="item-row">
          <div class="flex items-start justify-between">
          <div>
          <span class="text-sm font-bold text-gray-900 tracking-tight">{{ getItemDisplayName(item) }}</span>
          <p v-if="item.customizations?.length" class="text-[10px] font-medium text-gray-500 mt-1">Base: ₦{{ item.price?.toLocaleString() || 0 }}</p>
          </div>
          <div class="flex flex-col items-end gap-1">
-         <span class="text-sm font-bold text-[#FF5C1A] px-2.5 py-1 bg-[#FF5C1A]/10 rounded-md border border-[#FF5C1A]/20">x{{ item.quantity || item.qty }}</span>
+         <span class="item-qty">{{ item.quantity || item.qty }}×</span>
          <span class="text-sm font-bold text-gray-700">₦{{ item.price?.toLocaleString() || 0 }}</span>
          </div>
          </div>
@@ -296,20 +295,38 @@
    </div>
   </template>
  </div>
- </div>
+ </section>
 
  <!-- Delivery Location (Interactive) -->
- <div class="bg-gray-50 rounded-lg border border-gray-50 overflow-hidden relative group h-[300px]">
-  <MapboxMap 
-    v-if="mapboxToken" 
-    :order="order" :mapbox-token="mapboxToken" 
-    :errander-location="currentLocation" 
-  />
-  <div v-else class="absolute inset-0 flex flex-col items-center justify-center p-4 md:p-4 text-center">
-    <Loader2 class="w-8 h-8 animate-spin text-gray-400 mb-2" />
-    <p class="text-sm font-bold text-gray-400">Loading map...</p>
-  </div>
- </div>
+ <section class="map-card">
+   <div class="map-head">
+     <div class="min-w-0">
+       <p class="map-label">Delivery location</p>
+       <p class="map-address">{{ order.deliveryAddress || order.customDetails?.dropoffLocation || 'Address not set' }}</p>
+     </div>
+     <a
+       :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.deliveryAddress || order.customDetails?.dropoffLocation || '')}`"
+       target="_blank"
+       rel="noopener"
+       class="map-open"
+     >
+       <Navigation class="w-4 h-4" />
+       Open
+     </a>
+   </div>
+
+   <div class="map-canvas">
+     <MapboxMap
+       v-if="mapboxToken"
+       :order="order" :mapbox-token="mapboxToken"
+       :errander-location="currentLocation"
+     />
+     <div v-else class="map-loading">
+       <Loader2 class="w-7 h-7 animate-spin" />
+       <p>Loading map…</p>
+     </div>
+   </div>
+ </section>
  </div>
 
  <!-- Sidebar: Actions & Customer -->
@@ -2211,5 +2228,149 @@ useHead({ title: computed(() => `Delivery #${order.value?.orderNumber || ''} - E
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+/* ─── Map and contents, on the same surfaces as the rest of the screen ─── */
+.panel-card {
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid #eef0f3;
+  background: #fff;
+}
+
+.panel-title {
+  margin: 0 0 14px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #9aa1ac;
+}
+
+.request-text {
+  padding: 14px;
+  border-radius: 12px;
+  background: #faf9f7;
+  border: 1px solid #eef0f3;
+  font-size: 14.5px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: #14110d;
+}
+
+.cost-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 14px;
+  border-radius: 12px;
+  background: #fff1e8;
+  border: 1px solid #ffe2d0;
+}
+
+.cost-label {
+  font-size: 12.5px;
+  font-weight: 750;
+  color: #b45309;
+}
+
+.cost-value {
+  font-size: 15px;
+  font-weight: 800;
+  color: #b45309;
+}
+
+.pack-name {
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #14110d;
+}
+
+.item-row {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #eef0f3;
+  background: #fff;
+}
+
+.item-row + .item-row {
+  margin-top: 8px;
+}
+
+.item-qty {
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: #f4f5f7;
+  color: #14110d;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.map-card {
+  border-radius: 16px;
+  border: 1px solid #eef0f3;
+  background: #fff;
+  overflow: hidden;
+}
+
+.map-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.map-label {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9aa1ac;
+}
+
+.map-address {
+  margin: 3px 0 0;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #14110d;
+}
+
+.map-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #eef0f3;
+  background: #fff;
+  color: #14110d;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-decoration: none;
+  flex: none;
+}
+
+.map-canvas {
+  position: relative;
+  height: 220px;
+  border-top: 1px solid #eef0f3;
+}
+
+.map-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #9aa1ac;
+  font-size: 13px;
+  font-weight: 650;
 }
 </style>
