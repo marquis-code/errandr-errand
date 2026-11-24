@@ -69,22 +69,10 @@
         !activeChat ? 'hidden md:flex' : 'flex'
       ]"
     >
-      <div v-if="!activeChat" class="flex-1 flex flex-col items-center justify-center text-center p-5 bg-[#F0F2F5]">
-        <div class="w-80 h-80 mb-8 opacity-20 mx-auto">
-          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M50 100C77.6142 100 100 77.6142 100 50C100 22.3858 77.6142 0 50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100Z" fill="#075E54"/>
-            <path d="M70.5 35.5C70.5 35.5 68.5 32 63.5 32C58.5 32 55.5 35.5 55.5 35.5C55.5 35.5 53 38 52 38.5C51 39 48.5 38 46 36.5C43.5 35 42.5 32 42.5 32C42.5 32 44.5 29 42.5 27.5C40.5 26 38.5 23 37.5 23C36.5 23 34.5 24.5 33 26.5C31.5 28.5 30 33 34.5 39C39 45 44.5 50 49 51.5C53.5 53 58.5 53 62.5 51.5C66.5 50 69.5 47 70.5 45C71.5 43 70.5 35.5 70.5 35.5Z" fill="white"/>
-          </svg>
-        </div>
-        <h2 class="text-[32px] font-light text-[#41525D] mb-4">Erranders for Web</h2>
-        <p class="text-[14px] text-[#667781] max-w-md leading-relaxed">
-          Send and receive messages without keeping your phone online.<br/>
-          Use Erranders on up to 4 linked devices and 1 phone at the same time.
-        </p>
-        <div class="mt-10 flex items-center justify-center gap-1.5 text-[14px] text-[#8696A0]">
-          <Lock class="w-3.5 h-3.5" />
-          <span>End-to-end encrypted</span>
-        </div>
+      <div v-if="!activeChat" class="no-chat">
+        <MessageSquare class="w-10 h-10" />
+        <p class="no-chat-title">Pick a conversation</p>
+        <p class="no-chat-sub">Messages about a delivery stay attached to its order, so you always know who you are talking to and what it is about.</p>
       </div>
 
       <EmbeddedOrderChat 
@@ -445,5 +433,33 @@ onMounted(() => {
   line-height: 1.5;
   color: #9aa1ac;
   max-width: 34ch;
+}
+
+.no-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 40px 24px;
+  text-align: center;
+  color: #c3c8d0;
+  background: #f7f6f4;
+}
+
+.no-chat-title {
+  margin: 8px 0 0;
+  font-size: 15px;
+  font-weight: 750;
+  color: #14110d;
+}
+
+.no-chat-sub {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #9aa1ac;
 }
 </style>

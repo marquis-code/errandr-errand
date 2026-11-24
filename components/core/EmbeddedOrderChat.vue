@@ -1,9 +1,9 @@
 <template>
- <div v-if="isOpen" class="w-full h-full flex flex-col font-sans relative overflow-hidden bg-[#E5DDD5]">
+ <div v-if="isOpen" class="w-full h-full flex flex-col font-sans relative overflow-hidden bg-[#f7f6f4]">
  <!-- Chat Panel -->
- <div class="w-full h-full flex flex-col bg-[#E5DDD5]">
+ <div class="w-full h-full flex flex-col bg-[#f7f6f4]">
  <!-- WhatsApp Green Header -->
- <div class="px-4 py-2.5 bg-[#008069] text-white flex items-center gap-4 sticky top-0 z-20 shadow-sm">
+ <div class="chat-top">
  <button @click="$emit('close')" class="lg:hidden p-2 hover:bg-white/10 rounded-full transition-colors">
  <ArrowLeft class="w-5 h-5 text-white" />
  </button>
@@ -24,7 +24,7 @@
  </div>
 
  <!-- Messages Area with WhatsApp-like background -->
- <div ref="messageContainer" class="flex-1 overflow-y-auto px-4 py-4 space-y-2 scroll-smooth bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat">
+ <div ref="messageContainer" class="chat-scroll">
  
  <!-- Date Marker -->
  <div class="flex justify-center mb-6 sticky top-2 z-10">
@@ -428,5 +428,36 @@ onMounted(() => {
 ::-webkit-scrollbar-thumb {
  background: rgba(0,0,0,0.1);
  border-radius: 10px;
+}
+
+/* The conversation, in the same surfaces as the rest of the app. */
+.chat-top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #fff;
+  border-bottom: 1px solid #eef0f3;
+  color: #14110d;
+}
+
+.chat-top :deep(svg) {
+  color: #14110d;
+}
+
+.chat-top :deep(.rounded-full) {
+  background: #fff1e8 !important;
+  color: #ff5c1a !important;
+}
+
+.chat-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  background: #f7f6f4;
+  scroll-behavior: smooth;
 }
 </style>
