@@ -298,18 +298,18 @@
             <p v-if="(selectedOrder.proposedDeliveryFee || selectedOrder.deliveryFee) > 0" class="text-xl font-bold text-amber-700 tracking-tight">₦{{ (selectedOrder.proposedDeliveryFee || selectedOrder.deliveryFee).toLocaleString() }}</p>
             <p v-else class="text-lg font-bold text-amber-700 tracking-tight">Open to Offers</p>
           </div>
-          <div v-else class="p-4 bg-gray-50 rounded-lg">
-            <p class="text-[9px] font-medium text-gray-400 uppercase  mb-1">You Earn</p>
-            <p class="text-xl font-medium text-emerald-600 tracking-tight">₦{{ selectedOrder.status === 'interception_pending' ? (getOrderEarnings(selectedOrder) * 0.4).toLocaleString() : getOrderEarnings(selectedOrder).toLocaleString() }}</p>
+          <div v-else class="summary-card">
+            <p class="summary-label">You earn</p>
+            <p class="summary-value">₦{{ selectedOrder.status === 'interception_pending' ? Math.round(getOrderEarnings(selectedOrder) * 0.4).toLocaleString() : getOrderEarnings(selectedOrder).toLocaleString() }}</p>
           </div>
-          <div class="p-4 bg-gray-50 rounded-lg">
-            <p class="text-[9px] font-medium text-gray-400 uppercase  mb-1">Prep Time</p>
-            <p class="text-xl font-medium text-gray-900 tracking-tight">~15 Mins</p>
+          <div class="summary-card">
+            <p class="summary-label">Prep time</p>
+            <p class="summary-value quiet">~15 min</p>
           </div>
         </div>
 
         <!-- Outside Campus / Negotiation Banner -->
-        <div v-if="selectedOrder.status === 'negotiating' || selectedOrder.locationType === 'outside_campus' || selectedOrder.locationType === 'campus_environs'" class="p-4 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
+        <div v-if="selectedOrder.status === 'negotiating' || selectedOrder.locationType === 'outside_campus' || selectedOrder.locationType === 'campus_environs'" class="notice-card space-y-2">
           <div class="flex items-center gap-2">
             <span class="text-lg">📍</span>
             <h4 class="text-sm font-bold text-amber-800 uppercase tracking-wide">{{ selectedOrder.locationType === 'campus_environs' ? 'Campus Environs Delivery' : 'Outside Campus Delivery' }}</h4>
@@ -526,7 +526,7 @@
               <button 
                 @click="rejectOrder(selectedOrder._id)"
                 :disabled="acceptingId === selectedOrder._id || biddingId === selectedOrder._id"
-                class="flex-1 py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-sm font-bold hover:bg-red-100 transition-all flex items-center justify-center gap-2 active:scale-95"
+                class="btn-reject flex-1"
               >
                 <X class="w-4 h-4" />
                 Reject
@@ -535,7 +535,7 @@
               <button 
                 @click="selectedOrder.status === 'interception_pending' ? acceptInterception(selectedOrder._id) : acceptOrder(selectedOrder._id); isDrawerOpen = false"
                 :disabled="acceptingId === selectedOrder._id || biddingId === selectedOrder._id"
-                class="flex-[2] py-2.5 bg-gray-950 text-white rounded-lg text-sm font-bold hover:bg-parentPrimary transition-all flex items-center justify-center gap-2 active:scale-95"
+                class="btn-accept-drawer flex-[2]"
               >
                 <Zap v-if="acceptingId !== selectedOrder._id" class="w-4 h-4 fill-current" />
                 <span v-else class="w-4 h-4 border border-white/30 border-t-white rounded-full animate-spin"></span>
@@ -1462,5 +1462,70 @@ useHead({
   height: 7px;
   border-radius: 999px;
   background: #10b981;
+}
+
+/* Drawer summary: two facts, one card style, brand only on the money. */
+.summary-card {
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid #eef0f3;
+  background: #fff;
+}
+
+.summary-label {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9aa1ac;
+}
+
+.summary-value {
+  margin: 5px 0 0;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #b45309;
+}
+
+.summary-value.quiet {
+  color: #14110d;
+}
+
+.btn-reject {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  color: #14110d;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.btn-accept-drawer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px;
+  border: 0;
+  border-radius: 12px;
+  background: #14110d;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.notice-card {
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid #eef0f3;
+  background: #faf9f7;
+  color: #4b5563;
 }
 </style>
