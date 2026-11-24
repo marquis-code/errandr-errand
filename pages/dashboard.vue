@@ -71,9 +71,8 @@
     </div>
 
     <!-- Main Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="home-stack">
       <!-- Active Delivery + Recent Deliveries -->
-      <div class="lg:col-span-2 space-y-6">
 
         <!-- Active Deliveries Section -->
         <div class="  rounded-lg  overflow-hidden border border-gray-25">
@@ -215,61 +214,10 @@
             </NuxtLink>
           </div>
         </div>
-      </div>
-
-      <!-- Right Sidebar -->
-      <div class="space-y-6">
-        <!-- Earnings Summary -->
-        <div class="bg-gray-900 rounded-lg p-4 text-white relative overflow-hidden">
-          <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-[#FF5C1A]/20 rounded-full blur-[60px]" />
-          <div class="relative z-10">
-            <p class="text-sm text-gray-400 font-medium mb-1">Total Earned</p>
-            <h3 class="text-2xl font-bold tracking-tight mb-4">₦{{ (earningsData.totalEarnings || 0).toLocaleString() }}</h3>
-            
-            <div class="space-y-2 mb-6">
-              <div class="flex justify-between text-sm font-medium">
-                <span class="text-gray-400">Rating</span>
-                <span class="text-white">{{ (earningsData.rating || 0).toFixed(1) }} ⭐</span>
-              </div>
-              <div class="flex justify-between text-sm font-medium">
-                <span class="text-gray-400">Deliveries</span>
-                <span class="text-white">{{ earningsData.totalDeliveries || 0 }}</span>
-              </div>
-            </div>
-            
-            <NuxtLink to="/earnings" class="block w-full py-3 bg-white text-gray-900 rounded-xl font-semibold text-sm text-center hover:bg-[#FF5C1A] hover:text-white transition-all">
-              View Earnings
-            </NuxtLink>
-          </div>
-        </div>
-
-        <!-- Rating Card -->
-        <div class="  rounded-lg  p-4 ">
-          <p class="text-sm text-gray-400 font-medium mb-3">Your Rating</p>
-          <div class="flex items-center gap-0.5 mb-2">
-            <span v-for="i in 5" :key="i" class="text-xl" :class="i <= Math.round(errandrProfile?.rating || 0) ? 'text-amber-400' : 'text-gray-200'">★</span>
-          </div>
-          <div class="flex items-baseline gap-2">
-            <h4 class="text-4xl font-bold text-gray-900 tracking-tight">{{ (errandrProfile?.rating || 0).toFixed(1) }}</h4>
-            <span class="text-sm text-gray-400 font-medium">/ 5.0</span>
-          </div>
-          <p v-if="errandrProfile?.rating >= 4.5" class="text-[11px] text-amber-600 font-semibold mt-3 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-100 inline-block">⭐ Top Rated Rider</p>
-        </div>
-
-        <!-- Quick Help -->
-        <!-- <div class="  rounded-lg  p-4 ">
-          <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2 mb-2">
-            Need Help?
-          </h3>
-          <p class="text-sm text-gray-500 mb-4">Get in touch with our support team for any delivery issues.</p>
-          <button class="w-full py-3 bg-gray-50 border border-gray-50 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-all">
-            Contact Support
-          </button>
-        </div> -->
-      </div>
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
@@ -359,9 +307,27 @@ const stats = computed(() => [
   { label: 'Active Orders', value: orders.value.filter(o => ['pending', 'confirmed', 'preparing', 'ready_for_pickup', 'picked_up', 'in_transit', 'negotiating', 'awaiting_payment'].includes(o.status)).length || '0', emoji: '📦', bgClass: 'bg-blue-50' },
 ])
 
-const activeOrders = computed(() => {
-  return orders.value.filter(o => ['pending', 'confirmed', 'preparing', 'ready_for_pickup', 'picked_up', 'in_transit', 'negotiating', 'awaiting_payment'].includes(o.status))
-})
+const STALE_AFTER_HOURS = 24
+
+const isStale = (order: any) => {
+  const created = new Date(order?.createdAt || 0).getTime()
+  if (!created) return false
+  return Date.now() - created > STALE_AFTER_HOURS * 60 * 60 * 1000
+}
+
+/**
+ * Work still worth showing.
+ *
+ * Anything untouched for a day drops out: keeping it in front of a rider makes the list lie about what they are doing
+ * today, and a stale job cannot be completed anyway.
+ */
+const activeOrders = computed(() =>
+  orders.value.filter(
+    (o) =>
+      ['pending', 'confirmed', 'preparing', 'ready_for_pickup', 'picked_up', 'in_transit', 'negotiating', 'awaiting_payment'].includes(o.status)
+      && !isStale(o),
+  ),
+)
 
 const batchStatus = ref<any>(null)
 
@@ -962,5 +928,12 @@ onUnmounted(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* Home is a stack of three answers: what am I doing, what can I pick up, what did I just finish. */
+.home-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 </style>
