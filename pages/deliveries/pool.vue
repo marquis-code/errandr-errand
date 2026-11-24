@@ -110,6 +110,7 @@
           </div>
 
           <div class="card-actions">
+            <button type="button" class="btn-details" @click.stop="viewDetails(order)">Details</button>
             <button
               v-if="order.status === 'negotiating'"
               type="button"
@@ -1392,6 +1393,7 @@ useHead({
   margin-top: 14px;
 }
 
+.btn-details,
 .btn-bid,
 .btn-accept {
   flex: 1;
@@ -1401,6 +1403,14 @@ useHead({
   font-size: 14.5px;
   font-weight: 750;
   cursor: pointer;
+}
+
+.btn-details {
+  flex: 0 0 auto;
+  padding: 13px 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  color: #14110d;
 }
 
 .btn-bid {

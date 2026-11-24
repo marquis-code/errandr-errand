@@ -3,7 +3,7 @@
     <!-- Left Sidebar (WhatsApp Web style) -->
     <div 
       :class="[
-        'w-full md:w-[35%] lg:w-[30%] max-w-[420px] min-w-[320px] flex-col bg-white border-r border-gray-200 flex-shrink-0 transition-all',
+        'w-full md:w-[35%] lg:w-[30%] md:max-w-[420px] md:min-w-[320px] flex-col bg-white border-r border-gray-200 flex-shrink-0 transition-all',
         activeChat ? 'hidden md:flex' : 'flex'
       ]"
     >

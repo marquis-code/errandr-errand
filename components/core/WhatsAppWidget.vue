@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed bottom-6 left-6 md:bottom-8 md:left-8 z-[100] flex flex-col items-start">
+  <div class="fixed bottom-[88px] left-4 md:bottom-8 md:left-8 z-[44] flex flex-col items-start">
     <!-- Modal -->
     <Transition
       enter-active-class="transition duration-200 ease-out"

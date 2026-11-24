@@ -114,20 +114,33 @@
               <span class="px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px] font-semibold">{{ filteredTransactions.length }}</span>
             </div>
             
-            <!-- Filters -->
-            <div class="flex items-center gap-2 flex-wrap">
-              <div class="w-32 relative">
-                <UiSelectInput v-model="filterType" :options="[{label: 'All Types', value: 'all'}, {label: 'Credits Only', value: 'credit'}, {label: 'Debits Only', value: 'debit'}]" class="w-full h-8 !min-h-[32px] text-sm !px-2 rounded-lg bg-white focus:ring-1 focus:ring-gray-300" />
+            <!-- Filters: a type row you can hit, then the dates as one pair -->
+            <div class="ledger-filters">
+              <div class="type-row">
+                <button
+                  v-for="opt in [{ label: 'All', value: 'all' }, { label: 'In', value: 'credit' }, { label: 'Out', value: 'debit' }]"
+                  :key="opt.value"
+                  type="button"
+                  class="type-chip"
+                  :class="{ on: filterType === opt.value }"
+                  @click="filterType = opt.value"
+                >
+                  {{ opt.label }}
+                </button>
               </div>
-              <div class="w-32">
+
+              <div class="date-row">
                 <UiDatePicker v-model="filterDateFrom" placeholder="From" />
-              </div>
-              <div class="w-32">
                 <UiDatePicker v-model="filterDateTo" placeholder="To" />
+                <button
+                  v-if="filterType !== 'all' || filterDateFrom || filterDateTo"
+                  type="button"
+                  class="clear-chip"
+                  @click="clearFilters"
+                >
+                  Clear
+                </button>
               </div>
-              <button v-if="filterType !== 'all' || filterDateFrom || filterDateTo" @click="clearFilters" class="px-2 py-1.5 text-sm text-gray-500 hover:text-gray-700 font-medium">
-                Clear
-              </button>
             </div>
           </div>
         </div>
@@ -141,48 +154,75 @@
             <p class="text-gray-400 text-sm max-w-sm">{{ transactions.length === 0 ? 'Complete your first delivery to see your history.' : 'Try adjusting the filters above.' }}</p>
           </div>
           
-          <div v-else class="overflow-x-auto">
-            <table class="w-full text-left">
-              <thead>
-                <tr class="bg-gray-50 border-b border-gray-100">
-                  <th class="py-3 px-4 font-semibold text-gray-500 text-[11px] uppercase tracking-wide">Description</th>
-                  <th class="py-3 px-4 font-semibold text-gray-500 text-[11px] uppercase tracking-wide text-right">Amount</th>
-                  <th class="py-3 px-4 font-semibold text-gray-500 text-[11px] uppercase tracking-wide text-right">Date</th>
-                  <th class="py-3 px-4 font-semibold text-gray-500 text-[11px] uppercase tracking-wide text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-50">
-                <tr v-for="tx in filteredTransactions" :key="tx._id" class="hover:bg-gray-50/50 transition-colors">
-                  <td class="py-3 px-4">
-                    <div class="flex items-center gap-3">
-                      <div :class="tx.type === 'credit' ? 'bg-emerald-50 text-emerald-500' : 'bg-rose-50 text-rose-500'" class="w-7 h-7 rounded-full flex items-center justify-center shrink-0">
-                        <svg v-if="tx.type === 'credit'" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"></path></svg>
-                        <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"></path></svg>
-                      </div>
-                      <div>
-                        <p class="text-sm text-gray-900 font-semibold">{{ tx.description }}</p>
-                        <p v-if="tx.order" class="text-[10px] text-gray-400 font-mono mt-0.5">{{ tx.order.slice(-8) }}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="py-3 px-4 text-right">
-                    <p :class="tx.type === 'credit' ? 'text-emerald-600' : 'text-gray-900'" class="text-sm font-bold font-mono">
-                      {{ tx.type === 'credit' ? '+' : '-' }}₦{{ tx.amount.toLocaleString() }}
+          <!-- A ledger reads as a list on a phone: four columns cannot survive 390px. -->
+          <div v-else>
+            <div class="md:hidden">
+              <div v-for="tx in filteredTransactions" :key="'m-' + tx._id" class="ledger-row">
+                <div class="ledger-main">
+                  <span class="ledger-dot" :class="tx.type === 'credit' ? 'in' : 'out'">
+                    <span v-if="tx.type === 'credit'">+</span><span v-else>−</span>
+                  </span>
+                  <div class="ledger-text">
+                    <p class="ledger-desc">{{ tx.description }}</p>
+                    <p class="ledger-meta">
+                      {{ new Date(tx.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) }}
+                      ·
+                      {{ new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+                      <template v-if="tx.order"> · {{ tx.order.slice(-8) }}</template>
                     </p>
-                  </td>
-                  <td class="py-3 px-4 text-right">
-                    <p class="text-sm text-gray-700 font-medium">{{ new Date(tx.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) }}</p>
-                    <p class="text-[10px] text-gray-400 mt-0.5">{{ new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</p>
-                  </td>
-                  <td class="py-3 px-4 text-right">
-                    <button @click="downloadReceipt(tx._id)" class="px-2.5 py-1 rounded text-[10px] font-semibold text-gray-500 hover:text-[#FF5C1A] hover:bg-orange-50 transition-colors inline-flex items-center gap-1">
-                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                      Receipt
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  </div>
+                </div>
+                <div class="ledger-side">
+                  <p class="ledger-amount" :class="tx.type === 'credit' ? 'plus' : 'minus'">
+                    {{ tx.type === 'credit' ? '+' : '−' }}₦{{ tx.amount.toLocaleString() }}
+                  </p>
+                  <button type="button" class="ledger-receipt" @click="downloadReceipt(tx._id)">Receipt</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- The table still earns its keep where there is room for it -->
+            <div class="hidden md:block overflow-x-auto">
+              <table class="w-full text-left">
+                <thead>
+                  <tr class="bg-gray-50 border-b border-gray-100">
+                    <th class="py-3 px-4 font-semibold text-gray-500 text-[11px] uppercase tracking-wide">Description</th>
+                    <th class="py-3 px-4 font-semibold text-gray-500 text-[11px] uppercase tracking-wide text-right">Amount</th>
+                    <th class="py-3 px-4 font-semibold text-gray-500 text-[11px] uppercase tracking-wide text-right">Date</th>
+                    <th class="py-3 px-4 font-semibold text-gray-500 text-[11px] uppercase tracking-wide text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                  <tr v-for="tx in filteredTransactions" :key="tx._id" class="hover:bg-gray-50/50 transition-colors">
+                    <td class="py-3 px-4">
+                      <div class="flex items-center gap-3">
+                        <div :class="tx.type === 'credit' ? 'bg-emerald-50 text-emerald-500' : 'bg-rose-50 text-rose-500'" class="w-7 h-7 rounded-full flex items-center justify-center shrink-0">
+                          <span class="text-xs font-bold">{{ tx.type === 'credit' ? '+' : '−' }}</span>
+                        </div>
+                        <div>
+                          <p class="text-sm text-gray-900 font-semibold">{{ tx.description }}</p>
+                          <p v-if="tx.order" class="text-[10px] text-gray-400 font-mono mt-0.5">{{ tx.order.slice(-8) }}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                      <p :class="tx.type === 'credit' ? 'text-emerald-600' : 'text-gray-900'" class="text-sm font-bold">
+                        {{ tx.type === 'credit' ? '+' : '−' }}₦{{ tx.amount.toLocaleString() }}
+                      </p>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                      <p class="text-sm text-gray-700 font-medium">{{ new Date(tx.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) }}</p>
+                      <p class="text-[10px] text-gray-400 mt-0.5">{{ new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</p>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                      <button @click="downloadReceipt(tx._id)" class="px-2.5 py-1 rounded text-[10px] font-semibold text-gray-500 hover:text-[#FF5C1A] hover:bg-orange-50 transition-colors">
+                        Receipt
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -553,5 +593,154 @@ useHead({ title: 'Earnings - Errandr Dashboard' });
   font-weight: 700;
   color: #9aa1ac;
   margin-right: 2px;
+}
+
+/* Ledger on a phone */
+.ledger-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f4f5f7;
+}
+
+.ledger-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ledger-dot {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 800;
+  flex: none;
+}
+
+.ledger-dot.in {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.ledger-dot.out {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.ledger-text {
+  min-width: 0;
+}
+
+.ledger-desc {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 650;
+  color: #14110d;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ledger-meta {
+  margin: 3px 0 0;
+  font-size: 11.5px;
+  color: #9aa1ac;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ledger-side {
+  text-align: right;
+  flex: none;
+}
+
+.ledger-amount {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 800;
+}
+
+.ledger-amount.plus {
+  color: #059669;
+}
+
+.ledger-amount.minus {
+  color: #14110d;
+}
+
+.ledger-receipt {
+  margin-top: 4px;
+  padding: 3px 8px;
+  border: 1px solid #eef0f3;
+  border-radius: 8px;
+  background: #fff;
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ledger-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .ledger-filters {
+    flex-direction: row;
+    align-items: center;
+    width: auto;
+  }
+}
+
+.type-row {
+  display: flex;
+  gap: 6px;
+}
+
+.type-chip {
+  padding: 7px 14px;
+  border: 1px solid #eef0f3;
+  border-radius: 999px;
+  background: #fff;
+  color: #6b7280;
+  font-size: 12.5px;
+  font-weight: 750;
+}
+
+.type-chip.on {
+  background: #14110d;
+  border-color: #14110d;
+  color: #fff;
+}
+
+.date-row {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+}
+
+.date-row > * {
+  flex: 1;
+  min-width: 0;
+}
+
+.clear-chip {
+  padding: 7px 12px;
+  border: 0;
+  background: transparent;
+  color: #ff5c1a;
+  font-size: 12.5px;
+  font-weight: 750;
 }
 </style>
