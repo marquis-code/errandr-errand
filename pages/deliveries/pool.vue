@@ -6,9 +6,10 @@
         <h1 class="text-xl md:text-2xl font-medium text-gray-900 tracking-tight mb-1">Available Errands</h1>
         <p class="text-gray-400 text-sm md:text-sm font-medium">Claim available orders in real-time from the open orders list.</p>
       </div>
-      <div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="text-[9px] font-medium text-emerald-600 uppercase tracking-[0.2em]">Available Orders</span>
+      <!-- A live badge that said "Available orders" under a heading that already said it; the count is the news. -->
+      <div class="pool-count">
+        <span class="pool-count-dot"></span>
+        {{ availableOrders.length }} waiting
       </div>
     </div>
 
@@ -1441,5 +1442,25 @@ useHead({
   to {
     transform: rotate(360deg);
   }
+}
+
+.pool-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #eef0f3;
+  color: #4b5563;
+  font-size: 12.5px;
+  font-weight: 750;
+}
+
+.pool-count-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #10b981;
 }
 </style>

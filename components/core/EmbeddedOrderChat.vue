@@ -5,21 +5,21 @@
  <!-- WhatsApp Green Header -->
  <div class="chat-top">
  <button @click="$emit('close')" class="lg:hidden p-2 hover:bg-white/10 rounded-full transition-colors">
- <ArrowLeft class="w-5 h-5 text-white" />
+ <ArrowLeft class="w-5 h-5" />
  </button>
- <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold overflow-hidden cursor-pointer">
+ <div class="w-10 h-10 rounded-full bg-[#fff1e8] flex items-center justify-center text-sm font-bold overflow-hidden cursor-pointer">
  <img v-if="receiverAvatar" :src="receiverAvatar" class="w-full h-full object-cover" />
- <User v-else class="w-6 h-6 text-white" />
+ <User v-else class="w-[22px] h-[22px] text-[#ff5c1a]" />
  </div>
  <div class="flex-1 min-w-0">
- <h3 class="text-[16px] font-medium truncate leading-tight text-white">{{ receiverName || 'Order Coordination' }}</h3>
- <p class="text-[13px] text-white/80 font-normal truncate">
- Order ID: {{ orderId.substring(0, 8) }}... • {{ isTyping ? 'typing...' : (isOnline ? 'online' : 'click here for contact info') }}
+ <h3 class="text-[15.5px] font-bold truncate leading-tight text-[#14110d]">{{ receiverName || 'Order coordination' }}</h3>
+ <p class="text-[12.5px] text-[#9aa1ac] font-medium truncate">
+ {{ orderId.substring(0, 8) }} · {{ isTyping ? 'typing…' : (isOnline ? 'online' : 'tap for contact info') }}
  </p>
  </div>
  <div class="flex items-center gap-5 mr-2">
- <Search class="w-5 h-5 text-white cursor-pointer hover:text-gray-200" />
- <MoreVertical class="w-5 h-5 text-white cursor-pointer hover:text-gray-200" />
+ <Search class="w-5 h-5 cursor-pointer" />
+ <MoreVertical class="w-5 h-5 cursor-pointer" />
  </div>
  </div>
 
@@ -28,7 +28,7 @@
  
  <!-- Date Marker -->
  <div class="flex justify-center mb-6 sticky top-2 z-10">
- <span class="px-3 py-1 bg-[#D1E9F6] text-[#54656F] text-[11px] font-bold rounded-lg shadow-sm">
+ <span class="px-3 py-1 bg-white text-[#9aa1ac] text-[11px] font-bold rounded-full border border-[#eef0f3]">
  Order #{{ orderId }}
  </span>
  </div>
@@ -50,10 +50,10 @@
  :class="isMe(msg) ? 'items-end' : 'items-start'">
  
  <div :class="[
- 'relative max-w-[85%] px-3 py-1.5 rounded-lg text-[14.5px] shadow-sm mb-1 group transition-all',
+ 'relative max-w-[78%] px-3.5 py-2 rounded-2xl text-[14.5px] leading-relaxed mb-1 group transition-all',
  isMe(msg) 
- ? 'bg-[#DCF8C6] text-[#054740] rounded-tr-none ml-10' 
- : 'bg-white text-[#111B21] rounded-tl-none mr-10'
+ ? 'bg-[#ffe6d5] text-[#3a1c0c] rounded-br-md' 
+ : 'bg-white text-[#14110d] border border-[#eef0f3] rounded-bl-md'
  ]">
  <!-- Speech Bubble Tail -->
  <div v-if="shouldShowTail(msg, idx)" 
@@ -456,7 +456,8 @@ onMounted(() => {
 .chat-scroll {
   flex: 1;
   overflow-y: auto;
-  padding: 14px;
+  overflow-x: hidden;
+  padding: 14px 12px;
   background: #f7f6f4;
   scroll-behavior: smooth;
 }
